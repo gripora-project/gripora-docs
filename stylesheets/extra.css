@@ -1,6 +1,7 @@
 /* =============================================================================
-   WingFlight Documentation — Brand Styles
-   Design tokens sourced from wingflight.org (color-palette.html)
+   Gripora Documentation — Brand Styles
+   Design tokens inherited from WingFlight (wingflight.org color-palette.html);
+   interim until Gripora has its own palette
    ============================================================================= */
 
 /* ---------------------------------------------------------------------------
@@ -8,22 +9,22 @@
    --------------------------------------------------------------------------- */
 
 [data-md-color-primary="custom"] {
-  --md-primary-fg-color:        #d40000; /* Brand Red — header background  */
-  --md-primary-fg-color--light: #ff4d4d; /* Light Red                      */
-  --md-primary-fg-color--dark:  #a40000; /* Dark Red                       */
+  --md-primary-fg-color:        #16181d; /* Gripora ink — header background */
+  --md-primary-fg-color--light: #2a2e37; /* Light ink                      */
+  --md-primary-fg-color--dark:  #0e0f12; /* Dark ink                       */
   --md-primary-bg-color:        #ffffff;
   --md-primary-bg-color--light: rgba(255, 255, 255, 0.7);
 }
 
 [data-md-color-accent="custom"] {
-  --md-accent-fg-color:             #d40000;
-  --md-accent-fg-color--transparent: rgba(212, 0, 0, 0.1);
+  --md-accent-fg-color:             #ff5f1f;
+  --md-accent-fg-color--transparent: rgba(255, 95, 31, 0.1);
   --md-accent-bg-color:             #ffffff;
   --md-accent-bg-color--light:      rgba(255, 255, 255, 0.7);
 }
 
 /* ---------------------------------------------------------------------------
-   Light scheme — wingflight.org light palette
+   Light scheme — inherited WingFlight light palette
    --------------------------------------------------------------------------- */
 
 [data-md-color-scheme="default"] {
@@ -64,7 +65,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Dark scheme — wingflight.org dark palette
+   Dark scheme — inherited WingFlight dark palette
    --------------------------------------------------------------------------- */
 
 [data-md-color-scheme="slate"] {
@@ -118,9 +119,9 @@
   margin-bottom: 1.5rem;
 }
 
-/* Header stays brand-red; override the slate-generated tint */
+/* Header stays Gripora ink; override the slate-generated tint */
 [data-md-color-scheme="slate"] .md-header {
-  background-color: #d40000;
+  background-color: #16181d;
 }
 
 /* Search field in dark mode */
@@ -130,7 +131,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Typography — 'Helvetica Now Text' matching wingflight.org font stack
+   Typography — 'Helvetica Now Text' inherited from the WingFlight site font stack
    --------------------------------------------------------------------------- */
 
 body,
@@ -152,7 +153,7 @@ body,
 
 .md-typeset h2 {
   padding-bottom: 0.4rem;
-  border-bottom: 3px solid #d40000;
+  border-bottom: 3px solid #ff5f1f;
 }
 
 [data-md-color-scheme="default"] .md-typeset h1,
@@ -172,15 +173,15 @@ body,
    --------------------------------------------------------------------------- */
 
 .md-typeset a {
-  color: #d40000;
+  color: #c2410c; /* Gripora orange, darkened for text contrast */
 }
 
 .md-typeset a:hover {
-  color: #a40000;
+  color: #9a3412;
 }
 
 [data-md-color-scheme="slate"] .md-typeset a {
-  color: #ff4d4d;
+  color: #ff8a57;
 }
 
 [data-md-color-scheme="slate"] .md-typeset a:hover {
@@ -193,7 +194,7 @@ body,
 
 [data-md-color-scheme="slate"] .md-nav__link--active,
 [data-md-color-scheme="slate"] .md-nav__link:hover {
-  color: #ff4d4d;
+  color: #ff8a57;
 }
 
 [data-md-color-scheme="slate"] .md-nav__link--active {
@@ -207,7 +208,7 @@ body,
 .md-typeset .admonition,
 .md-typeset details {
   border: none;
-  border-left: 4px solid #d40000;
+  border-left: 4px solid #ff5f1f;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
@@ -241,7 +242,7 @@ body,
 }
 
 [data-md-color-scheme="default"] .md-typeset table:not([class]) tr:hover {
-  background-color: rgba(212, 0, 0, 0.04);
+  background-color: rgba(255, 95, 31, 0.04);
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) {
@@ -259,7 +260,7 @@ body,
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) tr:hover {
-  background-color: rgba(255, 77, 77, 0.06);
+  background-color: rgba(255, 95, 31, 0.06);
 }
 
 /* ---------------------------------------------------------------------------
@@ -279,7 +280,7 @@ body,
    --------------------------------------------------------------------------- */
 
 [data-md-color-scheme="slate"] .md-tabs {
-  background-color: #a40000;
+  background-color: #16181d;
 }
 
 /* ---------------------------------------------------------------------------
