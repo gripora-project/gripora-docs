@@ -14,5 +14,5 @@ testing -- are welcome.
 
 See the [Developer Guide](developers.md) for general contribution guidance,
 [Code Guidelines and Testing](code-guidelines.md) and [Coding Style](coding-style.md) for how to write
-the code, and the [Technical Reference](tech/index.md) for the internals. Join the [WingFlight Discord](https://discord.gg/aEyyAJTXRw/) to discuss
+the code, and the [Technical Reference](tech/index.md) for the internals. Use the [issue tracker](https://github.com/gripora-project/gripora-firmware/issues) to discuss
 larger changes before starting.

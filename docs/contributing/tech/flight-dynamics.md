@@ -1,4 +1,4 @@
-# Gripora Flight Dynamics: Design Rationale and Review
+# Flight Dynamics (inherited from WingFlight): Design Rationale and Review
 
 This document describes how Gripora turns pilot sticks and sensor data into surface and motor commands. It records why each piece is built the way it is, and lists the problems found in a review of that code.
 

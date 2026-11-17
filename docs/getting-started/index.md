@@ -16,5 +16,5 @@ configured, flying aircraft.
 6. Once you have a working setup, take a [backup](backup-and-restore.md)
    before you start tuning.
 
-If you get stuck at any point, the [WingFlight Discord](https://discord.gg/aEyyAJTXRw/)
-is the fastest place to get help.
+If you get stuck at any point, the [issue tracker](https://github.com/gripora-project/gripora-firmware/issues)
+is the place to ask for help.

@@ -44,5 +44,5 @@ protocol, CLI, and configuration philosophy.
 
 ## Getting help
 
-Join the [WingFlight Discord](https://discord.gg/aEyyAJTXRw/) for setup help,
+Open an issue on [GitHub](https://github.com/gripora-project/gripora-firmware/issues) for setup help,
 tuning advice, and project discussion.
