@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gripora-flight-dynamics-design-rationale-and-review" class="md-skip">
+        <a href="#flight-dynamics-inherited-from-wingflight-design-rationale-and-review" class="md-skip">
           Skip to content
         </a>
       
@@ -4382,7 +4382,7 @@
   
 
 
-<h1 id="gripora-flight-dynamics-design-rationale-and-review">Gripora Flight Dynamics: Design Rationale and Review<a class="headerlink" href="#gripora-flight-dynamics-design-rationale-and-review" title="Permanent link">&para;</a></h1>
+<h1 id="flight-dynamics-inherited-from-wingflight-design-rationale-and-review">Flight Dynamics (inherited from WingFlight): Design Rationale and Review<a class="headerlink" href="#flight-dynamics-inherited-from-wingflight-design-rationale-and-review" title="Permanent link">&para;</a></h1>
 <p>This document describes how Gripora turns pilot sticks and sensor data into surface and motor commands. It records why each piece is built the way it is, and lists the problems found in a review of that code.</p>
 <p><strong>Scope.</strong> Everything between the receiver and the servo/motor outputs: setpoint shaping, the rate PID, the leveling and hold modes, the thrust-vector loop, the mixer, servo and motor output, the attitude estimator, and the arming/failsafe/navigation logic that overrides them.</p>
 <p><strong>Basis.</strong> A static read of <code>master</code>. Nothing was compiled, simulated, or flown for this review. The one thing checked numerically was the fast quaternion product in <code>imu.c</code>, which matches the Hamilton product to 1e-15. Where a finding depends on a sign convention or on behaviour I could not observe, it says so.</p>
