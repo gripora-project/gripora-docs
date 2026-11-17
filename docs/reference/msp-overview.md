@@ -14,6 +14,12 @@ MSP compatibility it can't verify.
 
 ## Version compatibility
 
+Gripora's MSP protocol is its own from **MSP API 33.0**: earlier Gripora
+firmware reported the API version of WingFlight, which it was forked from
+(22.x), and WingFlight stays on 22.x. The Gripora-specific MSP2 messages
+are named `MSP2_GRIPORA_*` (ids `0x5F00` and up). The Configurator and the
+Lua suites accept MSP API 33.x only, and refuse 22.x firmware: update it.
+
 Additive changes, such as a new read-only command, don't change the API
 version: firmware that lacks a command answers it as unsupported, which is
 how the Configurator tells. `MSP_SERVO_TRIM`, which reports the live runtime

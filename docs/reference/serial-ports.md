@@ -148,7 +148,7 @@ main RX's own existing ~100ms signal-loss detection window (`rxSignalReceived`,
 above the takeover branch in `detectAndApplySignalLossBehaviour()` for why a feature-
 specific fixed threshold isn't used instead. See `drivers/rx_input_backup.c` and
 `rx/rx.c`'s `detectAndApplySignalLossBehaviour()`. Diagnostics are available
-read-only via `MSP2_WING_RX_INPUT_BACKUP_STATUS`.
+read-only via `MSP2_GRIPORA_RX_INPUT_BACKUP_STATUS`.
 
 Which protocol each port speaks is selected via `rx_input_backup_provider`
 (backup 1) and `rx_input_backup2_provider` (backup 2):

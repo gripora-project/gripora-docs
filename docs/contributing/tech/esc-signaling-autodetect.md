@@ -43,13 +43,13 @@ uncovered and fixed). This note only covers what's different here.
 
 ## MSP
 
-One new command, `MSP2_WING_ESC_SENSOR_TRIAL` (`0x5F14` - `0x5F12`/`0x5F13`
-are claimed by the RX wiring auto-detect PR's `MSP2_WING_RX_SERIAL_TRIAL`/
-`MSP2_WING_RX_INPUT_BACKUP_TRIAL`, deliberately skipped rather than
+One new command, `MSP2_GRIPORA_ESC_SENSOR_TRIAL` (`0x5F14` - `0x5F12`/`0x5F13`
+are claimed by the RX wiring auto-detect PR's `MSP2_GRIPORA_RX_SERIAL_TRIAL`/
+`MSP2_GRIPORA_RX_INPUT_BACKUP_TRIAL`, deliberately skipped rather than
 colliding, since both branches were cut from `master` independently and
 each just grabbed the next free slot from its own starting point). Same
 start/poll/stop action-byte shape as the RX version and
-`MSP2_WING_BOARD_AUTO_ALIGN`. Response layout is one field shorter than the
+`MSP2_GRIPORA_BOARD_AUTO_ALIGN`. Response layout is one field shorter than the
 RX version's (no `inverted` byte):
 
 `U8 state, U8 comboIndex, U8 halfDuplex, U8 pinSwap, U16 elapsedMs`

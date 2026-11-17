@@ -41,7 +41,7 @@ So the mechanism is: **close current port → flip the trial bits in RAM →
 re-run the same init switch that already exists → poll
 `rxIsReceivingSignal()`** ([rx.c:391](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/rx/rx.c#L391)),
 which is already exposed to MSP as `mainLinkUp` in
-`MSP2_WING_RX_INPUT_BACKUP_STATUS` and already polled every 200ms by the
+`MSP2_GRIPORA_RX_INPUT_BACKUP_STATUS` and already polled every 200ms by the
 configurator today.
 
 ## Firmware: new state machine (rx.c)
@@ -130,11 +130,11 @@ Next free IDs after `0x5F11` ([msp_protocol.h:305-322](https://github.com/gripor
 
 | Command | ID | Request | Response |
 |---|---|---|---|
-| `MSP2_WING_RX_SERIAL_TRIAL_START` | `0x5F12` | *(none — always trials the currently-configured `serialrx_provider`)* | `U8 accepted` (0 = rejected: no serial RX feature/port, or trial already running) |
-| `MSP2_WING_RX_SERIAL_TRIAL_STATUS` | `0x5F13` | *(none)* | `U8 state` (idle/running/success/failed), `U8 comboIndex`, `U8 inverted`, `U8 halfDuplex`, `U8 pinSwap`, `U16 elapsedMs` — also **is** the watchdog keep-alive (updates `lastPollAt`) |
-| `MSP2_WING_RX_SERIAL_TRIAL_STOP` | `0x5F14` | *(none)* | `U8 ack` — always restores + reinits, idempotent |
+| `MSP2_GRIPORA_RX_SERIAL_TRIAL_START` | `0x5F12` | *(none — always trials the currently-configured `serialrx_provider`)* | `U8 accepted` (0 = rejected: no serial RX feature/port, or trial already running) |
+| `MSP2_GRIPORA_RX_SERIAL_TRIAL_STATUS` | `0x5F13` | *(none)* | `U8 state` (idle/running/success/failed), `U8 comboIndex`, `U8 inverted`, `U8 halfDuplex`, `U8 pinSwap`, `U16 elapsedMs` — also **is** the watchdog keep-alive (updates `lastPollAt`) |
+| `MSP2_GRIPORA_RX_SERIAL_TRIAL_STOP` | `0x5F14` | *(none)* | `U8 ack` — always restores + reinits, idempotent |
 
-Mirrors the existing `MSP2_WING_RX_INPUT_BACKUP_STATUS` handler pattern
+Mirrors the existing `MSP2_GRIPORA_RX_INPUT_BACKUP_STATUS` handler pattern
 ([msp.c:1321](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/msp/msp.c#L1321)) closely enough to reuse
 its shape.
 
@@ -146,7 +146,7 @@ its shape.
   [ReceiverType.svelte:65](https://github.com/gripora-project/gripora-configurator/blob/master/src/tabs/receiver/ReceiverType.svelte#L65)).
 - On click: send `TRIAL_START`; if accepted, poll `TRIAL_STATUS` on the same
   ~150-200ms cadence the tab already uses for
-  `MSP2_WING_RX_INPUT_BACKUP_STATUS`
+  `MSP2_GRIPORA_RX_INPUT_BACKUP_STATUS`
   ([Receiver.svelte:89-91](https://github.com/gripora-project/gripora-configurator/blob/master/src/tabs/receiver/Receiver.svelte#L89)),
   showing "Trying combo N of 8…".
 - On `SUCCESS`: send `TRIAL_STOP` (commits nothing on the FC, just cleans up

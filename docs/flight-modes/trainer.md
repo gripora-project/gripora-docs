@@ -44,7 +44,7 @@ for its distinction between angle demand and envelope protection.
 - In the Ethos suite, assign TRAINER under **Controls → Modes** and adjust
   **Gain**, **Bank** and **Pitch** under
   **Flight Tuning → Advanced → Flight Modes → Acro Trainer**. The suite requires
-  MSP API **22.04 or newer**; update the firmware snapshot alongside the suite.
+  MSP API **33.0 or newer**; update the firmware snapshot alongside the suite.
   ANGLE and ATT HOLD have separate tools in the same menu.
 - In EdgeTX, **Profile – Various** exposes the independent limits with API 22.4
   firmware. Its older-firmware support retains shared limits.

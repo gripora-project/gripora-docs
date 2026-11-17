@@ -9,7 +9,7 @@ The work is split in two:
 
 | Side | Does | Source |
 | --- | --- | --- |
-| Flight controller | Measures how the model answers the rate loop and reports the numbers over MSP. Gives no advice and changes no settings. | `src/main/flight/tune_advisor.c`, `MSP2_WING_TUNE_ADVISOR` in `src/main/msp/msp.c` (gripora-firmware) |
+| Flight controller | Measures how the model answers the rate loop and reports the numbers over MSP. Gives no advice and changes no settings. | `src/main/flight/tune_advisor.c`, `MSP2_GRIPORA_TUNE_ADVISOR` in `src/main/msp/msp.c` (gripora-firmware) |
 | Radio (Ethos Lua suite) | Reads the numbers after each flight, keeps the last 5 flights, works out the advice, and writes it to the flight controller when the pilot presses **Save**. | `tasks/tune_history.lua`, `lib/tune_history.lua`, `lib/msp_tune_advisor.lua`, `app/pages/tune_advisor.lua` (gripora-lua-ethos-suite) |
 
 The advice rules live on the radio so they can change without flashing the
@@ -139,7 +139,7 @@ I-term pushing the model back.
 Everything accumulates in RAM across flights until it is reset. It is **not**
 saved and is lost at power-off. It is reset when:
 
-- `MSP2_WING_TUNE_ADVISOR_CLEAR` is received (the radio sends it after saving
+- `MSP2_GRIPORA_TUNE_ADVISOR_CLEAR` is received (the radio sends it after saving
   each flight), or
 - the model arms on a **different tune**. At each arm the firmware hashes the
   current PID and rate profile numbers, every PID gain (P, I, D, F, B, O) of
@@ -154,8 +154,8 @@ by an adjustment function) is not noticed until the next arm.
 
 | Command | ID | Direction | Payload |
 | --- | --- | --- | --- |
-| `MSP2_WING_TUNE_ADVISOR` | `0x5F18` | Read | Request: `U8` axis (0 roll, 1 pitch, 2 yaw). Any other length or axis is an error. |
-| `MSP2_WING_TUNE_ADVISOR_CLEAR` | `0x5F19` | Write | Empty. Resets all statistics. |
+| `MSP2_GRIPORA_TUNE_ADVISOR` | `0x5F18` | Read | Request: `U8` axis (0 roll, 1 pitch, 2 yaw). Any other length or axis is an error. |
+| `MSP2_GRIPORA_TUNE_ADVISOR_CLEAR` | `0x5F19` | Write | Empty. Resets all statistics. |
 
 One axis per request. The reply is 48 bytes: one CRSF frame, and 11 S.Port/FBUS
 frames. Firmware without the feature answers with an MSP error.
@@ -220,7 +220,7 @@ On each **disarm**:
 5. Save the three axes as one flight, unless the flight time is 0 (no valid
    flight) or the same as the last flight saved for this model (the previous
    clear never arrived and nothing new was flown).
-6. Send `MSP2_WING_TUNE_ADVISOR_CLEAR`, so the next flight is measured on its
+6. Send `MSP2_GRIPORA_TUNE_ADVISOR_CLEAR`, so the next flight is measured on its
    own.
 
 Arming during a capture abandons it. The flight controller was not cleared,
@@ -398,4 +398,4 @@ it next arms.
 ## Clearing
 
 The page's **Tool** button deletes `history.csv` for the model and sends
-`MSP2_WING_TUNE_ADVISOR_CLEAR`. `changes.csv` and `logs.ini` are kept.
+`MSP2_GRIPORA_TUNE_ADVISOR_CLEAR`. `changes.csv` and `logs.ini` are kept.
