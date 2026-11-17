@@ -3860,13 +3860,13 @@ uncovered and fixed). This note only covers what's different here.</p>
   HW4, Kontronik, APD, and Record get the default (faster) tier.</li>
 </ul>
 <h2 id="msp">MSP<a class="headerlink" href="#msp" title="Permanent link">&para;</a></h2>
-<p>One new command, <code>MSP2_WING_ESC_SENSOR_TRIAL</code> (<code>0x5F14</code> - <code>0x5F12</code>/<code>0x5F13</code>
-are claimed by the RX wiring auto-detect PR's <code>MSP2_WING_RX_SERIAL_TRIAL</code>/
-<code>MSP2_WING_RX_INPUT_BACKUP_TRIAL</code>, deliberately skipped rather than
+<p>One new command, <code>MSP2_GRIPORA_ESC_SENSOR_TRIAL</code> (<code>0x5F14</code> - <code>0x5F12</code>/<code>0x5F13</code>
+are claimed by the RX wiring auto-detect PR's <code>MSP2_GRIPORA_RX_SERIAL_TRIAL</code>/
+<code>MSP2_GRIPORA_RX_INPUT_BACKUP_TRIAL</code>, deliberately skipped rather than
 colliding, since both branches were cut from <code>master</code> independently and
 each just grabbed the next free slot from its own starting point). Same
 start/poll/stop action-byte shape as the RX version and
-<code>MSP2_WING_BOARD_AUTO_ALIGN</code>. Response layout is one field shorter than the
+<code>MSP2_GRIPORA_BOARD_AUTO_ALIGN</code>. Response layout is one field shorter than the
 RX version's (no <code>inverted</code> byte):</p>
 <p><code>U8 state, U8 comboIndex, U8 halfDuplex, U8 pinSwap, U16 elapsedMs</code></p>
 <h2 id="open-items-pending-bench-testing">Open items pending bench testing<a class="headerlink" href="#open-items-pending-bench-testing" title="Permanent link">&para;</a></h2>

@@ -3979,7 +3979,7 @@ provider cooperation, is already possible with existing plumbing:</p>
 re-run the same init switch that already exists → poll
 <code>rxIsReceivingSignal()</code></strong> (<a href="https://github.com/gripora-project/gripora-firmware/blob/master/src/main/rx/rx.c#L391">rx.c:391</a>),
 which is already exposed to MSP as <code>mainLinkUp</code> in
-<code>MSP2_WING_RX_INPUT_BACKUP_STATUS</code> and already polled every 200ms by the
+<code>MSP2_GRIPORA_RX_INPUT_BACKUP_STATUS</code> and already polled every 200ms by the
 configurator today.</p>
 <h2 id="firmware-new-state-machine-rxc">Firmware: new state machine (rx.c)<a class="headerlink" href="#firmware-new-state-machine-rxc" title="Permanent link">&para;</a></h2>
 <p>A small non-blocking state machine, ticked from the scheduler like any other
@@ -4065,26 +4065,26 @@ averaging 4.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>MSP2_WING_RX_SERIAL_TRIAL_START</code></td>
+<td><code>MSP2_GRIPORA_RX_SERIAL_TRIAL_START</code></td>
 <td><code>0x5F12</code></td>
 <td><em>(none — always trials the currently-configured <code>serialrx_provider</code>)</em></td>
 <td><code>U8 accepted</code> (0 = rejected: no serial RX feature/port, or trial already running)</td>
 </tr>
 <tr>
-<td><code>MSP2_WING_RX_SERIAL_TRIAL_STATUS</code></td>
+<td><code>MSP2_GRIPORA_RX_SERIAL_TRIAL_STATUS</code></td>
 <td><code>0x5F13</code></td>
 <td><em>(none)</em></td>
 <td><code>U8 state</code> (idle/running/success/failed), <code>U8 comboIndex</code>, <code>U8 inverted</code>, <code>U8 halfDuplex</code>, <code>U8 pinSwap</code>, <code>U16 elapsedMs</code> — also <strong>is</strong> the watchdog keep-alive (updates <code>lastPollAt</code>)</td>
 </tr>
 <tr>
-<td><code>MSP2_WING_RX_SERIAL_TRIAL_STOP</code></td>
+<td><code>MSP2_GRIPORA_RX_SERIAL_TRIAL_STOP</code></td>
 <td><code>0x5F14</code></td>
 <td><em>(none)</em></td>
 <td><code>U8 ack</code> — always restores + reinits, idempotent</td>
 </tr>
 </tbody>
 </table>
-<p>Mirrors the existing <code>MSP2_WING_RX_INPUT_BACKUP_STATUS</code> handler pattern
+<p>Mirrors the existing <code>MSP2_GRIPORA_RX_INPUT_BACKUP_STATUS</code> handler pattern
 (<a href="https://github.com/gripora-project/gripora-firmware/blob/master/src/main/msp/msp.c#L1321">msp.c:1321</a>) closely enough to reuse
 its shape.</p>
 <h2 id="configurator-side-gripora-configurator">Configurator side (gripora-configurator)<a class="headerlink" href="#configurator-side-gripora-configurator" title="Permanent link">&para;</a></h2>
@@ -4095,7 +4095,7 @@ its shape.</p>
   <a href="https://github.com/gripora-project/gripora-configurator/blob/master/src/tabs/receiver/ReceiverType.svelte#L65">ReceiverType.svelte:65</a>).</li>
 <li>On click: send <code>TRIAL_START</code>; if accepted, poll <code>TRIAL_STATUS</code> on the same
   ~150-200ms cadence the tab already uses for
-  <code>MSP2_WING_RX_INPUT_BACKUP_STATUS</code>
+  <code>MSP2_GRIPORA_RX_INPUT_BACKUP_STATUS</code>
   (<a href="https://github.com/gripora-project/gripora-configurator/blob/master/src/tabs/receiver/Receiver.svelte#L89">Receiver.svelte:89-91</a>),
   showing "Trying combo N of 8…".</li>
 <li>On <code>SUCCESS</code>: send <code>TRIAL_STOP</code> (commits nothing on the FC, just cleans up

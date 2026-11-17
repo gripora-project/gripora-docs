@@ -4236,7 +4236,7 @@ and exactly which parameters <strong>Save</strong> writes. For using it, see
 <tr>
 <td>Flight controller</td>
 <td>Measures how the model answers the rate loop and reports the numbers over MSP. Gives no advice and changes no settings.</td>
-<td><code>src/main/flight/tune_advisor.c</code>, <code>MSP2_WING_TUNE_ADVISOR</code> in <code>src/main/msp/msp.c</code> (gripora-firmware)</td>
+<td><code>src/main/flight/tune_advisor.c</code>, <code>MSP2_GRIPORA_TUNE_ADVISOR</code> in <code>src/main/msp/msp.c</code> (gripora-firmware)</td>
 </tr>
 <tr>
 <td>Radio (Ethos Lua suite)</td>
@@ -4418,7 +4418,7 @@ I-term pushing the model back.</p>
 <p>Everything accumulates in RAM across flights until it is reset. It is <strong>not</strong>
 saved and is lost at power-off. It is reset when:</p>
 <ul>
-<li><code>MSP2_WING_TUNE_ADVISOR_CLEAR</code> is received (the radio sends it after saving
+<li><code>MSP2_GRIPORA_TUNE_ADVISOR_CLEAR</code> is received (the radio sends it after saving
   each flight), or</li>
 <li>the model arms on a <strong>different tune</strong>. At each arm the firmware hashes the
   current PID and rate profile numbers, every PID gain (P, I, D, F, B, O) of
@@ -4440,13 +4440,13 @@ by an adjustment function) is not noticed until the next arm.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>MSP2_WING_TUNE_ADVISOR</code></td>
+<td><code>MSP2_GRIPORA_TUNE_ADVISOR</code></td>
 <td><code>0x5F18</code></td>
 <td>Read</td>
 <td>Request: <code>U8</code> axis (0 roll, 1 pitch, 2 yaw). Any other length or axis is an error.</td>
 </tr>
 <tr>
-<td><code>MSP2_WING_TUNE_ADVISOR_CLEAR</code></td>
+<td><code>MSP2_GRIPORA_TUNE_ADVISOR_CLEAR</code></td>
 <td><code>0x5F19</code></td>
 <td>Write</td>
 <td>Empty. Resets all statistics.</td>
@@ -4606,7 +4606,7 @@ page is open.</p>
 <li>Save the three axes as one flight, unless the flight time is 0 (no valid
    flight) or the same as the last flight saved for this model (the previous
    clear never arrived and nothing new was flown).</li>
-<li>Send <code>MSP2_WING_TUNE_ADVISOR_CLEAR</code>, so the next flight is measured on its
+<li>Send <code>MSP2_GRIPORA_TUNE_ADVISOR_CLEAR</code>, so the next flight is measured on its
    own.</li>
 </ol>
 <p>Arming during a capture abandons it. The flight controller was not cleared,
@@ -4874,7 +4874,7 @@ a new combination on the page, and the firmware resets its statistics when
 it next arms.</p>
 <h2 id="clearing">Clearing<a class="headerlink" href="#clearing" title="Permanent link">&para;</a></h2>
 <p>The page's <strong>Tool</strong> button deletes <code>history.csv</code> for the model and sends
-<code>MSP2_WING_TUNE_ADVISOR_CLEAR</code>. <code>changes.csv</code> and <code>logs.ini</code> are kept.</p>
+<code>MSP2_GRIPORA_TUNE_ADVISOR_CLEAR</code>. <code>changes.csv</code> and <code>logs.ini</code> are kept.</p>
 
 
 

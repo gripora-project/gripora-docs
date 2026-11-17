@@ -3784,6 +3784,11 @@ Configurator build supports, the Configurator falls back to
 <a href="../../getting-started/first-connection/">CLI-only mode</a> rather than assuming
 MSP compatibility it can't verify.</p>
 <h2 id="version-compatibility">Version compatibility<a class="headerlink" href="#version-compatibility" title="Permanent link">&para;</a></h2>
+<p>Gripora's MSP protocol is its own from <strong>MSP API 33.0</strong>: earlier Gripora
+firmware reported the API version of WingFlight, which it was forked from
+(22.x), and WingFlight stays on 22.x. The Gripora-specific MSP2 messages
+are named <code>MSP2_GRIPORA_*</code> (ids <code>0x5F00</code> and up). The Configurator and the
+Lua suites accept MSP API 33.x only, and refuse 22.x firmware: update it.</p>
 <p>Additive changes, such as a new read-only command, don't change the API
 version: firmware that lacks a command answers it as unsupported, which is
 how the Configurator tells. <code>MSP_SERVO_TRIM</code>, which reports the live runtime
