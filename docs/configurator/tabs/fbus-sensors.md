@@ -99,5 +99,5 @@ This only works on an FBUS master port with an F.Port2 or FBUS receiver,
 and not while armed.
 
 !!! note
-    A device's settings change on the device itself, not in Wingflight, so
-    they are not part of a Wingflight backup or `diff`.
+    A device's settings change on the device itself, not in Gripora, so
+    they are not part of a Gripora backup or `diff`.

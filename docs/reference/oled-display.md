@@ -1,6 +1,6 @@
 # Display
 
-WingFlight supports displays to provide information to you about your aircraft and WingFlight state.
+Gripora supports displays to provide information to you about your aircraft and Gripora state.
 
 When the aircraft is armed the display does not update so flight is not affected.  When disarmed the display cycles between various pages.
 

@@ -269,7 +269,7 @@ The providers are: `SPEK1024`, `SPEK2048`, `SBUS`, `SUMD`, `SUMH`, `XB-B`, `XB-B
 
 `FBUS` (460800 baud) and `FPORT2` (115200 baud) are the same protocol, and both find the receiver's speed: the port starts at the selected one, switches to the other every 150 ms until three good frames arrive, then keeps it. No telemetry is sent until then. If no frame arrives for 1 s while disarmed, it searches again.
 
-ImmersionRC GHOST (`GHST`) and CPPM receivers are not supported in WingFlight. `GHST` is still accepted by the CLI so saved
+ImmersionRC GHOST (`GHST`) and CPPM receivers are not supported in Gripora. `GHST` is still accepted by the CLI so saved
 configurations load, but the receiver will not work.
 
 
@@ -301,7 +301,7 @@ Do __NOT USE__ the mode indicated with FAILSAFE instead, as this combination is 
 
 ## Receiver Channel Range Configuration.
 
-The channels defined in WingFlight are as follows:
+The channels defined in Gripora are as follows:
 
 | Channel number | Channel name |
 | ----- | --------- |
@@ -311,7 +311,7 @@ The channels defined in WingFlight are as follows:
 | 3     | Throttle |
 
 If you have a transmitter/receiver, that output a non-standard pulse range (i.e. 1070-1930 as some Spektrum receivers)
-you could use rx channel range configuration to map actual range of your transmitter to 1000-2000 as expected by WingFlight.
+you could use rx channel range configuration to map actual range of your transmitter to 1000-2000 as expected by Gripora.
 
 The low and high value of a channel range are often referred to as 'End-points'.  e.g. 'End-point adjustments / EPA'.
 
@@ -347,22 +347,22 @@ You can also use rxrange to reverse the direction of an input channel, e.g. `rxr
 
 ## Disabling the OpenTx/EdgeTx ADC Filter
 
-OpenTx and EdgeTx both enable an `ADC filter` by default.  WingFlight users should turn this off.
+OpenTx and EdgeTx both enable an `ADC filter` by default.  Gripora users should turn this off.
 
 The `ADC filter` converts what would otherwise be smooth changes in channel values into a series of steps, where each step is about 1% of the full stick travel.  It is intended to reduce 'chatter' when the Rx is connected to a *servo, so that the servo only changes position when a meaningful change has occurred.  It is not intended for use with flight controllers.
 
-When the `ADC Filter` is active, WingFlight does not receive the most recent position of the gimabl with each new RC packet.  Instead, the Rx repeatedly provides the same data, until a moving-averaged smoothed estimate of gimbal position has increased by about 1% of full stick resolution.  
+When the `ADC Filter` is active, Gripora does not receive the most recent position of the gimabl with each new RC packet.  Instead, the Rx repeatedly provides the same data, until a moving-averaged smoothed estimate of gimbal position has increased by about 1% of full stick resolution.  
 
-WingFlight needs a non-delayed, smooth and continuous representation of the stick travel to give the PID system a smooth target setpoint value.  Our RC Smoothing is based on the assumption that every packet is unique and that each is a new representation of the most recent position of the gimbal.  Feedforward is calculated from the packet-to-packet position difference, and absolutely relies on smooth and regular updates in measured gimbal position.
+Gripora needs a non-delayed, smooth and continuous representation of the stick travel to give the PID system a smooth target setpoint value.  Our RC Smoothing is based on the assumption that every packet is unique and that each is a new representation of the most recent position of the gimbal.  Feedforward is calculated from the packet-to-packet position difference, and absolutely relies on smooth and regular updates in measured gimbal position.
 
-When active with WingFlight firmware, the `ADC filter` causes:
+When active with Gripora firmware, the `ADC filter` causes:
 - delay (from the moving averaging)
 - sustained transient impacts
 - steps in setpoint
 - spikes and noise in feedforward, with reduced feedforward precision
 - spikes in motor control signals that may cause noticeable jerking in HD video
 
-This is why, whenever an OpenTx or EdgeTx user is using WingFlight, the OpenTx/EdgeTx `ADC Filter` **MUST** be disabled, for accurate smooth flight control.
+This is why, whenever an OpenTx or EdgeTx user is using Gripora, the OpenTx/EdgeTx `ADC Filter` **MUST** be disabled, for accurate smooth flight control.
 
 The user only has to find the `ADC Filter` checkbox in the Hardware tab of the Global Settings for their radio, and ensure it is un-checked.  For example, with the Frsky Taranis X9D+ pre 2019 model:
 

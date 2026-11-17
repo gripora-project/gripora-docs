@@ -9,8 +9,8 @@ The work is split in two:
 
 | Side | Does | Source |
 | --- | --- | --- |
-| Flight controller | Measures how the model answers the rate loop and reports the numbers over MSP. Gives no advice and changes no settings. | `src/main/flight/tune_advisor.c`, `MSP2_WING_TUNE_ADVISOR` in `src/main/msp/msp.c` (wingflight-firmware) |
-| Radio (Ethos Lua suite) | Reads the numbers after each flight, keeps the last 5 flights, works out the advice, and writes it to the flight controller when the pilot presses **Save**. | `tasks/tune_history.lua`, `lib/tune_history.lua`, `lib/msp_tune_advisor.lua`, `app/pages/tune_advisor.lua` (wingflight-lua-ethos-suite) |
+| Flight controller | Measures how the model answers the rate loop and reports the numbers over MSP. Gives no advice and changes no settings. | `src/main/flight/tune_advisor.c`, `MSP2_WING_TUNE_ADVISOR` in `src/main/msp/msp.c` (gripora-firmware) |
+| Radio (Ethos Lua suite) | Reads the numbers after each flight, keeps the last 5 flights, works out the advice, and writes it to the flight controller when the pilot presses **Save**. | `tasks/tune_history.lua`, `lib/tune_history.lua`, `lib/msp_tune_advisor.lua`, `app/pages/tune_advisor.lua` (gripora-lua-ethos-suite) |
 
 The advice rules live on the radio so they can change without flashing the
 flight controller.
@@ -235,7 +235,7 @@ to learn whether the firmware has the Tune Advisor; an MSP error shows
 
 ### Files on the radio
 
-All under `LOGS:/wfsuite/tune/<mcuId>/`, where `<mcuId>` is the flight
+All under `LOGS:/grsuite/tune/<mcuId>/`, where `<mcuId>` is the flight
 controller's ID (the same one that names the flight log folders):
 
 | File | Contents |

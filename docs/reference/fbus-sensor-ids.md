@@ -4,7 +4,7 @@ Background reference for the [FBUS/S.Port Sensors](../configurator/tabs/fbus-sen
 tab -- what the Physical ID and App ID numbers it shows actually mean.
 These IDs come from FrSky's S.Port sensor addressing scheme, which FBUS
 reuses; they're shared across the wider FrSky/OpenTX/EdgeTX ecosystem, not
-specific to WingFlight.
+specific to Gripora.
 
 ## Physical IDs
 
@@ -37,7 +37,7 @@ own Physical ID.
 | `0x1A` | 26 | S6R | FrSky S6R stabilization receiver telemetry |
 
 An unrecognized Physical ID shows up in the sensor table as `ID_<n>` rather
-than a name -- the sensor is still read and can still be forwarded, WingFlight
+than a name -- the sensor is still read and can still be forwarded, Gripora
 just doesn't have a friendly name for it.
 
 ## App IDs
@@ -74,7 +74,7 @@ is lat/long, altitude, speed, and time -- not course or satellite count,
 which that particular GPS unit isn't reporting.
 
 When an FBUS GPS does not report the satellite-count App ID (`0x0860`),
-WingFlight shows the satellite count as `0` rather than guessing. This keeps
+Gripora shows the satellite count as `0` rather than guessing. This keeps
 RTH, Loiter, GPS Rescue and other minimum-satellite checks from being satisfied
 by an unknown value.
 

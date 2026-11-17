@@ -5,7 +5,7 @@ configured, flying aircraft.
 
 1. [Install the Configurator](installing-the-configurator.md) -- either as a
    desktop app, or use the web version at
-   [cfg.wingflight.org](https://cfg.wingflight.org) with no install required.
+   [cfg.gripora.org](https://cfg.gripora.org) with no install required.
 2. [Flash the firmware](flashing-the-firmware.md) onto your flight controller.
 3. [Make a first connection](first-connection.md) and confirm sensors,
    receiver, and basic setup are working.

@@ -1,6 +1,6 @@
 # Reference
 
-Technical reference material for WingFlight:
+Technical reference material for Gripora:
 
 - [CLI Command Reference](cli-reference.md) -- the flight controller's
   command-line interface, used both interactively (via the

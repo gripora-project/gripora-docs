@@ -1,6 +1,6 @@
-# wingflight-docs
+# gripora-docs
 
-Source for [doc.wingflight.org](https://doc.wingflight.org), built with
+Source for [doc.gripora.org](https://doc.gripora.org), built with
 [MkDocs Material](https://squidfunk.github.io/mkdocs-material/).
 
 ## Local preview
@@ -22,4 +22,4 @@ them to appear in the nav.
 
 Pushing to `main` builds the site and publishes it to the `gh-pages` branch
 via `.github/workflows/deploy.yml`, served at
-[doc.wingflight.org](https://doc.wingflight.org).
+[doc.gripora.org](https://doc.gripora.org).

@@ -1,6 +1,6 @@
 # Configurator
 
-This section documents the WingFlight Configurator tab by tab, in the order
+This section documents the Gripora Configurator tab by tab, in the order
 they appear once connected to a flight controller.
 
 The Configurator's tab list adapts to your connection state and firmware

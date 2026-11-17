@@ -1,6 +1,6 @@
 # Building the Firmware
 
-WingFlight firmware is built with the same ARM GCC toolchain and Makefile
+Gripora firmware is built with the same ARM GCC toolchain and Makefile
 structure as Rotorflight/Betaflight.
 
 ## Prerequisites
@@ -42,14 +42,14 @@ examples use unified targets throughout. The one other supported target is
 
 ## Simulator (SITL)
 
-`TARGET=SITL` builds WingFlight as a native executable that talks to an
+`TARGET=SITL` builds Gripora as a native executable that talks to an
 external flight-dynamics model (JSBSim, optionally with FlightGear visuals)
 over UDP, so the firmware can be flown without a board. Unlike the ARM
 builds, it can be built natively on Windows:
 
 ```
 make mingw_sdk_install    # Windows only, once: installs MinGW-w64 GCC
-make TARGET=SITL          # produces obj/main/wingflight_SITL.elf
+make TARGET=SITL          # produces obj/main/gripora_SITL.elf
 ```
 
 On Linux/macOS the system `gcc` is used. RC input arrives over MSP, so a

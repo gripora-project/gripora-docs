@@ -17,7 +17,7 @@ The sensors sent to the radio over S.Port, F.Port, FBUS and custom CRSF are
 chosen on the [Receiver tab](../configurator/tabs/receiver.md#telemetry-sensors),
 or with the `telemetry_sensors` CLI setting (a list of sensor IDs, up to 40).
 
-New and reset configurations select the sensors the WingFlight Lua suites use:
+New and reset configurations select the sensors the Gripora Lua suites use:
 
 ```
 set telemetry_sensors = 3,4,5,6,15,43,50,52,58,59,60,89,91,99,120,121,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -42,7 +42,7 @@ their own list when you upgrade.
 
 For CRSF (ELRS and Crossfire), `crsf_telemetry_mode` selects what is sent:
 
-- `CUSTOM` (the default): the sensors selected above, which the WingFlight Lua
+- `CUSTOM` (the default): the sensors selected above, which the Gripora Lua
   suites decode.
 - `NATIVE`: the standard CRSF frames (battery, attitude, altitude, GPS, flight
   mode, RPM and temperature) that any radio understands without a script.
@@ -50,7 +50,7 @@ For CRSF (ELRS and Crossfire), `crsf_telemetry_mode` selects what is sent:
 ### Status sensors
 
 Two sensors carry the flight controller's status as bitfields, so a radio
-script can read many flags from one sensor. The WingFlight Lua suites decode
+script can read many flags from one sensor. The Gripora Lua suites decode
 them for their [callouts and dashboard alerts](radio-alerts.md).
 
 | ID | Sensor | S.Port | CRSF | Sent every |
@@ -130,7 +130,7 @@ Graupner HoTT V4, Ibus, Jeti EX Bus and Futaba SBUS2, plus the telemetry built
 into CRSF, F.PORT, FBUS and SRXL receivers.
 
 FrSky Hub (D-series), LightTelemetry (LTM) and MAVLink telemetry are not
-supported in WingFlight.
+supported in Gripora.
 
 All telemetry systems use serial ports, configure serial ports to use the telemetry system required.
 
@@ -203,7 +203,7 @@ The following sensors are transmitted :
 | 420 | GPS distance to home |
 | Cels | average cell value, vbat divided by cell number. |
 
-> WingFlight will send Cels (FLVSS Individual Cell Voltages Telemetry), disable the setting to use actual FLVSS sensor with:
+> Gripora will send Cels (FLVSS Individual Cell Voltages Telemetry), disable the setting to use actual FLVSS sensor with:
 > ```
 > set report_cell_voltage = OFF
 > ```
@@ -218,9 +218,9 @@ The following sensors are transmitted :
 > - Cell Sensor: Cels _(pack total voltage, sum of all cells)_
 > - Cell Index: Lowest
 
-### Integrate WingFlight telemetry with FrSky Smartport sensors
+### Integrate Gripora telemetry with FrSky Smartport sensors
 
-While WingFlight telemetry brings a lot of valuable data to the radio, there are additional sensors, like Lipo cells sensor FLVSS, that can be a great addition for many aircrafts. Smartport sensors are designed to be daisy chained, and CF telemetry is no exception to that. To add an external sensor, just connect the "S" port of the FC and sensor(s) together, and ensure the sensor(s) are getting connected to GND and VCC either from the controler or the receiver
+While Gripora telemetry brings a lot of valuable data to the radio, there are additional sensors, like Lipo cells sensor FLVSS, that can be a great addition for many aircrafts. Smartport sensors are designed to be daisy chained, and CF telemetry is no exception to that. To add an external sensor, just connect the "S" port of the FC and sensor(s) together, and ensure the sensor(s) are getting connected to GND and VCC either from the controler or the receiver
 
 ![Smartport diagram](../assets/images/integrate_smartport.png)
 

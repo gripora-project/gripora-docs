@@ -1,8 +1,8 @@
 # Serial
 
-WingFlight has enhanced serial port flexibility but configuration is slightly more complex as a result.
+Gripora has enhanced serial port flexibility but configuration is slightly more complex as a result.
 
-WingFlight has the concept of a function (MSP, GPS, Serial RX, etc) and a port (VCP, UARTx, SoftSerial x).
+Gripora has the concept of a function (MSP, GPS, Serial RX, etc) and a port (VCP, UARTx, SoftSerial x).
 Not all functions can be used on all ports due to hardware pin mapping, conflicting features, hardware, and software
 constraints.
 
@@ -291,13 +291,13 @@ See [Serial port diagnostics](cli-reference.md#serial-port-diagnostics).
 
 ### Passthrough
 
-WingFlight can enter a special passthrough mode whereby it passes serial data through to a device connected to a UART/SoftSerial port. This is useful to change the configuration of a WingFlight peripheral such as an OSD, bluetooth dongle, serial RX etc.
+Gripora can enter a special passthrough mode whereby it passes serial data through to a device connected to a UART/SoftSerial port. This is useful to change the configuration of a Gripora peripheral such as an OSD, bluetooth dongle, serial RX etc.
 
 To initiate passthrough mode, use the CLI command `serialpassthrough` This command takes four arguments.
 
     serialpassthrough <port1 id> [port1 baud] [port1 mode] [port1 DTR PINIO] [port2 id] [port2 baud] [port2 mode]
 
-`PortX ID` is the internal identifier of the serial port from WingFlight source code (see serialPortIdentifier_e in the source). For instance UART1-UART4 are 0-3 and SoftSerial1/SoftSerial2 are 30/31 respectively. PortX Baud is the desired baud rate, and portX mode is a combination of the keywords rx and tx (rxtx is full duplex). The baud and mode parameters can be used to override the configured values for the specified port. `port1 DTR PINIO` identifies the PINIO resource which is optionally connected to a DTR line of the attached device.
+`PortX ID` is the internal identifier of the serial port from Gripora source code (see serialPortIdentifier_e in the source). For instance UART1-UART4 are 0-3 and SoftSerial1/SoftSerial2 are 30/31 respectively. PortX Baud is the desired baud rate, and portX mode is a combination of the keywords rx and tx (rxtx is full duplex). The baud and mode parameters can be used to override the configured values for the specified port. `port1 DTR PINIO` identifies the PINIO resource which is optionally connected to a DTR line of the attached device.
 
 If port2 config(the last three arguments) is not specified, the passthrough will run between port1 and VCP. The last three arguments are used for `Passthrough between UARTs`, see that section to get detail.
 
@@ -307,7 +307,7 @@ For example. If you have your MWOSD connected to UART 2, you could enable commun
 
 If a baud rate is not specified, or is set to 0, then `serialpassthrough` supports changing of the baud rate over USB. This allows tools such as the MWOSD GUI to dynamically set the baud rate to, for example 57600 for reflashing the MWOSD firmware and then 115200 for adjusting settings without having to powercycle your flight control board between the two.
 
-_To use a tool such as the MWOSD GUI, it is necessary to disconnect or exit WingFlight Configurator._
+_To use a tool such as the MWOSD GUI, it is necessary to disconnect or exit Gripora Configurator._
 
 **To exit serial passthrough mode, power cycle your flight control board.**
 

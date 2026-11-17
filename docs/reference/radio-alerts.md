@@ -1,6 +1,6 @@
 # Radio Callouts and Alerts
 
-The WingFlight Lua suite for Ethos radios reads the flight controller's
+The Gripora Lua suite for Ethos radios reads the flight controller's
 status over telemetry. It tells you about important changes in two ways:
 
 - **Spoken callouts**, such as "Backup receiver active" or "GPS not
@@ -135,7 +135,7 @@ These existed before the status alerts, and work the same way.
 
 ## Turning callouts on and off
 
-On the radio, open the WingFlight suite and go to
+On the radio, open the Gripora suite and go to
 **Settings → Audio → Events**:
 
 - **State callouts**: armed, flight mode, GPS fix and profile changes.

@@ -41,7 +41,7 @@ its own. The firmware accepts three layouts and answers in the one the request u
 | Version bits | Header | Used by |
 | --- | --- | --- |
 | `11` compact | command (16 bit), length (8 bit; `0xFF` then a 16-bit length for longer messages) | Ethos suite, EdgeTX scripts |
-| `10` MSPv2 | flags, command (16 bit), length (16 bit) | older Wingflight Lua, Rotorflight Lua |
+| `10` MSPv2 | flags, command (16 bit), length (16 bit) | older Gripora Lua, Rotorflight Lua |
 | `01` MSPv1 | length, command (8 bit), CRC byte at the end | older EdgeTX scripts, commands below 256 |
 
 The compact header is 3 bytes, so the first frame carries 2 bytes of payload and every later frame

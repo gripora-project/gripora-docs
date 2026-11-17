@@ -1,16 +1,16 @@
 # Contributing
 
-WingFlight is open source, and contributions -- code, documentation, and
+Gripora is open source, and contributions -- code, documentation, and
 testing -- are welcome.
 
 - **Documentation** (this site) lives in
-  [WingFlight/wingflight-docs](https://github.com/WingFlight/wingflight-docs).
+  [Gripora/gripora-docs](https://github.com/gripora-project/gripora-docs).
   Every page has an *Edit this page* link for quick fixes.
 - **Firmware** lives in
-  [WingFlight/wingflight-firmware](https://github.com/WingFlight/wingflight-firmware) --
+  [Gripora/gripora-firmware](https://github.com/gripora-project/gripora-firmware) --
   see [Building the Firmware](building-the-firmware.md).
 - **Configurator** lives in
-  [WingFlight/wingflight-configurator](https://github.com/WingFlight/wingflight-configurator).
+  [Gripora/gripora-configurator](https://github.com/gripora-project/gripora-configurator).
 
 See the [Developer Guide](developers.md) for general contribution guidance,
 [Code Guidelines and Testing](code-guidelines.md) and [Coding Style](coding-style.md) for how to write

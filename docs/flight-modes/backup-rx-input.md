@@ -143,7 +143,7 @@ port conflict is fixed.
 
 ## Alerts on the radio
 
-With the WingFlight Lua suite on an Ethos radio, the backup receivers' state
+With the Gripora Lua suite on an Ethos radio, the backup receivers' state
 is also shown on the dashboard and announced:
 
 - **BACKUP RX NO SIGNAL** (amber banner, "Backup receiver lost" /

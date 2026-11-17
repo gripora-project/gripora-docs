@@ -1,13 +1,13 @@
-site_name: WingFlight Documentation
-site_description: Documentation for the WingFlight flight controller firmware and configurator
-site_url: https://doc.wingflight.org/
-repo_url: https://github.com/WingFlight
-repo_name: WingFlight
-edit_uri: edit/main/docs/
+site_name: Gripora Documentation
+site_description: Documentation for Gripora, open-source stability-control firmware for RC cars, and its configurator
+site_url: https://doc.gripora.org/
+repo_url: https://github.com/gripora-project
+repo_name: Gripora
+edit_uri: https://github.com/gripora-project/gripora-docs/edit/main/docs/
 
 theme:
   name: material
-  logo: assets/wf_icon_white.svg # white variant of the same artwork, for contrast against the red toolbar
+  logo: assets/gripora_icon_white.svg # white variant of the Gripora icon, for contrast against the coloured toolbar
   favicon: assets/favicon.ico
   font: false # use the system-font stack from color-palette.html instead of a fetched webfont
   icon:
@@ -57,9 +57,7 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/WingFlight
-    - icon: fontawesome/brands/discord
-      link: https://discord.gg/aEyyAJTXRw/
+      link: https://github.com/gripora-project
 
 nav:
   - Home: index.md

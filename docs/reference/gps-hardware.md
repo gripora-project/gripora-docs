@@ -1,6 +1,6 @@
 # GPS Hardware and Module Setup
 
-This page covers the GPS module: hardware, wiring, and configuring a u-blox or NMEA receiver. The [GPS tab](../configurator/tabs/gps.md) in the Configurator sets most of this up. GPS features in WingFlight are experimental. Please share your findings with the developers.
+This page covers the GPS module: hardware, wiring, and configuring a u-blox or NMEA receiver. The [GPS tab](../configurator/tabs/gps.md) in the Configurator sets most of this up. GPS features in Gripora are experimental. Please share your findings with the developers.
 
 GPS works best if the GPS receiver is mounted above and away from other sources of interference.
 
@@ -157,7 +157,7 @@ Select `Save current configuration` and click `Send`.
 
 ### UBlox Navigation model
 
-WingFlight will use `Pedestrian` when gps auto config is used.
+Gripora will use `Pedestrian` when gps auto config is used.
 
 From the UBlox documentation:
 

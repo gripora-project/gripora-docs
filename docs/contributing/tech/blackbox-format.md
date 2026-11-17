@@ -11,13 +11,13 @@ rate of 900Hz. That's about 25,000 bytes per second, which is 250,000 baud with 
 
 Please refer to the source code to clarify anything this document leaves unclear:
 
-* The firmware's Blackbox logger: [blackbox.c](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/blackbox/blackbox.c),
-  [blackbox_io.c](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/blackbox/blackbox_io.c),
-  [blackbox_fielddefs.h](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/blackbox/blackbox_fielddefs.h)
-* The WingFlight Blackbox Explorer, which decodes the logs, is linked from the [WingFlight GitHub organization](https://github.com/WingFlight).
+* The firmware's Blackbox logger: [blackbox.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/blackbox/blackbox.c),
+  [blackbox_io.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/blackbox/blackbox_io.c),
+  [blackbox_fielddefs.h](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/blackbox/blackbox_fielddefs.h)
+* The Gripora Blackbox Explorer, which decodes the logs, is linked from the [Gripora GitHub organization](https://github.com/gripora-project).
 
 The encodings and predictors below are the same as in the original Cleanflight/Betaflight format. The field names
-and the flight-mode fields differ: the firmware source is the reference for which fields a WingFlight log contains.
+and the flight-mode fields differ: the firmware source is the reference for which fields a Gripora log contains.
 
 ## Logging cycle
 Blackbox is designed for flight controllers that are based around the concept of a "main loop". During each main loop

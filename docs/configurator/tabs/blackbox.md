@@ -61,11 +61,12 @@ first word.
 When the flight controller is plugged in as a USB drive (mass storage), log
 files are named after the craft name from your pilot settings, followed by
 a sequence number and timestamp. With no craft name set, the prefix is
-`wflt` (it used to be `rtfl`), for example `wflt_002_20251012_141213.bbl`.
+`grpa` (it was `wflt` in WingFlight and `rtfl` in Rotorflight), for example
+`grpa_002_20251012_141213.bbl`.
 
 ## Reviewing logs
 
-Open a `.bbl` file in the WingFlight Blackbox viewer to play the flight
+Open a `.bbl` file in the Gripora Blackbox viewer to play the flight
 back. Each graph stacks related fields -- here, setpoint against gyro for
 each axis, then the servo outputs and motor -- with the legend on the right
 showing every field's value at the red cursor line. The craft model and

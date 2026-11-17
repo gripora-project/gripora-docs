@@ -10,10 +10,10 @@ guess was right).
 
 ## Why this needs a firmware change, not just a configurator loop
 
-`rxInit()` ([rx.c:281](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/rx/rx.c#L281)) only ever runs once,
-at boot ([init.c:770](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/fc/init.c#L770)). Every RX_CONFIG
+`rxInit()` ([rx.c:281](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/rx/rx.c#L281)) only ever runs once,
+at boot ([init.c:770](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/fc/init.c#L770)). Every RX_CONFIG
 field is `SET` + `EEPROM_WRITE` + reboot today
-([Receiver.svelte:110-124](https://github.com/WingFlight/wingflight-configurator/blob/master/src/tabs/receiver/Receiver.svelte#L110)).
+([Receiver.svelte:110-124](https://github.com/gripora-project/gripora-configurator/blob/master/src/tabs/receiver/Receiver.svelte#L110)).
 Cycling 8 combos that way means 8 real EEPROM writes and 8 full reboot/MSP-
 reconnect cycles — slow, disruptive, and needless flash wear for something
 that's inherently transient (only the final answer should ever be persisted).
@@ -24,22 +24,22 @@ provider cooperation, is already possible with existing plumbing:
 - `findSerialPortConfig(FUNCTION_RX_SERIAL)` gives the identifier of whatever
   UART is assigned to the main RX.
 - `findSerialPortUsageByIdentifier(identifier)` is already public
-  ([serial.h:144](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/io/serial.h#L144)) and returns the
+  ([serial.h:144](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/io/serial.h#L144)) and returns the
   `serialPortUsage_t*` holding the live `serialPort_t*` for that identifier.
-- `closeSerialPort()` ([serial.c:445](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/io/serial.c#L445))
+- `closeSerialPort()` ([serial.c:445](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/io/serial.c#L445))
   releases it and marks the slot `FUNCTION_NONE` again.
 - Each provider's own init (e.g. `sbusInit`,
-  [sbus.c:225-234](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/rx/sbus.c#L225)) just reopens the port
+  [sbus.c:225-234](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/rx/sbus.c#L225)) just reopens the port
   itself, building `portOptions_e` straight from
   `rxConfig->serialrx_inverted/halfDuplex/pinSwap`. Nothing provider-specific
   needs touching — mutate those three fields in the live (RAM-only)
   `rxConfigMutable()` and re-run the existing `serialRxInit()` dispatch
-  ([rx.c:172](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/rx/rx.c#L172)) for the current
+  ([rx.c:172](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/rx/rx.c#L172)) for the current
   `serialrx_provider`.
 
 So the mechanism is: **close current port → flip the trial bits in RAM →
 re-run the same init switch that already exists → poll
-`rxIsReceivingSignal()`** ([rx.c:391](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/rx/rx.c#L391)),
+`rxIsReceivingSignal()`** ([rx.c:391](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/rx/rx.c#L391)),
 which is already exposed to MSP as `mainLinkUp` in
 `MSP2_WING_RX_INPUT_BACKUP_STATUS` and already polled every 200ms by the
 configurator today.
@@ -94,7 +94,7 @@ typedef struct {
 
 `rxSignalReceived` already flips `true` on the very next valid frame and
 `false` after an internal invalid-frame timeout
-([rx.c:545-554](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/rx/rx.c#L545)), so a single stray
+([rx.c:545-554](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/rx/rx.c#L545)), so a single stray
 checksum-lucky garbage byte is already unlikely to read as sustained signal.
 Still, require it held for a short continuous window (e.g. 150–250ms) before
 calling a combo a `SUCCESS`, rather than trusting one instantaneous poll —
@@ -126,7 +126,7 @@ averaging 4.
 
 ## New MSP2 commands
 
-Next free IDs after `0x5F11` ([msp_protocol.h:305-322](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/msp/msp_protocol.h#L305)):
+Next free IDs after `0x5F11` ([msp_protocol.h:305-322](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/msp/msp_protocol.h#L305)):
 
 | Command | ID | Request | Response |
 |---|---|---|---|
@@ -135,19 +135,19 @@ Next free IDs after `0x5F11` ([msp_protocol.h:305-322](https://github.com/WingFl
 | `MSP2_WING_RX_SERIAL_TRIAL_STOP` | `0x5F14` | *(none)* | `U8 ack` — always restores + reinits, idempotent |
 
 Mirrors the existing `MSP2_WING_RX_INPUT_BACKUP_STATUS` handler pattern
-([msp.c:1321](https://github.com/WingFlight/wingflight-firmware/blob/master/src/main/msp/msp.c#L1321)) closely enough to reuse
+([msp.c:1321](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/msp/msp.c#L1321)) closely enough to reuse
 its shape.
 
-## Configurator side (wingflight-configurator)
+## Configurator side (gripora-configurator)
 
 - `ReceiverType.svelte`: a "Detect wiring" button next to the protocol
   select, enabled only when `RX_PROTOCOLS[rxProtoIndex]?.feature ===
   "RX_SERIAL"` (same guard already used for the signaling SubSection at
-  [ReceiverType.svelte:65](https://github.com/WingFlight/wingflight-configurator/blob/master/src/tabs/receiver/ReceiverType.svelte#L65)).
+  [ReceiverType.svelte:65](https://github.com/gripora-project/gripora-configurator/blob/master/src/tabs/receiver/ReceiverType.svelte#L65)).
 - On click: send `TRIAL_START`; if accepted, poll `TRIAL_STATUS` on the same
   ~150-200ms cadence the tab already uses for
   `MSP2_WING_RX_INPUT_BACKUP_STATUS`
-  ([Receiver.svelte:89-91](https://github.com/WingFlight/wingflight-configurator/blob/master/src/tabs/receiver/Receiver.svelte#L89)),
+  ([Receiver.svelte:89-91](https://github.com/gripora-project/gripora-configurator/blob/master/src/tabs/receiver/Receiver.svelte#L89)),
   showing "Trying combo N of 8…".
 - On `SUCCESS`: send `TRIAL_STOP` (commits nothing on the FC, just cleans up
   the trial and restores original live bits), then apply the *returned*

@@ -7,7 +7,7 @@ walks you through the whole process as a step-by-step wizard.
 
 ## Picking a build
 
-WingFlight firmware is currently published as numbered development
+Gripora firmware is currently published as numbered development
 snapshots (e.g. `0.0.23`) rather than stable releases, while the project is
 in its early stages. The Firmware Flasher lists available builds per target
 board, pulled from the project's build history.
@@ -50,7 +50,7 @@ the Connect step and return with **Back to wizard**.
 
 ## DFU mode
 
-Most WingFlight boards flash over USB using STM32's built-in DFU (Device
+Most Gripora boards flash over USB using STM32's built-in DFU (Device
 Firmware Upgrade) bootloader:
 
 1. Put the board into DFU mode (usually a boot button held while powering on,

@@ -2,7 +2,7 @@
 
 The Mixer tab defines how virtual control axes (roll, pitch, yaw, throttle)
 map onto your aircraft's actual control surfaces and motor(s) -- the core of
-what makes WingFlight a *fixed-wing* mixer rather than a helicopter swashplate
+what makes Gripora a *fixed-wing* mixer rather than a helicopter swashplate
 mixer.
 
 ![Mixer tab](../../assets/images/configurator-mixer.png)

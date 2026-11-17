@@ -1,6 +1,6 @@
 # Flight Modes & Features
 
-WingFlight's flight modes are built around fixed-wing flight characteristics
+Gripora's flight modes are built around fixed-wing flight characteristics
 -- most were designed or adapted specifically for aircraft with fixed
 control surfaces, rather than inherited unchanged from Rotorflight's
 helicopter-focused mode set.

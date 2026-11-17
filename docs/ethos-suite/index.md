@@ -1,14 +1,14 @@
 # Ethos Lua Suite
 
-The WingFlight Lua suite puts the flight controller's settings on your FrSky
+The Gripora Lua suite puts the flight controller's settings on your FrSky
 Ethos radio. At the field you can retune PIDs and rates, change setup, read
 logs and check the model's status without a computer.
 
-![The WingFlight app's main menu on an X20](../assets/images/ethos-suite/root-menu.png)
+![The Gripora app's main menu on an X20](../assets/images/ethos-suite/root-menu.png)
 
 The suite installs three things on the radio:
 
-- **The WingFlight app**, opened from the radio's System menu. Its pages
+- **The Gripora app**, opened from the radio's System menu. Its pages
   read settings from the flight controller over telemetry, let you change
   them, and save them back. See [Using the app](using-the-app.md).
 - **A dashboard widget** for the model's home screen, showing the arming

@@ -8,9 +8,9 @@ during and after a flight.
 
 ## Adding it to a screen
 
-The widget is called **Wingflight Dashboard**. On the radio, press **DISP**
+The widget is called **Gripora Dashboard**. On the radio, press **DISP**
 to configure the model's screens, pick a full-screen layout for the screen
-you want, and choose **Wingflight Dashboard** as its widget.
+you want, and choose **Gripora Dashboard** as its widget.
 
 ## Themes
 
@@ -39,7 +39,7 @@ closes by itself after 10 seconds, or swipe down.
 | Erase | Erases the flight controller's blackbox log memory, after asking. Greyed out until the model is connected. |
 | Battery | Picks the battery profile. Greyed out until the model is connected, or if fewer than two battery profiles are set up. |
 | Info | Opens the info panel (below). |
-| Setup | Opens the WingFlight app. Needs Ethos 26.1 or later. |
+| Setup | Opens the Gripora app. Needs Ethos 26.1 or later. |
 
 ## Info panel
 

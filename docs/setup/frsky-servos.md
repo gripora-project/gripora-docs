@@ -24,7 +24,7 @@ themselves are explained on their own pages, linked below.
 - A flight controller with a free UART that can be set to **FBUS Master**
   (function `FBUS_OUT`, see [Configuration](../configurator/tabs/configuration.md)).
   The pin mapping in this guide is taken from the VANTAC RF007 TWIN drawing; a
-  WingFlight target for that board is not in the repository, so check your
+  Gripora target for that board is not in the repository, so check your
   board's pinout before wiring.
 - Four XACT servos for two ailerons, the elevator and the rudder. They match the
   default mixer, see [section 5](#5-bus-servos-and-the-mixer).
@@ -75,7 +75,7 @@ Each servo needs two addresses, set one servo at a time:
 !!! warning "Check the total travel and the arm angles before installation"
     A Rotorflight test on a helicopter found that with **120°** total travel the
     angles did not match the servo positions, and that **180°** matched. The
-    WingFlight firmware accepts 120°, 90° and 180° for XACT servos
+    Gripora firmware accepts 120°, 90° and 180° for XACT servos
     (`src/main/drivers/fbus_xact.h:36`). This result is not verified for control
     surfaces. Set the total travel to what your linkage needs, and measure each
     arm angle **before** the servo is installed in the model. Endpoints are
@@ -83,8 +83,8 @@ Each servo needs two addresses, set one servo at a time:
 
 ### 2.1 Configurator
 
-The WingFlight Configurator documentation does not describe a bus-servo
-programming tab for XACT servos. This route is **not verified** for WingFlight.
+The Gripora Configurator documentation does not describe a bus-servo
+programming tab for XACT servos. This route is **not verified** for Gripora.
 Use the Ethos route in section 2.2.
 
 ### 2.2 Transmitter (Ethos)
@@ -223,12 +223,12 @@ disarmed and the propeller off:
 | Servo is listed on FBUS/S.Port Sensors, but **Forwarded** is off | Turn **Forwarded** on. The receiver must be F.Port, F.Port2 or FBUS. |
 | Telemetry shows nothing on the radio | Run **Discover sensors** on the transmitter again. |
 
-## Not verified for WingFlight
+## Not verified for Gripora
 
 - The Port A pin mapping and the pin 5 V warning. They come from the RF007 TWIN
-  drawing, and no WingFlight target for that board is in the repository.
+  drawing, and no Gripora target for that board is in the repository.
 - The Configurator route for XACT servos (section 2.1).
 - The cause of the 120° versus 180° finding. It comes from a helicopter test with
-  Rotorflight and has not been checked against WingFlight's servo angle mapping.
+  Rotorflight and has not been checked against Gripora's servo angle mapping.
 - Whether the Ethos XAct menu reaches a servo on the flight controller's Port A
   (section 2.2).

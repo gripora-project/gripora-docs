@@ -1,16 +1,16 @@
 # Developer Guide
 
-General guidance for contributing to WingFlight's firmware and configurator.
+General guidance for contributing to Gripora's firmware and configurator.
 
 ## Repositories
 
 | Repo | Purpose |
 |---|---|
-| [wingflight-firmware](https://github.com/WingFlight/wingflight-firmware) | Flight controller firmware (C) |
-| [wingflight-configurator](https://github.com/WingFlight/wingflight-configurator) | Configurator app (Svelte/Vite) |
-| [wingflight-docs](https://github.com/WingFlight/wingflight-docs) | This documentation site (MkDocs) |
-| [wingflight-artifacts](https://github.com/WingFlight/wingflight-artifacts) | Mirrored build artifacts (firmware binaries, etc.), used so the web Configurator can download them without hitting GitHub's release-asset CORS restrictions |
-| [wingflight-targets](https://github.com/WingFlight/wingflight-targets) | Unified target board configs |
+| [gripora-firmware](https://github.com/gripora-project/gripora-firmware) | Flight controller firmware (C) |
+| [gripora-configurator](https://github.com/gripora-project/gripora-configurator) | Configurator app (Svelte/Vite) |
+| [gripora-docs](https://github.com/gripora-project/gripora-docs) | This documentation site (MkDocs) |
+| [gripora-artifacts](https://github.com/gripora-project/gripora-artifacts) | Mirrored build artifacts (firmware binaries, etc.), used so the web Configurator can download them without hitting GitHub's release-asset CORS restrictions |
+| [gripora-targets](https://github.com/gripora-project/gripora-targets) | Unified target board configs |
 
 ## Firmware changes
 

@@ -34,7 +34,7 @@ Each time you disarm, the radio's background task reads the measurements for rol
 controller. It saves them as one flight and then clears them on the flight controller, so the next flight is
 measured on its own. This happens whether or not the Tune Advisor page is open.
 
-- The flights are kept on the radio's SD card in `LOGS:/wfsuite/tune/<model>/history.csv`, one row per axis per
+- The flights are kept on the radio's SD card in `LOGS:/grsuite/tune/<model>/history.csv`, one row per axis per
   flight. `<model>` is the flight controller's ID, the same one that names the flight log folders. A `logs.ini`
   beside it holds the model name.
 - Only the **last 5 flights** are kept.

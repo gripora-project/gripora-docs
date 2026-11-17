@@ -35,13 +35,13 @@ that. Changing the receiver between F.Bus and F.Port2 needs no change here.
 ExpressLRS receivers use the **TBS CRSF** protocol.
 
 !!! warning
-    Wingflight only supports the ExpressLRS **Full Res 16ch Rate/2** switch
+    Gripora only supports the ExpressLRS **Full Res 16ch Rate/2** switch
     mode, at the **100Hz Full** or **333Hz Full** packet rate. It sends all
     16 channels at full (10-bit) resolution, including channel 5, at half
     the packet refresh rate.
 
     The other switch modes send channel 5 (AUX1) only as a two-position arm
-    switch. Wingflight uses channel 5 as a normal channel, for example for
+    switch. Gripora uses channel 5 as a normal channel, for example for
     [flaps and flaperons](mixer.md#flaps-and-flaperons), so in those modes
     it can only be fully one way or the other.
 
@@ -101,7 +101,7 @@ order they go out in -- data earlier in the list updates more often.
 Available sensors depend on what the connected protocol and firmware build
 actually support (e.g. RPM only appears with a configured RPM source).
 
-New configurations start with the sensors the WingFlight Lua suites use,
+New configurations start with the sensors the Gripora Lua suites use,
 including **System Status** and **System Config** in the Status group. These
 two carry the flight controller's status (arm state, receiver links, failsafe,
 GPS, profiles and more) for the radio's

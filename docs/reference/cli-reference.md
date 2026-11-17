@@ -214,7 +214,7 @@ is rejected as an invalid value. Set `debug_mode = NONE` instead.
 | 69-77 | `PITCH_PRECOMP`, `YAW_PRECOMP`, `RESCUE`, `RESCUE_ALTHOLD`, `CROSS_COUPLING`, `ERROR_DECAY`, `HS_OFFSET`, `HS_BLEED`, `GOV_MOTOR` |
 | 79 | `AUTOHOVER` (removed with the mode in API 22.11) |
 
-For Wingflight's own diagnostics use `ATTHOLD`, `TVHOLD`,
+For Gripora's own diagnostics use `ATTHOLD`, `TVHOLD`,
 `AIRBORNE`, `ALTITUDE`, `GAIN_ATTEN`, `SNAP_RELAX` or `PROP_HANG`. The first two log one axis at a
 time, picked with `debug_axis`.
 

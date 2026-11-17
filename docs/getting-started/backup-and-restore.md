@@ -19,7 +19,7 @@ is the easiest route around a firmware update:
   step once the new firmware boots, so you don't have to do anything by
   hand. Saving a copy to a file is optional but recommended in case
   something goes wrong.
-- If the board isn't currently running WingFlight, the backup is still
+- If the board isn't currently running Gripora, the backup is still
   captured and saveable, but it isn't offered for automatic restore --
   another firmware's settings aren't guaranteed to carry over.
 - A backup made before the 24-servo firmware (MSP API 22.16) restores

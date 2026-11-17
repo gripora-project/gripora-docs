@@ -1,7 +1,7 @@
 # Trainer Mode
 
 TRAINER provides **rate control with pitch and bank angle limits**, without
-self-leveling. It is the closest Wingflight equivalent to the behavior Spektrum
+self-leveling. It is the closest Gripora equivalent to the behavior Spektrum
 calls SAFE Intermediate or Envelope mode. This is a behavioral comparison,
 not an implementation of Spektrum's proprietary controller.
 

@@ -35,7 +35,7 @@ jobs:
         run: mkdocs build --strict
 
       - name: Add custom domain
-        run: echo "doc.wingflight.org" > site/CNAME
+        run: echo "doc.gripora.org" > site/CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

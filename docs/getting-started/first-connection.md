@@ -16,7 +16,7 @@ Configurator window (not the Firmware Flasher tab).
 
 If the Configurator can't validate the firmware version or type it just
 connected to -- for example, very old/incompatible firmware, or a board
-that isn't running WingFlight firmware at all -- it shows a warning dialog
+that isn't running Gripora firmware at all -- it shows a warning dialog
 and falls back to **CLI mode**, which works independent of the normal MSP
 configuration protocol. This lets you back up settings or investigate over
 the CLI even when the full Configurator UI can't be used yet.
