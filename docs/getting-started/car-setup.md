@@ -46,6 +46,12 @@ the car as you go.
   the wizard reopens on the same step when the controller is back.
 - **The car can't be armed while the wizard is open.** The Status tab shows
   the SETUP flag while a setup tool holds the outputs.
+- **Only steering servos.** The servo steps (center, direction, binding
+  limits) work on the servos that the mixer drives from the stabilised
+  steering. The wizard names them **STEER**, or **F STEER** and **R STEER**
+  with rear steering. A servo driven by anything else is left alone.
+
+![The Setup Wizard's Steering direction step: the wizard holds the steering and asks whether the front wheels steer right](../assets/images/configurator-wizard-steering-direction.png)
 
 The same wizard is in the [Ethos Lua Suite](../ethos-suite/tools-and-logs.md)
 under **Tools → Setup Wizard**, so setup can also be done from a FrSky radio.
@@ -66,8 +72,8 @@ radio talks to the controller through the receiver.
 | 10. Binding limits | Find how far each servo can move before the steering or linkage binds. |
 | 11. Gyro direction | Overrides are off now and the gyro drives the steering. Turn the car by hand around its vertical axis: the steering should push against the movement. If it doesn't, the step can reverse the gyro for you. |
 | 12. Trim and gain | Choose how you trim the steering, and put the stabilizer gain on a knob. See [Radio mixes](#radio-mixes-for-a-gain-knob-and-mode-switches). |
-| 13. Mode switches | Put ARM, and any other modes you want, on switches. Only ARM is required. **GYRO OFF** turns the gyro off; **DRIVE AIDS OFF** turns the drive aids off; **LAUNCH** stages a launch for launch control. |
-| 14. Driving style | **Beginner** (steering 90 °/s, 20 % expo), **Sport** (150 °/s, 30 %) or **Drift** (300 °/s, 60 %): how fast the car turns at full steering and how the I-term behaves while you steer. Starting points to tune from. |
+| 13. Mode switches | Put ARM, and any other modes you want, on switches. Only ARM is required. **GYRO OFF** turns the gyro off; **DRIVE AIDS OFF** turns the drive aids off; **LAUNCH** stages a launch for launch control; **DRIFT** turns on [drift mode](../driving/drift.md). |
+| 14. Driving style | **Beginner** (steering 90 °/s, 20 % expo), **Sport** (150 °/s, 30 %) or **Drift** (300 °/s, 60 %): how fast the car turns at full steering and how the I-term behaves while you steer. Starting points to tune from. The Drift style sets rates only; it doesn't turn on the DRIFT mode. |
 | 15. Finish | A summary of what the wizard set, and the checks before the first run. |
 
 ## Servo bus

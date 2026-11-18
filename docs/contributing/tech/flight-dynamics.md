@@ -10,8 +10,8 @@ The page keeps its old address (`contributing/tech/flight-dynamics/`) because so
 firmware Gripora was forked from (WingFlight).
 
 **Scope.** Everything between the receiver and the servo/motor outputs: RC processing, setpoint shaping, the
-steering rate PID, the drive state, speed and throttle gain attenuation, GYRO OFF, the drive aids (ABS and
-traction control), the mixer, servo and motor output, and the arming and failsafe logic that overrides them.
+steering rate PID, the drive state, speed and throttle gain attenuation, GYRO OFF, DRIFT, the drive aids (ABS,
+traction control and launch control), the mixer, servo and motor output, and the arming and failsafe logic that overrides them.
 
 **Basis.** A static read of the firmware source at the time of writing, checked against the unit tests where
 they exist. Nothing here was verified by driving. Where a statement depends on behaviour that can only be
@@ -50,6 +50,8 @@ These are easy to get wrong.
                P, D: Kp/Kd · masterGain · gainCurve · atten · corr
                I:    Ki · masterGain · corr · axisError
                F, B: Kf/Kb · atten            (atten = max(TPA · SPA, 0.25), corr = drive correction scale)
+               DRIFT: P = counter-steer(gyro past drift_allow) · atten · corr, D as above,
+                      I = 0, F = raw steering deflection, B = 0
                               │
                               ▼
         mixer.c inputs: STABILIZED_YAW = pidSum   (GYRO OFF: raw steering channel instead)
@@ -159,7 +161,8 @@ F 65, B 35, `error_limit` 60°.
   is active) the gyro is not tracking the setpoint, so I is not integrated; decay still runs.
 - **Gyro overflow** (`gyroOverflowDetected()`): `pidReset()` zeroes all PID state and outputs.
 
-**Mode 0** (`pid_mode` = 0) outputs F only: a stick-proportional command with no gyro.
+**Mode 0** (`pid_mode` = 0) outputs F only: a stick-proportional command with no gyro. DRIFT (§2.6) replaces
+mode 1 only; in mode 0 it does nothing.
 
 ### 2.4 Drive state — `flight/drive.c`, `PG_DRIVE_CONFIG`
 
@@ -207,10 +210,41 @@ stabilized-yaw mixer input is replaced by the steering channel's deflection, neg
 min/max limits do not apply; the input rate and the servo's own limits still do. While disarmed, a bench override
 or a wiggle still wins over the switch.
 
-Only the steering is bypassed. The throttle still goes through the drive aids (§2.6); DRIVE AIDS OFF is the
+Only the steering is bypassed. The throttle still goes through the drive aids (§2.7); DRIVE AIDS OFF is the
 separate switch for those.
 
-### 2.6 Drive aids (ABS and traction control) — `flight/drive_aids.c`, `PG_DRIVE_AIDS_CONFIG`
+### 2.6 DRIFT — `flight/pid.c` `pidApplyDrift()`, `PG_DRIFT_CONFIG`
+
+`BOXDRIFT`, permanent id 68. While it is on and failsafe is not active (`mixerDriftActive()`), and `pid_mode` is
+not 0, `pidApplyDrift()` runs on yaw instead of mode 1:
+
+| Term | Formula | Notes |
+|---|---|---|
+| F | `−getRcDeflection(YAW)` | The steering wheel straight through, negated as in GYRO OFF (§1). No rates, no expo, not attenuated, not scaled by `corr`. |
+| P | `clamp(−drift_gain/100 · excess / 360, ±drift_limit/100) · atten · corr` | The counter-steer. `excess` is the gyro rate (sign and travel direction as in §2.3) beyond `±drift_allow`, zero inside it. `DRIFT_FULL_RATE` = 360 °/s. |
+| D | `Kd · masterGain · atten · corr · d/dt(−gyro)` | As in mode 1, but without the master gain curve. |
+| I | 0 | `axisError` is held at zero. |
+| B | 0 | The rate setpoint is still computed (for the log) and fed to the B filter. |
+
+**Design decisions:**
+
+- **Wheel angle, not turn rate, from the stick.** In a drift the front wheels point against the rotation, so a
+  rate setpoint from the stick would ask for the wrong sign. The driver sets the wheel angle; the gyro only adds
+  counter-steer once the rotation passes an allowance, which holds a slip angle and catches over-rotation.
+- **No I-term.** Heading hold would fight the drift. Holding `axisError` at zero also means leaving DRIFT starts
+  mode 1 clean.
+- **The counter-steer is the P term**, so it is logged as `axisP[2]` and scaled by `atten` and `corr` exactly as P
+  is in mode 1: none at a standstill with RPM, reduced in reverse, faded after an unconfirmed direction change.
+- **Master gain and `Kp` don't scale the counter-steer**; `drift_gain` alone sets it.
+- **Through the stabilized-yaw input**, unlike GYRO OFF: the input's min/max limits apply. `pidSum` is not clamped in `pid.c`; the input limits (±1000) hold it to full travel.
+- **Precedence:** GYRO OFF's bypass is written after the PID output in `mixerUpdateInputs()`, so GYRO OFF wins
+  over DRIFT; failsafe turns both off.
+
+Settings per PID profile (`drift_gain` 100 %, 0-200; `drift_allow` 30 °/s, 0-720; `drift_limit` 100 %, 10-100),
+in `PG_DRIFT_CONFIG` (1030), copied and reset with the profile. MSP `MSP2_GRIPORA_DRIFT_CONFIG` /
+`SET` (0x5F42/0x5F43); Blackbox header `drift`. Unit-tested in `pid_unittest`.
+
+### 2.7 Drive aids (ABS, traction control, launch control) — `flight/drive_aids.c`, `PG_DRIVE_AIDS_CONFIG`
 
 The driver's throttle/brake command passes through `driveAidsApply()` before it becomes
 `STABILIZED_THROTTLE`. An aid only ever moves the command towards neutral, never past it and never into the
@@ -238,7 +272,7 @@ The settings are per PID profile (copied and reset with the profile).
 - **Debug** mode `DRIVE_AIDS`: throttle in and out x1000, flags, ABS rate x10 (or TC limit x1000 when driving
   forward with TC on), floor x1000, hold ms, cycle phase ms, steering x1000. Unit-tested in `drive_aids_unittest`.
 
-### 2.7 Mixer — `flight/mixer.c`, `pg/mixer.c`
+### 2.8 Mixer — `flight/mixer.c`, `pg/mixer.c`
 
 A rule table: `output (SET/ADD/MUL) = (offset + weight · curve(input · rate)) / 1000`, with a separate negative
 weight, an optional slew (`speed`) and an optional logic-condition gate. `model_type` is `CAR` (0) or `CUSTOM`
@@ -254,7 +288,7 @@ The stabilized throttle input range is −1000..1000.
 - **Live-adjustable rule weights** keep the configured polarity in `mixerRuleSign[]`, because a live magnitude
   passes through 0, which has no sign.
 
-### 2.8 Servo output — `flight/servos.c`
+### 2.9 Servo output — `flight/servos.c`
 
 Order: mixer output (or a bench override) → geometry correction → balance curve → non-finite guard → speed limit
 (each servo on its own) → reverse → `rpos`/`rneg` scale → trim (saved + runtime) → travel limit → `mid`.
@@ -265,7 +299,7 @@ Order: mixer output (or a bench override) → geometry correction → balance cu
 - **Trim never edits `mid`**, so min/max (offsets from `mid`) stay where they are. Saved and runtime trim are
   added before the travel limit, so the output stays inside min/max.
 
-### 2.9 Motor output — `flight/motors.c`, `drivers/`
+### 2.10 Motor output — `flight/motors.c`, `drivers/`
 
 Every motor defaults to `motor_control_mode` bidirectional, with `min_throttle` 1000 and `max_throttle` 2000. A
 zero command to a bidirectional motor is neutral: on PWM, SRXL2 and SITL the midpoint of
@@ -273,14 +307,14 @@ zero command to a bidirectional motor is neutral: on PWM, SRXL2 and SITL the mid
 their neutral at power-up. On DShot zero is the motor-stop command, positive commands use the forward range and
 negative ones the reverse range.
 
-### 2.10 Attitude estimator — `flight/imu.c`
+### 2.11 Attitude estimator — `flight/imu.c`
 
 The inherited Mahony quaternion filter still runs on all three axes (gyro integration corrected by the
 accelerometer, plus magnetometer or GPS course when available). Accelerometer readings are only used within
 0.9-1.1 g; the gain is x10 while disarmed, with a quick re-convergence after a disarm. Nothing in the steering
-loop or the drive aids uses the attitude: it feeds the arming check (§2.11), telemetry and the Blackbox.
+loop or the drive aids uses the attitude: it feeds the arming check (§2.12), telemetry and the Blackbox.
 
-### 2.11 Arming, running latch, failsafe — `fc/core.c`, `flight/failsafe.c`, `rx/rx.c`
+### 2.12 Arming, running latch, failsafe — `fc/core.c`, `flight/failsafe.c`, `rx/rx.c`
 
 - **Arming** is blocked unless the throttle is at neutral (`ARMING_DISABLED_THROTTLE`) and the attitude estimate
   is established (`isAttitudeEstimateReady()`, which does not check that the car is level), among the other
@@ -300,7 +334,7 @@ loop or the drive aids uses the attitude: it feeds the arming check (§2.11), te
       (default) disarms at once; `AUTO-LAND` holds `failsafe_throttle` (default 1500 µs, neutral) for
       `failsafe_off_delay` (1 s), then disarms.
     - While a procedure is active, `failsafe_throttle` replaces the drive aids' output on the stabilized throttle,
-      and GYRO OFF is ignored. Re-arming needs `failsafe_recovery_delay` (1 s) of valid signal.
+      and GYRO OFF and DRIFT are ignored. Re-arming needs `failsafe_recovery_delay` (1 s) of valid signal.
     - A FAILSAFE mode switch acts as stage 1 (default), `KILL` (disarm at once) or `STAGE2`
       (`failsafe_switch_mode`).
 
@@ -322,6 +356,8 @@ vectoring, GPS navigation, the governor and so on) is in the WingFlight reposito
 | `d5e28efef` | Timed ABS, per PID profile; DRIVE AIDS OFF mode | First drive aid; a profile switch changes it with the tune |
 | `259d57c55` | `fw_spa_speed_max` default 60 km/h, range 10-300 | Car speeds |
 | `8afcd9c4d` | Timed traction control (ramp) | Second drive aid |
+| `167f8dbb2` | Launch control: the LAUNCH mode stages a capped, ramped standing start | Third drive aid |
+| `987dc46bd` | DRIFT mode: steering wheel direct, gyro counter-steer past `drift_allow`, no I-term, per PID profile; `WINGFLIGHT_AIRPLANE` removed | A rate loop asks for the wrong wheel angle in a drift; the marker was tested nowhere |
 
 ---
 

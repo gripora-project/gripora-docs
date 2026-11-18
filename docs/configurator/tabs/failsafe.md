@@ -74,8 +74,9 @@ While a failsafe is active:
   fallback value, and the [drive aids](../../driving/drive-aids.md) don't
   shape it. Leave it at 1500 (neutral) unless you have a reason not to; a
   value below neutral brakes (and on some ESCs reverses).
-- [GYRO OFF](../../driving/gyro-off.md) is ignored, so the gyro keeps
-  steering even if the GYRO OFF switch was on when the link went.
+- [GYRO OFF](../../driving/gyro-off.md) and [DRIFT](../../driving/drift.md)
+  are ignored, so the normal gyro loop steers even if one of those switches
+  was on when the link went.
 - Once the link returns, the controller needs **Failsafe Recovery Delay**
   (`failsafe_recovery_delay`) of good signal before you can arm again.
 

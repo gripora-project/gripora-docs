@@ -1,8 +1,8 @@
 # Profiles
 
 The Profiles tab holds the PID profiles: the steering stabilizer's tune,
-how it changes with throttle and speed, and the drive aids. Each profile is
-a complete set, so a profile can be a tune for one track or surface.
+how it changes with throttle and speed, the drive aids and the drift
+settings. Each profile is a complete set, so a profile can be a tune for one track or surface.
 
 Up to six profiles can be stored (fewer on boards with little memory). Pick
 the one to edit from the profile selector at the top; the loaded profile is
@@ -209,3 +209,26 @@ the RC throttle bypasses them.
 
 What each setting does, and which ESC setups ABS can't run on:
 [Drive Aids](../../driving/drive-aids.md).
+
+## Drift
+
+The **Drift** panel sets up the **DRIFT** mode. While DRIFT is on (put it on
+a switch on the [Modes](auxiliary.md) tab), the steering wheel steers the
+wheels directly, as with GYRO OFF, and the gyro only counter-steers when the
+car rotates faster than the allowed rate. There is no heading hold.
+
+![The Drift panel on the Profiles tab, with the preview line under the three settings](../../assets/images/configurator-profiles-drift.png)
+
+| Setting | Default | Range | What it does |
+|---|---|---|---|
+| **Counter-steer gain** | 100 % | 0-200 % | How hard the gyro counter-steers past the allowed rate. 100 % gives full lock 360 °/s past it; 0 % turns the counter-steer off. |
+| **Allowed turn rate** | 30 °/s | 0-720 °/s | Turn rate the gyro leaves alone, so the car can hold a slip angle. Raise it to hold more angle. |
+| **Counter-steer limit** | 100 % | 10-100 % | The most lock the gyro adds, as a share of full lock. Lower it if the counter-steer snaps the car straight. |
+
+The line under the settings shows where the counter-steer starts and the
+turn rate at which it reaches full lock, or its limit. The settings belong
+to the profile selected at the top and are saved and reverted with it. The
+panel is hidden on firmware without drift mode.
+
+How DRIFT works with GYRO OFF, failsafe and the drive state, and how to tune
+it: [DRIFT](../../driving/drift.md).

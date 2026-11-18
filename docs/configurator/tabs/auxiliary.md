@@ -17,6 +17,7 @@ find out. **Add mode** opens a searchable list of the modes, in groups.
 | Gyro | **GYRO OFF** | Turns the gyro off: the steering wheel goes straight to the steering servo, with no gyro correction. See [GYRO OFF](../../driving/gyro-off.md). |
 | | **DRIVE AIDS OFF** | Turns ABS, traction control and launch control off: the throttle and brake go to the ESC as you give them. The gyro still steers. See [Drive Aids](../../driving/drive-aids.md). |
 | | **LAUNCH** | Stages a launch for launch control: turn it on at the line, and the first forward throttle launches. See [Launch control](../../driving/drive-aids.md#launch-control). |
+| | **DRIFT** | For drifting: the steering wheel goes straight to the steering servo, and the gyro only counter-steers turn rate beyond the allowed rate. Set it up on the [Profiles](profiles.md#drift) tab. GYRO OFF and failsafe win over it. See [DRIFT](../../driving/drift.md). |
 | GPS | **GPS BEEP SATELLITE COUNT** | Beeps the number of GPS satellites in view. Only with a GPS running. |
 | Beeper & Lights | **BEEPER** | Sounds the buzzer, to find the car. |
 | | **BEEPER MUTE** | Silences the beeper. |
@@ -52,8 +53,8 @@ When a mode has more than one Range or Link, each one past the first gets an
 true, or when *at least one* OR condition is true.
 
 A switch does nothing until a mix on the radio puts it on a channel. The
-Setup Wizard's **Mode switches** step puts ARM, GYRO OFF and DRIVE AIDS
-OFF on switches with you and shows how to set up the radio; see
+Setup Wizard's **Mode switches** step puts ARM, GYRO OFF, DRIVE AIDS OFF,
+LAUNCH and DRIFT on switches with you and shows how to set up the radio; see
 [Set Up Your Car](../../getting-started/car-setup.md).
 
 Changes here take effect when you **Save**.

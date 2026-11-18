@@ -38,12 +38,15 @@ conversion is in progress. Keep these in mind when changing anything:
   auto trim, the tune advisor and the MANUAL and TRADITIONAL modes are gone,
   but their mode (BOX), adjustment, parameter group, debug and MSP ids are kept
   as reserved so later ids do not move. Never reuse or renumber them.
-- **Remaining aircraft concepts** (for example the `WINGFLIGHT_AIRPLANE` build
-  marker) are due to be replaced by car equivalents. Don't extend them, and ask
-  before deleting them.
+- **The aircraft mixer concepts are gone.** The control-surface presets, the
+  aircraft model types and the `WINGFLIGHT_AIRPLANE` build marker have been
+  removed; the model types are `CAR` and `CUSTOM`, and there is no build-time
+  fork marker. Inherited comments and receiver-protocol channel names may
+  still say aileron or elevator. Don't add new aircraft concepts.
 - **Car features go under `src/main/flight/`** (the directory name is
   inherited) until a reorganisation is agreed: `drive.c` (drive state),
-  `drive_aids.c` (ABS and traction control), `speed_atten.c`.
+  `drive_aids.c` (ABS, traction control and launch control),
+  `speed_atten.c`; DRIFT is `pidApplyDrift()` in `pid.c`.
 - **WingFlight fixes** can be pulled in from the `upstream` remote
   (`WingFlight/wingflight-firmware`). Keep diffs to inherited code small so
   that stays easy.
@@ -56,8 +59,8 @@ changing steering, mixer or arming code.
 
 ### Keep stable interfaces stable
 
-- Do not renumber permanent mode (BOX) ids. `GYRO OFF` is 12 and `DRIVE AIDS
-  OFF` is 66.
+- Do not renumber permanent mode (BOX) ids. `GYRO OFF` is 12, `DRIVE AIDS
+  OFF` 66, `LAUNCH` 67 and `DRIFT` 68.
 - Keep MSP and CLI backward compatible where you can. If a setting is renamed,
   keep an alias where practical and record it in the firmware's `Changes.md`.
 

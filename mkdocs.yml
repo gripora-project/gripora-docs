@@ -104,6 +104,7 @@ nav:
       - Drive State: driving/drive-state.md
       - Drive Aids: driving/drive-aids.md
       - GYRO OFF: driving/gyro-off.md
+      - DRIFT: driving/drift.md
       - Ready-to-Arm Wiggle: driving/ready-to-arm-wiggle.md
       - Backup RX Input: driving/backup-rx-input.md
   - Setup:

@@ -132,10 +132,9 @@ Other fields of a rule:
 
 ### Rule roles
 
-A **Role** is a label on a rule; the mixer itself never reads it. Two roles
-exist, inherited from WingFlight: **Flap Compensation** and **Differential
-Thrust Yaw**. A tagged rule's weight can be driven live from the
-[Adjustments](adjustments.md) tab (**Flap Compensation Gain**,
-**Differential Thrust Yaw Gain**), which scales every rule with that role,
-and a negative value reverses them together. The car setup doesn't use
-roles.
+A **Role** is a label on a rule; the mixer itself never reads it. The
+firmware keeps two roles inherited from WingFlight, **Flap Compensation** and
+**Differential Thrust Yaw**, but both are aircraft mixes and a car doesn't
+use them. The role picker only offers **None**. A rule loaded with one of
+the old roles still shows it by name, so you can set it back to None. Their
+adjustment functions are hidden on the [Adjustments](adjustments.md) tab.
