@@ -376,7 +376,7 @@ Select the PID profile with `profile <n>` first. Only the steering gains act; th
 
 ### Drive aids (per PID profile)
 
-ABS and traction control, one set per PID profile (select it with `profile <n>` first; a profile switch changes them with the tune). Everything is off by default. They act only while armed, outside failsafe and with the DRIVE AIDS OFF mode off. See [Drive Aids](../driving/drive-aids.md).
+ABS, traction control and launch control, one set per PID profile (select it with `profile <n>` first; a profile switch changes them with the tune). Everything is off by default. They act only while armed, outside failsafe and with the DRIVE AIDS OFF mode off. See [Drive Aids](../driving/drive-aids.md).
 
 | Setting | Scope | Values | Default | Description |
 |---|---|---|---|---|
@@ -391,6 +391,9 @@ ABS and traction control, one set per PID profile (select it with `profile <n>` 
 | `drive_abs_corner_hold` | PID profile | `0..100` | `0` | Hold at full steering lock, ms; 0 = off |
 | `drive_tc_mode` | PID profile | `OFF`, `RAMP` | `OFF` | Traction control: OFF or RAMP |
 | `drive_tc_ramp_time` | PID profile | `50..2000` | `500` | RAMP: quickest zero-to-full forward throttle, ms |
+| `drive_lc_mode` | PID profile | `OFF`, `SWITCH` | `OFF` | Launch control: OFF, or SWITCH (the LAUNCH mode stages a launch) |
+| `drive_lc_throttle` | PID profile | `10..100` | `50` | Forward throttle allowed as a launch starts, % |
+| `drive_lc_ramp_time` | PID profile | `100..5000` | `1000` | From the start throttle to full, ms |
 
 ### Rate profile
 
@@ -793,8 +796,8 @@ modes:
 |---|---|
 | 0 | Throttle from the transmitter, x1000 (below 0 is brake/reverse) |
 | 1 | Throttle to the ESC, x1000 |
-| 2 | Flags: bit 0 aids on, bit 1 ABS armed, bit 2 ABS releasing, bit 3 traction control armed, bit 4 traction control holding the throttle back |
-| 3 | While braking with ABS: pulse rate, x10 Hz. While driving forward with traction control: the throttle it allows, x1000 |
+| 2 | Flags: bit 0 aids on, bit 1 ABS armed, bit 2 ABS releasing, bit 3 traction control armed, bit 4 traction control holding the throttle back, bit 5 launch staged, bit 6 launching |
+| 3 | While braking with ABS: pulse rate, x10 Hz. While driving forward with traction control or launching: the throttle allowed, x1000 |
 | 4 | ABS release brake (floor), x1000 |
 | 5 | ABS hold, ms |
 | 6 | Time into the current ABS pulse, ms |

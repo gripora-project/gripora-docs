@@ -83,7 +83,7 @@ Pages shown by default:
 | Gyro Filters | The gyro filters. |
 | Accelerometer Trim | Accelerometer trim. |
 | ESC Sensor | ESC telemetry settings. |
-| Drive Aids | ABS and traction control for the current PID profile (see below). |
+| Drive Aids | ABS, traction control and launch control for the current PID profile (see below). |
 | Model | The model ID, the statistics the controller keeps (total runs, time and distance) and radio settings. |
 | Settings | Which pages to show, and the background script options. |
 
@@ -101,6 +101,7 @@ the firmware keeps the drive aids per PID profile.
   *Hold*, *Dyn rate* and *Dyn hold* (Dynamic only), *Corner rate* and
   *Corner hold*.
 - **Traction**: *Mode* (Off, Ramp) and *Ramp* time.
+- **Launch**: *Mode* (Off, Switch), *Start throttle* and *Ramp time*.
 
 See [Drive Aids](../driving/drive-aids.md) for what each setting does.
 

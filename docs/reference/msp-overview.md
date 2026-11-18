@@ -28,7 +28,7 @@ how a client tells. Appending fields to the end of a reply is additive too,
 and a client tells from the reply length. For example,
 `MSP_MIXER_CONFIG` carries `yaw_gyro_reverse` as an optional trailing byte,
 and `MSP2_GRIPORA_DRIVE_AIDS_CONFIG` grew from 9 to 12 bytes when traction
-control was added.
+control was added, and to 16 with launch control.
 
 Changes to an existing message's layout bump the API version, because an
 old client would misparse the reply or write shifted bytes into a profile.
@@ -42,8 +42,8 @@ Added for the car, all in MSP API 33.0:
 |---|---|---|
 | `MSP2_GRIPORA_DRIVE_CONFIG` / `MSP2_GRIPORA_SET_DRIVE_CONFIG` | `0x5F3C` / `0x5F3D` | The [drive state](../driving/drive-state.md) settings: ESC mode, wheel diameter, gyro start and full speed, gyro in reverse and its gain |
 | `MSP2_GRIPORA_DRIVE_STATUS` | `0x5F3E` | ESC mode in use, commanded ESC state, travel direction, whether the speed is known, speed and gyro correction scale |
-| `MSP2_GRIPORA_DRIVE_AIDS_CONFIG` / `MSP2_GRIPORA_SET_DRIVE_AIDS_CONFIG` | `0x5F3F` / `0x5F40` | The [drive aids](../driving/drive-aids.md) of the current PID profile: the nine ABS settings, then the traction control mode and ramp time |
-| `MSP2_GRIPORA_DRIVE_AIDS_STATUS` | `0x5F41` | Flags (aids on, ABS armed, ABS releasing, traction control armed, traction control holding back), throttle in and throttle out |
+| `MSP2_GRIPORA_DRIVE_AIDS_CONFIG` / `MSP2_GRIPORA_SET_DRIVE_AIDS_CONFIG` | `0x5F3F` / `0x5F40` | The [drive aids](../driving/drive-aids.md) of the current PID profile: the nine ABS settings, the traction control mode and ramp time, then the launch control mode, start throttle and ramp time |
+| `MSP2_GRIPORA_DRIVE_AIDS_STATUS` | `0x5F41` | Flags (aids on, ABS armed, ABS releasing, traction control armed, traction control holding back, launch staged, launching), throttle in and throttle out |
 
 A `SET` request for the drive or drive aids settings is refused as a whole
 if any value is out of range. `MSP_SET_MIXER_CONFIG` accepts only the car
@@ -69,7 +69,7 @@ fields of `MSP_PID_PROFILE`, are zero placeholders. Commands for features
 removed earlier (VTX, camera control, the rangefinder) are gone too.
 
 The mode list sent over MSP keeps the permanent ids of removed modes
-reserved, so `GYRO OFF` is still id 12; `DRIVE AIDS OFF` is id 66.
+reserved, so `GYRO OFF` is still id 12; `DRIVE AIDS OFF` is id 66 and `LAUNCH` id 67.
 
 !!! note
     A full MSP command reference is planned as the project stabilises --

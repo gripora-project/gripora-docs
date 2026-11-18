@@ -183,7 +183,7 @@ Master Gain, its cell in Driving Feel shows a **CURVE** badge.
 
 ## Drive aids
 
-The **Drive aids** panel holds **ABS** and **traction control**. They shape
+The **Drive aids** panel holds **ABS**, **traction control** and **launch control**. They shape
 the throttle and brake you give before they reach the ESC:
 
 - **ABS** pulses the brake when you brake hard, so the wheels keep turning
@@ -193,11 +193,13 @@ the throttle and brake you give before they reach the ESC:
 - **Traction control** limits how fast the forward throttle may rise, so
   the wheels don't spin up when you pull the trigger hard. Letting off is
   instant, and the brake and reverse are never touched.
+- **Launch control** caps the throttle for a standing start, staged with the
+  **LAUNCH** mode, and ramps it to full: **Start throttle** and **Ramp time**.
 
-Both are **Off** by default. They belong to the profile selected at the
+All are **Off** by default. They belong to the profile selected at the
 top: each profile has its own, and switching profile switches them. A
-**Live** box shows whether the aids are on, what ABS and traction control
-are doing, and the throttle from the transmitter next to the throttle to
+**Live** box shows whether the aids are on, what ABS, traction control and
+launch control are doing, and the throttle from the transmitter next to the throttle to
 the ESC.
 
 The aids are off while disarmed, in failsafe, and while the **DRIVE AIDS
