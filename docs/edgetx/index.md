@@ -7,11 +7,11 @@ computer. For FrSky Ethos radios, use the
 [Ethos Lua Suite](../ethos-suite/index.md) instead.
 
 !!! note "Being converted to cars"
-    The scripts came from WingFlight's along with the firmware. The ABS and
-    traction control page is new for cars, but most pages still show the
-    roll, pitch and yaw columns and some aircraft settings that Gripora no
-    longer uses (see [Pages](#pages)). This page will be updated as the
-    scripts are aligned with Gripora.
+    The scripts came from WingFlight's along with the firmware. The tuning
+    pages label the steering rows *Steer* or *Steering* and mark roll and
+    pitch *(unused)*, but some aircraft pages and settings that Gripora no
+    longer uses are still there (see
+    [Pages and settings left over from WingFlight](#pages-and-settings-left-over-from-wingflight)).
 
 ## What they install
 
@@ -72,11 +72,11 @@ Pages shown by default:
 | Page | What it is for |
 | --- | --- |
 | Status | The current PID and rate profiles, load, the arming disabled flags and the dataflash free space (with an erase button). |
-| Rates | The rates. On a car only yaw (steering) is used. |
-| Rate Dynamics | Response time, acceleration limit and setpoint boost. |
-| PID Gains | P, I, D, F and B per PID profile. On a car only yaw is used. |
-| PID Controller | Error decay, error limits and I-term relax. |
-| Profile - Various | Throttle and speed gain attenuation, the gain (Driving Feel) settings, gain curves and the speed range. It still lists aircraft settings too (see below). |
+| Rates | The rates. On a car only the *Steer* row is used. |
+| Rate Dynamics | Response time, acceleration limit and setpoint boost, and the *Steering Dynamics* ceiling and deadband. Only the steering values are used. |
+| PID Gains | P, I, D, F and B per PID profile. On a car only the *Steer* row is used. |
+| PID Controller | I-term relax level, I-term decay limit, error limits and the steering bandwidth and D- and B-term cutoffs. |
+| Profile - Various | Throttle and GPS speed gain attenuation, *Driving Feel* (master gain, I-term decay and I-term relax), gain curves and the speed range. It still lists aircraft settings too (see below). |
 | Battery, Smart Fuel | Battery profiles and the fuel estimate. |
 | Servos | Servo centre, limits and direction. |
 | Mixer | Gain and direction of the stabilised axes. |
@@ -84,7 +84,7 @@ Pages shown by default:
 | Accelerometer Trim | Accelerometer trim. |
 | ESC Sensor | ESC telemetry settings. |
 | Drive Aids | ABS and traction control for the current PID profile (see below). |
-| Model | The model ID, the statistics the controller keeps (still labelled *Total flights*, with total time and distance) and radio settings. |
+| Model | The model ID, the statistics the controller keeps (total runs, time and distance) and radio settings. |
 | Settings | Which pages to show, and the background script options. |
 
 *Mixer Inputs*, *Mixer Rules*, *Experimental* and the ESC programming pages
@@ -109,11 +109,14 @@ See [Drive Aids](../driving/drive-aids.md) for what each setting does.
 These are still in the scripts but do nothing on Gripora, or are refused by
 the firmware. Leave them alone; they are due to be removed:
 
-- **Tune Advisor**: the firmware no longer has the tune advisor.
-- On **Profile - Various**: *Trainer*, *Angle Mode* and *Cross-Axis Relax*.
-  The firmware keeps these fields only as placeholders.
-- The **roll** and **pitch** columns on the tuning pages: Gripora stabilises
-  only yaw, the steering.
+- **Tune Advisor**: the firmware no longer has the tune advisor. The page
+  is shown by default; turn it off under *Settings*.
+- On **Profile - Various**: *Trainer*, *Angle Mode*, *Cross-Axis Relax*,
+  and *Snap Relax* and *Prop Hang* where shown. The firmware keeps these
+  fields only as placeholders.
+- On **PID Controller**: *Attitude Hold*.
+- The **roll** and **pitch** rows and columns, marked *(unused)* where there
+  is room: Gripora stabilises only the steering.
 
 ## Adjustment Teller
 
