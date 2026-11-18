@@ -1,39 +1,47 @@
 # Adjustments
 
-The Adjustments tab configures in-flight tuning: mapping a transmitter
-channel/switch to live-adjust a setting (like a PID gain or rate) without
-reconnecting the Configurator. Useful for fine-tuning while flying, or for
-A/B comparing two settings values in the air.
+The Adjustments tab lets a transmitter switch or knob change a setting live,
+without reconnecting the Configurator: a gain knob, steering trim buttons,
+or a profile switch, so you can try values while driving.
 
-![Adjustments tab](../../assets/images/configurator-adjustments.png)
+The functions on offer are the ones that matter on a car (the roll and
+pitch versions are hidden):
 
-Adjustable functions are grouped by category -- [Flight Feel](profiles.md#flight-feel)
-(Master Gain, I-Term Decay and I-Term Relax), [Servo Trims](servos.md#trimming-in-flight)
-(roll/pitch/yaw), Accelerometer Trim, Setpoint Boost, PID/Rate/TV Profile
-switching, [Mixer](mixer.md#rule-roles) (Flap Compensation Gain,
-Differential Thrust Yaw Gain), and others -- and any function currently
-under live adjustment control shows its effective value on the owning tab
-while the switch/channel is active.
+| Group | Functions |
+|---|---|
+| Profile Selection | Battery Profile, LED Profile, Profile Selection (PID profile), Rate Profile Selection |
+| Rates, RC Rates, RC Expo | Yaw Rate, Yaw RC Rate, Yaw RC Expo |
+| PID Gains | Yaw P, I, D, F and B gain |
+| Filters | Yaw Gyro Cutoff, Yaw D-term Cutoff |
+| Yaw Dynamics | Yaw Dynamic Ceiling Gain, Dynamic Deadband Gain, Dynamic Deadband Filter |
+| Driving Feel | Master Gain Yaw, I-Term Decay Yaw, I-Term Relax Yaw (see [Profiles](profiles.md#driving-feel)) |
+| Servo Trims | Servo Trim Yaw (the steering, see [Servos](servos.md#trimming-from-the-transmitter)) |
+| Setpoint Boost | Yaw Setpoint Boost Gain |
+| Mixer | Flap Compensation Gain, Differential Thrust Yaw Gain (scale mixer rules with that [role](mixer.md#rule-roles); not used by the car setup) |
 
-Profile switching (PID, Rate, and [Thrust Vector](thrust-vector.md)) is a
-special case: each is its own adjustment function, mapped to a channel the
-same way as any other, but a profile switch applies -- and is confirmed with
-its own beep count -- immediately, rather than waiting for a manual value
-commit like most other adjustments.
+"Yaw" is the steering. A function under live adjustment shows its value on
+the tab that owns it while the switch or knob is in control.
 
-Adjustments made this way aren't saved to the flight controller
-automatically -- they're meant for freely trying values in the air without
-committing to any of them. If a value you find mid-flight is worth
-keeping, go set it permanently (e.g. on [Profiles](profiles.md)) and Save
-from there.
+PID and rate profile switching is a special case: each is its own function,
+mapped to a channel like any other, but a profile switch applies, and is
+confirmed with its own beep count, at once. The drive aids belong to the PID
+profile, so switching PID profile switches them too.
+
+Adjustments aren't saved by themselves: they are for trying values while
+driving. If a value you found is worth keeping, set it on its tab (for
+example [Profiles](profiles.md)) and save it there. Stepped servo trims are
+the exception; see below.
+
+The Setup Wizard's **Trim and gain** step sets up a steering trim and a gain
+knob for you (Master Gain Yaw on a knob, 0% fully down, 75% at center, 150%
+fully up). See [Set Up Your Car](../../getting-started/car-setup.md).
 
 ## Channel names
 
-Every channel picker in the Configurator -- here, on [Mixer](mixer.md),
-[Conditions](logic.md) and [Modes](auxiliary.md) -- uses one
-naming scheme: **CH #N**, where N is the receiver channel number. The four
-channels after the stick channels that older versions called AUX 1-4 are
-now simply CH #5-8, and so on up.
+Every channel picker in the Configurator (here, on [Mixer](mixer.md),
+[Conditions](logic.md) and [Modes](auxiliary.md)) uses one naming scheme:
+**CH #N**, where N is the receiver channel number, with its role where it
+has one. In the car channel order AUX 1-4 are CH #3-6.
 
 ## Enable Channel and Value Channel
 
@@ -53,7 +61,7 @@ Each adjustment slot has two channels:
 - **Mapped** continuously maps the Value Channel's position across its
   range straight onto the function's Min/Max -- a knob or 3-position
   switch gives you a proportional live value, the same idea as a
-  transmitter-side gain knob but applied on the flight controller side.
+  transmitter-side gain knob but applied on the controller side.
 - **Stepped** instead treats the Value Channel like a momentary
   increase/decrease button: entering one sub-range nudges the value up by
   **Step** each time, the other sub-range nudges it down -- useful for a

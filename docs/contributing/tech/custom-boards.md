@@ -1,10 +1,10 @@
 ## Custom Board Configuration Using CLI
 
-Warning: this is beyond the normal use case. Use a pre-made board configuration for a flight
-controller that has been tested, from the
+Warning: this is beyond the normal use case. Use a pre-made board configuration for a
+controller board that has been tested, from the
 [gripora-targets](https://github.com/gripora-project/gripora-targets) repository.
 
-Gripora can support a custom flight controller, as long as it uses supported hardware. Before
+Gripora can support a custom controller board, as long as it uses supported hardware. Before
 you start, check that your MCU and peripherals are supported, and test your hardware separately.
 Then flash the matching unified target (see [Building the Firmware](../building-the-firmware.md)) and configure the pins from the
 CLI.

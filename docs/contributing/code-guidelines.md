@@ -25,19 +25,25 @@ Guidance for firmware changes. For layout and formatting rules, see
 11. There is always more than one way to do something, and code is never
     final, but it does have to work.
 
-## Changing flight-control code
+## Changing steering, mixer and arming code
 
-Mixer, mode and PID changes are safety-critical. Before you change them, read
-the [Flight Dynamics](tech/flight-dynamics.md)
-notes in the firmware repository. They record the signal chain, sign
-conventions and the design rationale, and list known defects that can look
-intentional.
+Mixer, mode, PID, drive-state and drive-aids changes are safety-critical: they
+decide what the steering servo and the ESC do. Treat changes in
+`src/main/flight/mixer.c`, `src/main/pg/mixer.c`, `src/main/flight/pid.c`,
+`src/main/flight/drive.c` and `src/main/flight/drive_aids.c` as high risk, and
+check the arming and override behaviour in `src/main/fc/core.c` too. Before you
+change them, read [Steering Control Dynamics](tech/flight-dynamics.md). It
+records the signal chain, sign conventions and the design rationale, and lists
+known defects that can look intentional.
 
 - Do not renumber the permanent mode (BOX) IDs. Keep MSP and CLI compatible
   where you can.
 - Saved settings live in parameter groups. Follow the
   [parameter group rules](tech/parameter-groups.md), and bump the group version
-  when you change its layout.
+  whenever you change the group, including its defaults or ranges.
+- Never change the MSP API or firmware version numbers; see the
+  [Developer Guide](developers.md#never-bump-the-msp-api-or-firmware-version).
+- Check the change on the bench with the wheels off the ground before driving.
 
 ## Unit testing
 
@@ -58,11 +64,13 @@ make test
 executable in `obj/test`. `make -k test` carries on with the next test after a
 failure. Test reports are also written by the run.
 
-Some test files are disabled by their `.cc.txt` extension, for example the
-mixer, IMU and failsafe tests, and need reviving before they can run. Several
-areas have no tests at all: the hold engine, Attitude Hold, the
-thrust-vector loop, leveling, airborne detection, servos and GPS navigation.
-Tests for those are welcome.
+Tests exist for the PID, setpoint, curves, maths, speed attenuation, the drive
+state (`drive_unittest.cc`), the drive aids (`drive_aids_unittest.cc`), servos
+and telemetry status, among others. Some test files are disabled by their
+`.cc.txt` extension, for example the mixer, IMU, failsafe and arming-prevention
+tests, and need reviving before they can run. So the mixer, failsafe and
+`fc/core.c` arming paths have no running tests: changes there need extra care
+and, where possible, a new test.
 
 ## Pull requests
 
@@ -70,6 +78,8 @@ Tests for those are welcome.
 - Fork the repository, create a branch for each change, and open the pull
   request against `master`. Never open a pull request from your own `master`.
 - Don't rewrite history on a branch after you have opened the pull request.
-- Firmware pull requests should build with `make unified`.
+- Firmware pull requests should build with `make unified` and pass `make test`.
 - If your change affects what a user sees, update the matching page on this
-  site.
+  site, and say so in the pull request.
+- Keep the description short: **What**, **Compatibility** and **Testing**, as
+  described in the [Developer Guide](developers.md#issues-and-pull-requests).

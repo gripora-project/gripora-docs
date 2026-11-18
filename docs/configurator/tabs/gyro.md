@@ -1,22 +1,22 @@
 # Gyro
 
-The Gyro tab configures gyro signal filtering: removing airframe/motor
-vibration noise from the gyro signal before it reaches the PID loop, without
-adding so much delay that the filtering itself starts to hurt tracking.
-
-![Gyro tab](../../assets/images/configurator-gyro.png)
+The Gyro tab configures gyro filtering: removing vibration noise from the
+motor, the drivetrain and the chassis from the gyro signal before it
+reaches the steering loop, without adding so much delay that the filtering
+itself starts to hurt the steering.
 
 There are four different tools here, each catching noise a different way.
 It's tempting to turn all of them up "to be safe," but every filter trades
 noise removal for delay, and that delay comes straight out of how sharp and
-locked-in the plane feels -- so the goal is the *least* filtering that keeps
+locked-in the steering feels -- so the goal is the *least* filtering that keeps
 things cool and quiet, not the most.
 
 ## Which filter should I use?
 
 - If you can read real motor RPM (bidirectional DShot, or an RPM/frequency
-  sensor) -- turn on the **RPM Filter** first. It uses the motor's actual
-  RPM (and any gear ratio) to place notches exactly on the noise it's
+  sensor), turn on the **RPM Filter** first. It uses the motor's actual
+  RPM (and the gear ratio set in the [Motors](motors.md) tab's Drive panel)
+  to place notches exactly on the noise it's
   currently producing, so it introduces far less delay than guessing at a
   fixed frequency. `esc_sensor_protocol = FBUS` or `crsf_sensors_use_rpm =
   ON` ([CRSF Sensors](crsf-sensors.md)) can technically feed this too
@@ -42,9 +42,9 @@ things cool and quiet, not the most.
 
 | What you're seeing | Try |
 |---|---|
-| Servo/motor heat, high-frequency buzzing or growling | Enable RPM Filter or Dynamic Notch; if already on, raise RPM Filter Strength or lower Dynamic Notch Q |
-| Mushy, laggy, "flying through jello" | Filtering is too aggressive for the setup -- try a lower RPM Filter Strength, raise Dynamic Notch Q, or raise the Lowpass cutoff |
-| Twitchy at a specific throttle/RPM despite otherwise clean filtering | Look for a peak in Blackbox at that condition and target it with a fixed Notch Filter |
+| Hot steering servo, high-frequency buzzing or growling | Enable RPM Filter or Dynamic Notch; if already on, raise RPM Filter Strength or lower Dynamic Notch Q |
+| Steering feels mushy or laggy | Filtering is too aggressive for the setup -- try a lower RPM Filter Strength, raise Dynamic Notch Q, or raise the Lowpass cutoff |
+| Steering twitches at a specific throttle or motor RPM despite otherwise clean filtering | Look for a peak in Blackbox at that condition and target it with a fixed Notch Filter |
 
 ## RPM Filter
 
@@ -69,7 +69,7 @@ predictable noise). Notch Q controls how narrow/selective each notch is --
 2.0-4.0 is the recommended range; going below 2.0 makes notches much wider
 and adds significantly more delay. Min/Max Hz should bracket the actual
 noise band -- Min just below your lowest-RPM noise frequency (but never
-under 20Hz), Max about 10-20% above the highest noise frequency you expect.
+under 20 Hz), Max about 10-20% above the highest noise frequency you expect.
 
 ## Lowpass Filters
 

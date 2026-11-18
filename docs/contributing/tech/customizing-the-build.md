@@ -1,13 +1,13 @@
 # Create a Customized Version
 
-Flight controllers have limited flash and RAM, so the features built into the official firmware
+Controller boards have limited flash and RAM, so the features built into the official firmware
 are a compromise. If you build your own firmware you can switch features on and off to save space
 or to enable something the official build leaves out.
 
 Keep in mind that a firmware you build yourself is a piece of software that you are responsible
 for. It can have bugs that the official version does not, and enabling a feature that the
-developers left off may overload the processor or overflow flash or RAM. Do not fly it before you
-have tested it on the bench.
+developers left off may overload the processor or overflow flash or RAM. Do not drive with it before you
+have tested it on the bench, with the wheels off the ground.
 
 This is for people who can already build the firmware from source. See [Building the Firmware](../building-the-firmware.md) for the toolchain and
 targets, and [Code Guidelines and Testing](../code-guidelines.md) for contribution guidelines. Choose a unified target that matches your MCU:

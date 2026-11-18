@@ -1,14 +1,14 @@
 # Installing the Configurator
 
 The Gripora Configurator is the desktop/web application used to flash
-firmware, configure the aircraft, and tune flight behavior.
+firmware, set up the car, and tune how it drives.
 
 ## Web version (recommended for most users)
 
 The Configurator runs directly in a Chromium-based browser (Chrome, Edge,
 Brave, Opera) at **[cfg.gripora.org](https://cfg.gripora.org)** --
 no installation required. It uses the browser's WebSerial and WebUSB APIs to
-talk to your flight controller, so it needs:
+talk to your controller, so it needs:
 
 - A Chromium-based browser (Firefox and Safari do not support WebSerial/WebUSB)
 - A secure (HTTPS) connection, which `cfg.gripora.org` provides automatically

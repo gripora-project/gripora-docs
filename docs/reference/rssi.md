@@ -1,6 +1,6 @@
 # RSSI
 
-RSSI is a measurement of signal strength and is very handy so you know when your aircraft is going out of range or if it is suffering RF interference.
+RSSI is a measurement of signal strength and is very handy so you know when your car is going out of range or if it is suffering RF interference.
 
 Some receivers have RSSI outputs. 3 types are supported.
 

@@ -1,391 +1,417 @@
-# Flight Dynamics (inherited from WingFlight): Design Rationale and Review
+# Steering Control Dynamics: Signal Chain, Design Rationale and Known Defects
 
-This document describes how Gripora turns pilot sticks and sensor data into surface and motor commands. It records why each piece is built the way it is, and lists the problems found in a review of that code.
+This document describes how Gripora turns the driver's steering and throttle into steering-servo and ESC
+commands. It records why each stage is built the way it is, and lists the known defects and limitations. Read
+it before changing flight-control code: `src/main/flight/{setpoint,pid,drive,drive_aids,speed_atten,mixer,servos,motors}.c`,
+`src/main/fc/rc.c`, `src/main/fc/core.c` and `src/main/flight/failsafe.c`.
 
-**Scope.** Everything between the receiver and the servo/motor outputs: setpoint shaping, the rate PID, the leveling and hold modes, the thrust-vector loop, the mixer, servo and motor output, the attitude estimator, and the arming/failsafe/navigation logic that overrides them.
+The page keeps its old address (`contributing/tech/flight-dynamics/`) because source comments and the firmware's
+`AGENTS.md` link to it. Directory and file names such as `src/main/flight/` are inherited from the fixed-wing
+firmware Gripora was forked from (WingFlight).
 
-**Basis.** A static read of `master`. Nothing was compiled, simulated, or flown for this review. The one thing checked numerically was the fast quaternion product in `imu.c`, which matches the Hamilton product to 1e-15. Where a finding depends on a sign convention or on behaviour I could not observe, it says so.
+**Scope.** Everything between the receiver and the servo/motor outputs: RC processing, setpoint shaping, the
+steering rate PID, the drive state, speed and throttle gain attenuation, GYRO OFF, the drive aids (ABS and
+traction control), the mixer, servo and motor output, and the arming and failsafe logic that overrides them.
 
-**Provenance of the rationale.** "Why" statements come from in-code comments and commit messages, and are quoted or paraphrased. Where neither exists, the text says *inferred*.
+**Basis.** A static read of the firmware source at the time of writing, checked against the unit tests where
+they exist. Nothing here was verified by driving. Where a statement depends on behaviour that can only be
+observed on a car, it says so.
 
 ---
 
 ## 1. Conventions
 
-These are easy to get wrong and are not written down elsewhere.
+These are easy to get wrong.
 
-| Item | Convention | Evidence |
+| Item | Convention | Where |
 |---|---|---|
-| Pitch sign | `attitude.values.pitch` and `attitude.raw[PITCH]` are **positive nose-down** (inherited Betaflight convention). Nose-up vertical is `-900` decidegrees. | [gps_nav.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/gps_nav.c) (bench-confirmed: "+900 drives the elevator toward nose-down, -900 is physically vertical nose-up"); [gps_rescue.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/gps_rescue.c) (positive angle = forward flight) |
-| Yaw sign | RC yaw is clockwise-positive; gyro yaw is negative for the same motion. [setpoint.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/setpoint.c) negates RC yaw once, and everything downstream (setpoint, MANUAL, PASSTHROUGH) keeps that sign. | `setpointUpdate()`, `mixerGetPassthroughInput()` |
-| Stabilized outputs | PID sum is a unitless surface command, ±1.0 = full mixer input. | `pidSum` into `MIXER_IN_STABILIZED_*`, limits ±1000 in [pg/mixer.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/pg/mixer.c) |
-| Axis error units | `axisError` is degrees (integrated rate error). `error_limit` is degrees. | [pid.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/pid.c) |
-| Quaternion | `q` is sensor frame relative to earth frame. `imuEulerToQuaternion()` takes decidegrees in the `attitude.values` convention and negates yaw internally. | [imu.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/imu.c) |
-| Loop timing | `pid.dT` comes from `gyro.targetLooptime`. With `pid_process_denom` > 1, [core.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/fc/core.c) `taskMainPidLoop()` spreads setpoint → PID → mixer → servo across consecutive ticks, so output lags the PID by up to one denominator's worth of ticks. | `activePidLoopDenom` cases |
+| Axes | Only yaw (steering) is stabilised. Roll and pitch keep their slots in every per-axis array, PID and rate profile, MSP message and Blackbox field, but their setpoints and PID outputs are always zero. | `setpointUpdate()` zeroes roll/pitch setpoints; `pidResetRollPitch()` in `pid.c` |
+| Yaw sign | RC yaw (steering stick) is clockwise-positive; gyro yaw is negative for the same motion. `setpoint.c` negates the RC yaw **once**, and everything downstream keeps that sign. GYRO OFF negates the raw channel the same way, so the steering direction is the same with and without the gyro. | `setpointUpdate()`, `mixerUpdateInputs()` |
+| Pitch sign | `attitude.values.pitch` / `attitude.raw[PITCH]` are **positive nose-down** (inherited Betaflight convention). Nothing in the steering loop uses pitch; it matters for attitude telemetry and the Blackbox `attitude` field. | `imu.c` |
+| Throttle | Signed, -1..1 around `rc_center`: forward above, brake/reverse below. Inputs within 10 µs of centre are neutral (`RC_THROTTLE_NEUTRAL_DEADBAND`). "Throttle off" for arming, auto-disarm and failsafe is the stick within 15 µs of centre (`isThrottleOff()`: that deadband plus `RC_THROTTLE_DEADBAND`, 5 µs). | `fc/rc.c` |
+| Channel order | Default map `RT1234AE`: CH1 steering, CH2 throttle, CH3-CH6 AUX1-4. Roll and pitch are unused and parked on CH7/CH8. | `pg/rx.c` (`rcmap`) |
+| PID output | The PID sum is a unitless steering command: ±1.0 is the full stabilized-yaw mixer input, which the default rule sends to S1 at weight 1000, i.e. full servo scale. | `pidSum` into `MIXER_IN_STABILIZED_YAW`; limits ±1000 in `pg/mixer.c` |
+| Units | Setpoint and gyro rate in °/s. `axisError` (the I accumulator) in degrees, limited by `error_limit` (degrees). Drive speeds in km/h (settings in 0.1 km/h). | `pid.c`, `drive.c` |
+| Loop timing | `pid.dT` comes from `gyro.targetLooptime`. With `pid_process_denom` > 1, `taskMainPidLoop()` in `core.c` spreads setpoint → PID → mixer → servo across consecutive ticks. | `activePidLoopDenom` cases |
 
 ### Signal chain
 
 ```
- RX (rx.c) ─► rcInput ─► rc.c: deadband, ±1 deflection, throttle 0..1
+ RX (rx.c) ─► rcInput ─► rc.c: deadbands, ±1 deflection; throttle signed -1..1 around rc_center
                               │
                               ▼
-        setpoint.c: airborne update ─► yaw sign ─► PT3 smoothing ─► yaw dynamic range
-                    ─► response/accel limit ─► sp.deflection ─► FF boost ─► rates curve ─► sp.setpoint
+        setpoint.c: yaw sign ─► smoothing ─► yaw dynamic deadband/ceiling
+                    ─► response/accel limit (sp.deflection) ─► boost ─► rates curve (sp.setpoint)
+                    roll and pitch setpoints forced to 0
                               │
                               ▼
-        pid.c pidApplySetpoint(): first match wins
-           ANGLE|GPS_RESCUE|FAILSAFE|LOITER|RTH → leveling.c angleModeApply
-           ATTHOLD → atthold.c → hold_engine.c
-           TRAINER → acroTrainerApply     else: acro
+        pid.c: driveUpdate() + speedAttenUpdate(), yaw I cleared on a direction change
+               yaw gyro × (yaw_gyro_reverse ? -1 : 1) × travel direction (±1)
+               P, D: Kp/Kd · masterGain · gainCurve · atten · corr
+               I:    Ki · masterGain · corr · axisError
+               F, B: Kf/Kb · atten            (atten = max(TPA · SPA, 0.25), corr = drive correction scale)
                               │
                               ▼
-        pid.c mode 1: P (TPA·SPA) + I + D + F + B  ─► pidSum   (mode 0: F only)
-        tv_pid.c (optional, independent loop, reuses the final main setpoint)
+        mixer.c inputs: STABILIZED_YAW = pidSum   (GYRO OFF: raw steering channel instead)
+                        STABILIZED_THROTTLE = driveAidsApply(throttle)   (failsafe: failsafe_throttle instead)
                               │
-                              ▼
-        mixer.c: inputs → PASSTHROUGH / MANUAL override → rule table → outputs
+                        rule table (default: STABILIZED_YAW → S1, STABILIZED_THROTTLE → M1)
                               │
-                    servos.c (balance curve, speed limit, trim, travel)   motors.c (+ governor)
+              servos.c (curve, speed, reverse, scale, trim, travel)      motors.c (bidirectional: 0 = neutral)
 ```
 
-### Mode arbitration
-
-[core.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/fc/core.c) `processRxModes()` picks one leveling-family mode from the BOX switches. Priority: **ATTHOLD > ANGLE > TRAINER**; the winner clears the others' flags, so with ANGLE and ATTHOLD both switched on, ATTHOLD runs and `ANGLE_MODE` is off.
-
-Separately, the "safety" set (`ANGLE | GPS_RESCUE | FAILSAFE | LOITER | RTH`) preempts ATTHOLD inside `pidApplySetpoint()`. GPS rescue, loiter and RTH are set from their own switches and are not cleared by the chain above, so they do preempt a hold. `core.c` then feeds the hold `mode && !safetyLevelingActive`, so the hold re-captures a fresh target when the safety mode releases.
-
-`PASSTHROUGH`, `MANUAL` and `TRADITIONAL` are independent flags, not part of that chain.
+`drive.c` reads the stabilized throttle the mixer sent on the previous loop (failsafe included) as its
+command input, so the drive state follows what the ESC is actually told to do.
 
 ---
 
 ## 2. Subsystems: what they do and why
 
-### 2.1 Setpoint shaping — [setpoint.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/setpoint.c)
+### 2.1 RC processing — `fc/rc.c`
 
-Order of operations: airborne update, yaw negation, PT3 smoothing (cutoff derived from measured RX frame interval), yaw dynamic deadband/ceiling, response-time and acceleration limit (→ `sp.deflection`), feed-forward "boost", rates curve (→ `sp.setpoint`).
+Each stick is centred on `rc_center`, a per-axis deadband is removed (`roll_deadband`, `pitch_deadband`,
+`yaw_deadband`; the throttle uses a fixed 10 µs), and the result is scaled to ±1 by `rc_deflection`. The throttle
+is that same signed deflection: there is no 0..1 throttle any more. `getThrottle()` returns it; the
+Blackbox logs it x1000 as `rcCommand[4]`. AUX channels are passed on as `rcInput − rc_center`.
 
-- **Two outputs on purpose.** `sp.deflection` (before boost and curve) feeds the leveling/hold layers and MANUAL. `sp.setpoint` (after) feeds acro. The boost exists only to sharpen the gyro loop's target; it has no meaning for a mode that skips the gyro loop. Commit `062e79151`: reusing the boosted setpoint for MANUAL made fast stick moves saturate early "and felt like passthrough".
-- **Smoothing tied to the RX frame rate.** Inherited from Rotorflight; it removes stair-stepping from 50–150 Hz link updates without a fixed lag.
+### 2.2 Setpoint shaping — `flight/setpoint.c`
 
-### 2.2 Rate PID (mode 1) — [pid.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/pid.c)
+Order of operations: yaw negation, smoothing (cutoff derived from the measured RX frame interval), yaw dynamic
+deadband/ceiling, response-time and acceleration limit (→ `sp.deflection`), setpoint boost, rates curve
+(→ `sp.setpoint`). Roll and pitch are computed and then set to zero; their stick deflection is still available to
+mixer rules through the RC inputs.
 
-`error = setpoint − filtered gyro`. Terms:
+- **Smoothing tied to the RX frame rate.** Inherited from Rotorflight: it removes stair-stepping from slow link
+  updates without a fixed lag.
+- **Rates.** `rcRates × 5` °/s at full stick on the default curve. The default yaw rate is 150 °/s (`pg/rates.c`);
+  the Configurator's setup wizard driving styles set 90 (Beginner), 150 (Sport) or 300 °/s (Drift).
+- **Yaw dynamic deadband** is on by default (`yaw_dynamic_deadband_gain` 10), inherited.
+
+### 2.3 Steering rate PID — `flight/pid.c`
+
+`error = setpoint − gyroRate`, on yaw only (`pid_mode` 1; any value other than 0 runs mode 1). Before the error
+is formed, the yaw gyro rate is negated if `yaw_gyro_reverse` is on, and multiplied by the travel direction from
+the drive state (§2.4). Terms:
 
 | Term | Formula | Notes |
 |---|---|---|
-| P | `Kp · masterGain · gainCurve · TPA · SPA · crossAxisRelax · error` | |
-| I | `Ki · masterGain · axisError` | Not attenuated by TPA or SPA. Cross-axis relax slows the accumulation of `axisError` rather than scaling this output. Forced to 0 output (state kept) under `TRADITIONAL_MODE`. |
-| D | `Kd · masterGain · gainCurve · TPA · SPA · crossAxisRelax · d/dt(−gyro)` | Gyro-only D (no setpoint kick). Default D = 0. |
-| F | `Kf · setpoint` | Carries the steady stick response: F=100 → 0.0025/(°/s), so 400 °/s = full travel. Default F=75 (533 °/s = full travel). |
-| B | `Kb · d/dt(setpoint)` | FF boost; default 35, so stick starts and stops get a kick that cuts bounce-back. |
+| P | `Kp · masterGain · gainCurve · atten · corr · error` | |
+| I | `Ki · masterGain · corr · axisError` | Not attenuated by TPA or SPA. Accumulation is also scaled by `corr`. |
+| D | `Kd · masterGain · gainCurve · atten · corr · d/dt(−gyro)` | Gyro-only D (no setpoint kick). Default D = 0. |
+| F | `Kf · atten · setpoint` | Carries the steady stick response. Not scaled by `corr`, so the stick always steers. |
+| B | `Kb · atten · d/dt(setpoint)` | Feedforward boost. Not scaled by `corr`. |
 
-**Default authority budget** (from [pg/pid.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/pg/pid.c) and [pid.h](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/pid.h) scale constants):
+`atten = max(TPA × SPA, 0.25)` (`PID_ATTENUATION_MIN`); `corr` is `driveGetCorrectionScale()` (§2.4).
 
-| Axis | P at 100 °/s error | I ceiling (Ki · `error_limit`) |
-|---|---|---|
-| Roll / pitch | 0.033 | 0.0032 × 45° = 0.144 |
-| Yaw | 0.53 | 0.010 × 60° = **0.60** |
+**Default authority** (defaults from `pg/pid.c`, scale constants from `flight/pid.h`): yaw P 190, I 45, D 0,
+F 65, B 35, `error_limit` 60°.
 
-Yaw I can therefore drive 60% of travel on its own. That is deliberate room for rudder trim under prop torque, but it is large enough to matter for the anti-windup review below.
+| Quantity | Value |
+|---|---|
+| P at 100 °/s error | 190 × 6.67e-6 × 100 ≈ 0.13 of full travel |
+| I ceiling (Ki · `error_limit`) | 45 × 2e-4 × 60 = 0.54 of full travel |
+| F per °/s | 65 × 2.5e-5 = 0.0016, so 615 °/s of setpoint is full travel from F alone |
+| F at full stick, default 150 °/s | ≈ 0.24 of full travel |
 
 **Design decisions:**
 
-- **Throttle-based gain attenuation (`fw_tpa_gain`, `fw_tpa_curve`).** Throttle is used as a proxy for prop-wash over the surfaces, "not airspeed": on aircraft that hover or harrier at or past stall, surfaces stay authoritative at high throttle regardless of airspeed, so gain falls as throttle *rises*. Structured like `master_gain` + `gain_curve` (baseline scale × optional curve from the shared pool) so tuners have one mental model. Applies to P, D, F and B (F since [firmware#178](https://github.com/WingFlight/wingflight-firmware/pull/178): F sets most of the surface deflection, so attenuating P and D alone could not hold the achieved rate as prop wash raised authority; one airframe rolled at 1.22× the setpoint at low throttle and 1.70× at high). The combined TPA × SPA factor is floored at 25% (`PID_ATTENUATION_MIN`) so no curve can remove the throw. MANUAL is not attenuated: its full-stick throw floor (`MANUAL_MIN_THROW`, 30%) guarantees its travel.
-- **GPS speed attenuation (`fw_spa_gain`, `fw_spa_curve`, `fw_spa_speed_max`), in [speed_atten.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/speed_atten.c).** It complements TPA for the case TPA cannot see: a fast dive with the throttle closed, where dynamic pressure (∝ speed²) makes a cruise tune oscillate. Same shape as TPA (baseline × curve from the shared pool), with the curve evaluated at `speed / fw_spa_speed_max`; multiplied with TPA on P, D, F and B. Design choices:
-  - **Speed source:** `max(speed3d, groundSpeed)`. Only u-blox reports 3D speed, other providers leave it at 0, and 3D speed is never below ground speed.
-  - **Filtering:** low-passed at 1 Hz, because GPS arrives at 5-10 Hz.
-  - **Fix loss:** hold for 3 s, then slew back to 1.0 at 0.2/s. Holding avoids a gain step at high speed on a brief dropout; easing back avoids flying on a stale low gain.
-  - **Engaging:** first fix, fix regained or a profile change slews onto the curve at the same rate instead of stepping.
-  - **Limitations:** GPS is ground-referenced, so wind shifts it. With no curve, or with no GPS or no fix from boot, SPA is exactly 1.0.
-  - **Storage:** kept in a separate per-profile PG (`PG_FW_SPA_CONFIG`), so adding it did not reset saved PID profiles. Unit-tested in `speed_atten_unittest`.
-- **Master gain applied at the point of use**, not baked into `coef[]`, so any live adjustment stays correct regardless of which adjustment last touched a coefficient.
-- **I-term error relax** (`iterm_relax_*`): high-pass of the setpoint scales accumulation down during fast stick motion. Inherited. Always on for roll, pitch and yaw in both loops since API 22.8 (`iterm_relax_type` removed). Per axis: `bounceback` (the I-Term Relax score shown in Flight Feel, 1-10, default 5, higher = more suppression; API 22.9 replaced `iterm_relax_cutoff`), which `pidBouncebackCutoff()` maps to the setpoint low-pass cutoff (50, 30, 20, 15, 10, 8, 7, 6, 5, 3 Hz) and `iterm_relax_level` (°/s, default 22, the high-pass magnitude at which accumulation stops; lower = stronger).
-- **Cross-axis relax** (`cross_axis_relax_*`): yaw activity softens roll and/or pitch feedback "so rudder does not feel like an artificial hold". It scales the P and D outputs, and slows the I *accumulation* (like `iterm_relax`) instead of scaling the I output, so I does not step when rudder is applied or released. Default off.
-- **Anti-windup:** accumulation stops only when the mixer input for that axis is saturated *and* the error would push further into saturation (`pidAxisSaturated`). Servo travel clipping also raises saturation (`mixerSaturateServoOutput`), so trim-induced clipping is covered.
-- **`rotateAxisError()`:** rotates roll/pitch `axisError` by the yaw gyro so a stored error stays fixed in the earth-ish frame during a yaw rotation. Physically correct for a knife-edge or hover, harmless in cruise.
-- **I-term decay policy** (the most-edited rule in this file):
-  - Per-axis `iterm_decay_time`, default `60,60,60` (0.01 s units, range 1-100, no 0 = off) → decay rate 100/60 s⁻¹, i.e. τ ≈ 0.6 s, capped at 35 °/s. Plain acro/manual flight bleeds I at this rate.
-  - **Suspended** on roll/pitch while any of ANGLE/GPS-rescue/failsafe/loiter/RTH/TRAINER shapes the setpoint. Reason (commit `8a2b5233c`): the decay was inherited from the helicopter lineage to stop servo creep, but it "quietly erod[es] exactly the sustained I-term those layers need … felt like the correction giving up after a couple of seconds".
-  - **Slowed to 10%** (τ ≈ 6 s, 3.5 °/s) on an ATTHOLD axis that is holding (`QUATHOLD_HOLD_I_DECAY_SCALE`), except for 3 s after a stall re-capture, when it runs at full rate (see §2.5). Reason (commit `10bf9b81d`): with no bleed, stale I "parks the surfaces off-centre forever" at zero error and zero motion, e.g. on the bench. A real steady disturbance is still held because the outer loop re-grows the I it needs.
-  - **Unchanged (full rate)** for an axis that is free-tracking or settling inside a hold mode. Commit `92c9de190`: it is plain rate flight, so it should not carry stale I from an earlier manoeuvre into the next hold.
-- **Gyro overflow** (`gyroOverflowDetected()`): `pidReset()` zeros all PID state and outputs until the gyro has read sane values for 50 ms. Protects against "yaw spin to the moon" after a crash-level over-range.
+- **Gyro reversed for reverse travel, stick unchanged.** The yaw response to a steering angle is proportional to
+  the signed speed (yaw rate ≈ v · tan(steer) / wheelbase), so reversing flips its sign and a forward tune
+  becomes positive feedback. The stick keeps meaning "wheel angle" in both directions, so correcting in reverse
+  is exactly negating the gyro rate the loop sees: P, I and D all follow, F and B are untouched (`pid.c`
+  `pidApplyGyroRate()`, `drive.c` header comment).
+- **`yaw_gyro_reverse`** (PID config PG v4) negates only this loop's yaw gyro, for when the gyro corrects the wrong
+  way (typically a reversed steering channel fixed with a servo reverse). Board orientation and the attitude
+  estimate are unchanged. It is in `MSP_MIXER_CONFIG` as an optional trailing byte.
+- **Correction scale on P, I and D only.** At a standstill there is no yaw response to correct with, so P and D
+  would only push the steering and I would wind up; F and B carry the stick and must always steer the wheels.
+- **I-term cleared on a direction change**, because it was accumulated for the other sign of the plant.
+- **I held at zero while disarmed** (yaw only): on the bench the car cannot respond, and whatever built up would
+  arrive as a steering bump on arming. P and D still act while disarmed so the setup wizard's gyro-direction
+  check (turn the car by hand, the wheels steer against it) works.
+- **Throttle gain attenuation (`fw_tpa_gain`, `fw_tpa_curve`).** A baseline scale times an optional curve from the
+  shared gain-curve pool, evaluated on |throttle| (0..1), mirroring `master_gain` + `gain_curve`. Applied to P,
+  D, F and B, not I.
+- **Speed attenuation (`fw_spa_gain`, `fw_spa_curve`, `fw_spa_speed_max`)**, `flight/speed_atten.c`. A car's yaw
+  response to a steering angle grows with speed, so a tune that is right at moderate speed can oscillate flat
+  out; TPA cannot see that when the throttle is closed at speed. Same shape as TPA, with the curve evaluated at
+  `speed / fw_spa_speed_max` (default 60 km/h, range 10-300). Multiplied with TPA.
+    - **Speed source:** the RPM wheel speed from the drive state when there is an RPM source, otherwise GPS
+      (`max(speed3d, groundSpeed)`; only u-blox reports 3D speed).
+    - **Filtering:** low-passed at 1 Hz (`FW_SPA_SPEED_CUTOFF_HZ`).
+    - **Speed loss** (no RPM source and no GPS fix): hold the last scale for 3 s, then slew back to 1.0 at 0.2/s.
+      Engaging (first speed, speed regained, profile change) slews onto the curve at the same rate.
+    - With no curve SPA is exactly 1.0. Per PID profile, in `PG_FW_SPA_CONFIG` (v1). Unit-tested in
+      `speed_atten_unittest`.
+- **Master gain applied at the point of use**, not baked into `coef[]`, so live adjustments stay correct whichever
+  adjustment last touched a coefficient.
+- **I-term relax** (`iterm_relax`, the "bounceback" score 1-10, default 5, and `iterm_relax_level`, default
+  22 °/s): a high-pass of the setpoint scales I accumulation down during fast steering input.
+  `pidItermRelaxCutoff()` maps the score to the setpoint low-pass cutoff (50, 30, 20, 15, 10, 8, 7, 6, 5, 3 Hz).
+  Always on.
+- **I-term decay** (`iterm_decay_time`, default 60 = 0.6 s time constant, range 1-100; `iterm_decay_limit`,
+  default 35 °/s): I bleeds continuously, so a stale I-term does not hold the steering off centre.
+- **Anti-windup:** accumulation stops only when the stabilized-yaw mixer input is saturated *and* the error would
+  push further into saturation (`pidAxisSaturated()`). Servo travel clipping also raises saturation
+  (`mixerSaturateServoOutput()`), so trim-induced clipping is covered. Saturation flags last
+  `MIXER_SATURATION_TIME` (5) ticks.
+- **I held in GYRO OFF.** While GYRO OFF drives the steering (`mixerStabilizationBypassed()`, false once failsafe
+  is active) the gyro is not tracking the setpoint, so I is not integrated; decay still runs.
+- **Gyro overflow** (`gyroOverflowDetected()`): `pidReset()` zeroes all PID state and outputs.
 
-**Mode 0** (`pid_mode` ≠ 1) outputs F only: a stick-proportional command with no stabilization.
+**Mode 0** (`pid_mode` = 0) outputs F only: a stick-proportional command with no gyro.
 
-### 2.3 PASSTHROUGH and MANUAL — [mixer.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/mixer.c), [setpoint.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/setpoint.c)
+### 2.4 Drive state — `flight/drive.c`, `PG_DRIVE_CONFIG`
 
-Two distinct modes since commit `621dd3712`:
+The drive state estimates the travel direction and the wheel speed for the steering loop and the drive aids.
 
-- **PASSTHROUGH** replaces the stabilized mixer inputs with raw RC channels. No rates, no expo, no PID. Takes priority over MANUAL. TV stabilized inputs are zeroed because no raw channel maps to them. This is the "bail-out" mode.
-- **MANUAL** keeps the pilot's rates/expo but drops the gyro correction: output = `Kf · applyRatesCurve(sp.deflection)`, clamped ±1. Rationale (commit `a40c7860a`): MANUAL is meant to be "stabilized flight minus the gyro correction", and F is exactly that contribution, so reusing it makes MANUAL track however the airframe's F was tuned instead of an arbitrary fixed ceiling. Two earlier attempts (`062e79151`, `ec909933a`) had made MANUAL either saturate early or ignore the configured rates.
-- **Full-stick throw floor** ([firmware#181](https://github.com/WingFlight/wingflight-firmware/pull/181)). The stick shape comes from `applyRatesCurve()` normalised to full stick, and the full-stick throw is `max(Kf · maxRate, MANUAL_MIN_THROW)` with the floor at 30%. Above the floor this is the `Kf · rate` above. See finding **M-3**.
-- **I held while bypassed.** While PASSTHROUGH or MANUAL drives the surfaces (`mixerStabilizationBypassed()`, false once failsafe is active), the PID does not integrate I; decay still runs. The gyro is not tracking the setpoint then, so I used to wind up and bump the aircraft on switching back.
+- **Inputs.** The stabilized throttle sent to the ESC (failsafe included), and the motor RPM when motor 1 has an
+  RPM source (DShot telemetry, ESC telemetry or a frequency sensor), averaged with motor 2 if it has one too.
+  RPM is a magnitude: no source reports a direction, so the direction comes from what the ESC was commanded to
+  do. Wheel speed = motor RPM ÷ `motor1_gear_ratio` × π × `drive_wheel_diameter`, filtered at 10 Hz. Stopped =
+  below 1 km/h for 0.1 s.
+- **ESC model, `drive_esc_mode`.** The commanded state (neutral, forward, brake, reverse) follows the ESC's own
+  rules. A command within 5 % of neutral is neutral.
+    - `FWD_BRK_REV`: below neutral brakes after forward; back to neutral (held at least 50 ms,
+      `DRIVE_NEUTRAL_DWELL_S`), then below again, reverses. A brake or reverse carries on while the stick stays
+      below neutral. Reverse is also the first below-neutral command after arming.
+    - `FWD_REV`: below neutral reverses, braking or coasting first while RPM shows the car still rolling forward.
+    - `FWD_BRK`: below neutral only ever brakes.
+    - `AUTO`: `FWD_REV` on a DShot protocol (the AM32 default), `FWD_BRK_REV` otherwise. An AM32 with "RC car
+      reverse" on needs `FWD_BRK_REV` set by hand.
+- **Direction with RPM** changes only at zero speed: an RPM-confirmed standstill, or the moment the wheels pass
+  through zero (the unfiltered speed shows it). Braking while rolling forward is never taken for reverse. Wheels
+  speeding up from zero under a below-neutral command are taken as reverse in every mode that can reverse, and
+  under an above-neutral command as forward, so a reversal the model did not expect (a sensored ESC, an AM32
+  reversing at its own threshold) is still caught.
+- **Direction without RPM** follows the command at once (forward +1, reverse −1; brake and neutral keep it). The
+  ESC may brake or coast for a while before it really changes direction, so on each change the correction scale
+  drops to zero and fades back in over 1 s (`DRIVE_DIR_CHANGE_RAMP_S`).
+- **Correction scale** = speed factor × reverse factor × ramp factor:
+    - speed factor (RPM only): 0 below `drive_gyro_min_speed` (default 2.0 km/h, never below 1.0 km/h, the stop
+      speed, so the correction is faded out before the direction can flip), rising linearly to 1 at
+      `drive_gyro_full_speed` (default 6.0 km/h, always above the minimum). Without RPM it is 1.
+    - reverse factor: 1 forward; in reverse `drive_gyro_reverse_gain` % (default 50), or 0 with
+      `drive_gyro_reverse` OFF.
+    - ramp factor: the 1 s fade after an unconfirmed direction change.
+- **Disarmed** the state is held at neutral and forward, the ramp is complete and the speed factor is not applied,
+  so the gyro corrects on the bench (with I held at zero, §2.3). Every arming starts from neutral and forward.
+- **Debug** mode `DRIVE`: throttle command x1000, commanded state, direction, speed x10, speed known, correction
+  scale x1000, motor 1 RPM, stopped. Unit-tested in `drive_unittest`.
 
-### 2.4 ANGLE — [leveling.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/leveling.c)
+### 2.5 GYRO OFF — `flight/mixer.c`
 
-Euler-angle leveling on roll and pitch only; yaw stays a pass-through so the rudder is never held. Stick target = stick × `level_limit` (default 55°) + GPS-rescue/nav offsets, clamped to the limit. Rate command = error × `level_strength/10` (default 4 °/s per °) − measured rate × `angle_level_damping/100` (default 25%), clamped to the rate profile's full-stick rate for that axis. Below "airborne" the error is scaled to 25% (see **H-4**).
+`BOXPASSTHROUGH`, shown as **GYRO OFF** (permanent id 12). While it is on and failsafe is not active, the
+stabilized-yaw mixer input is replaced by the steering channel's deflection, negated to keep the stabilized sign
+(§1): no rates, no expo, no PID. It is written directly (`mixerSetBypassInput()`), so the stabilized-yaw input's
+min/max limits do not apply; the input rate and the servo's own limits still do. While disarmed, a bench override
+or a wiggle still wins over the switch.
 
-- **Slewed target, not a step.** The error is measured against a working target, not the stick target. On engagement (any entry into the leveling set: ANGLE, failsafe, GPS rescue, loiter, RTH) the working target starts at the current attitude, then moves toward the stick target no faster than the full-stick rate. Engaging 49° off level used to command 196 °/s on the first loop; the command now ramps in over about `1 / (level_strength/10)` seconds (0.25 s at the default). `pid.c` resets the target whenever no leveling mode is active.
-- **No I before takeoff.** Until `isAirborne()` latches, the rate loop does not accumulate I and decays it at the normal rate, in every mode. Leveling suspends decay, so a tail-dragger armed nose-up on the ground used to build pitch I to `error_limit` against an attitude it could never reach, and took off with the elevator wound in. Arming is often well before takeoff, so a reset on arm would not have helped.
-- **Damping through F.** The damping term is a rate setpoint, so it reaches the surfaces through the rate PID's F term and scales with each airframe's F tune. It is not a D-term on the level loop. The P-term was too small (about a twentieth of F) to damp the level loop on its own. In steady tracking the damping reduces the effective level gain by `1 / (1 + damping)`.
-- **Storage.** `angle_level_damping` lives in its own per-profile parameter group (`PG_LEVEL_CONFIG`) so adding it did not reset PID profiles. It is the MSP API 22.13 byte at the end of `MSP_PID_PROFILE`.
+Only the steering is bypassed. The throttle still goes through the drive aids (§2.6); DRIVE AIDS OFF is the
+separate switch for those.
 
-Euler math is acceptable here because ANGLE is limited to 55° and pitch never nears ±90°. This is exactly why ATTHOLD does *not* use it.
+### 2.6 Drive aids (ABS and traction control) — `flight/drive_aids.c`, `PG_DRIVE_AIDS_CONFIG`
 
-### 2.5 Attitude hold engine — [hold_engine.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/hold_engine.c), [atthold.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/atthold.c), [tv_hold.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/tv_hold.c)
+The driver's throttle/brake command passes through `driveAidsApply()` before it becomes
+`STABILIZED_THROTTLE`. An aid only ever moves the command towards neutral, never past it and never into the
+opposite direction. Failsafe replaces the result afterwards, so a failsafe throttle is never shaped. The aids pass
+the command through unchanged while disarmed, in failsafe and with **DRIVE AIDS OFF** (permanent id 66). A mixer
+rule fed from the RC throttle input instead of `STABILIZED_THROTTLE` bypasses them. Every aid is OFF by default.
+The settings are per PID profile (copied and reset with the profile).
 
-**What it does.** Per axis, the hold either *tracks* (pilot stick outside `deadband`: setpoint passes through and the target follows the aircraft) or *holds* (stick centred and the axis has stopped rotating: rate command = attitude error × gain, clamped to `max_rate`).
+- **ABS (timed).** Runs only while the drive state has the ESC braking (state BRAKE) and the car is not
+  RPM-confirmed stopped, and the brake is past `drive_abs_trigger`. Each cycle (1 / `drive_abs_freq`) holds the
+  brake command for half the cycle plus `drive_abs_hold` (at most 85 % of the cycle), then eases it to
+  `drive_abs_floor` % of the command. `DYNAMIC` moves the rate towards `drive_abs_dyn_freq`, the floor towards
+  60 % of `drive_abs_floor` and the hold towards `drive_abs_dyn_hold` as the brake deepens from the trigger to
+  full. `drive_abs_corner_freq` adds rate and `drive_abs_corner_hold` moves the hold with steering-stick
+  deflection; where both a dynamic and a steering hold apply, the shorter wins. The rate is limited to 2-33 Hz.
+- **10 % minimum release.** A brake-then-reverse ESC that sees neutral in the middle of a brake reverses on the
+  next pull, so the released brake never drops below 10 % brake (`DRIVE_ABS_MIN_BRAKE`). The command stays on
+  the brake side of neutral, and the drive state stays BRAKE with it.
+- **Traction control (`RAMP`).** A forward command may only rise at a limited rate, zero to full in
+  `drive_tc_ramp_time` (50-2000 ms, default 500); letting off is instant. It shapes only a forward command, never
+  a brake (including a command above neutral while the ESC brakes a car rolling backwards) or reverse. While
+  it, or the aids, are off the limit follows the command, so turning it on with the trigger held never cuts the
+  throttle.
+- **Timing only.** Both use the sticks and time, no wheel-slip sensing.
+- **Debug** mode `DRIVE_AIDS`: throttle in and out x1000, flags, ABS rate x10 (or TC limit x1000 when driving
+  forward with TC on), floor x1000, hold ms, cycle phase ms, steering x1000. Unit-tested in `drive_aids_unittest`.
 
-**Key decisions:**
+### 2.7 Mixer — `flight/mixer.c`, `pg/mixer.c`
 
-- **Quaternion error, not Euler.** Needed to work through inverted, knife-edge and harrier attitudes where Euler roll/pitch couple. Error is `2 × vector part` of `q_current⁻¹ · q_target` (shortest-path sign-corrected). That is singularity-free across 0–180°, at the cost of a non-linear measure: it saturates at 2 rad (≈115°) and reads 81° for a true 90° error, so gain is effectively lower at large errors.
-- **Per-axis independence** (commit `4d714a433`). A blackbox from a real flight showed roll never correcting torque roll while the pilot held elevator: the earlier gate was one OR across all three sticks. Each axis now tracks or freezes on its own stick. The target is advanced by zeroing the tracking axes' components of the error quaternion and recomposing, never by extracting Euler angles.
-- **Settle-then-capture** (`HOLD_SETTLE_RATE` 15 °/s or `HOLD_SETTLE_MAX_S` 0.4 s). Freezing at the instant the stick centres pins the target to an attitude the aircraft is still rotating through, and the hold hauls it back: a rubber-band snap-back "unlike plain acro, where the rate loop just brakes and the attitude stays put". The time cap stops a persistent disturbance rotation from keeping an axis in tracking forever.
-- **Stall timeout** (error > 5° and rate < 5 °/s for 3 s → re-capture). A hold pinned against something it cannot move (aircraft on the bench, surface with no authority) gives up instead of leaving surfaces pegged. A small sag held by I stays under the threshold. This is silent to the pilot. **Wound-up I is bled at the full rate for 3 s after a re-capture** (`HOLD_STALL_BLEED_S`, `quatHoldIDecayScale()`). Without that, the 10% hold-rate bleed took about 15 s to re-centre roll/pitch (longer on yaw, whose I ceiling is 0.60 of travel): 3 s stall timeout, then about 7 s of linear decay at 3.5 °/s, then an exponential tail. Now it re-centres in roughly 5–6 s in total, with no step, because it decays rather than resetting.
-- **Pre-airborne authority reduced, not zeroed** (commit `8a2b5233c`). Forcing passthrough on the ground made both hold modes look dead on the bench. They now use the same 25% scaling that ANGLE already used.
-- **Free axes** ([firmware#211](https://github.com/WingFlight/wingflight-firmware/pull/211)). An instance can mark an axis free: it always tracks. With exactly one free axis the error quaternion is split into swing and twist about it and only the swing is kept, so the target keeps where that body axis points while the airframe turns about it. Zeroing the axis's component alone does not remove the twist exactly. Only the TV hold uses this, for axes with no TV mixer rule.
-- **One engine, two instances** (commits `50b444423`, `83a5965e0`). ATTHOLD and the thrust-vector hold each own a `quatHold_t` but run identical code, so a fix lands in both.
-- **Clamps at load, not only at the CLI** (commit `fa54e333d`). MSP `SET_PID_PROFILE` writes the raw byte with no clamping, so `deadband > 100` would have made the tracking test never trip and frozen the hold at full stick.
-- **Re-capture after a safety mode** (commit `fa54e333d`). The ATTHOLD flag stayed set while a safety mode preempted the setpoint, so the hold never saw a rising edge and resumed a stale target. `core.c` now feeds `mode && !safetyLevelingActive`.
+A rule table: `output (SET/ADD/MUL) = (offset + weight · curve(input · rate)) / 1000`, with a separate negative
+weight, an optional slew (`speed`) and an optional logic-condition gate. `model_type` is `CAR` (0) or `CUSTOM`
+(1). The default (car) rules are `SET STABILIZED_YAW → S1` (steering) and `SET STABILIZED_THROTTLE → M1`
+(reversible ESC); rear steering and a second ESC are added by the Configurator's car preset as further rules.
+The stabilized throttle input range is −1000..1000.
 
-**Known limitation (documented in source):** does not subtract `accelerometerTrims`, unlike `leveling.c`/`trainer.c`, so a pilot with board-mount trim dialled in will hold slightly off where the sticks were released.
+- **Saturation flags** last 5 ticks and gate the PID's anti-windup.
+- **Overrides and wiggle** apply only while disarmed. The wiggle (ready, armed, arming-error patterns,
+  `wiggle_*` settings) moves only the steering (yaw) input (`flight/wiggle.c`).
+- **Non-finite guard.** A NaN or infinity at a mixer input, a rule output or an accumulated output is replaced by
+  zero (and counted as saturation at the input).
+- **Live-adjustable rule weights** keep the configured polarity in `mixerRuleSign[]`, because a live magnitude
+  passes through 0, which has no sign.
 
-### 2.6 AUTOHOVER (removed)
+### 2.8 Servo output — `flight/servos.c`
 
-The quaternion prop-hang hold (`autohover.c`), its optional throttle assist and the mixer's yaw-authority widening were removed in MSP API 22.11 ([firmware#168](https://github.com/WingFlight/wingflight-firmware/pull/168)). Its slots stay reserved so nothing renumbers: box permanent ID 58, flight mode bit 9, adjustment function 87, debug mode 79 (`UNUSED_79`), and 9 zero-filled bytes in `MSP_PID_PROFILE` backed by `autohover_reserved` in `pidProfile_t`. The decision log below keeps its history.
+Order: mixer output (or a bench override) → geometry correction → balance curve → non-finite guard → speed limit
+(each servo on its own) → reverse → `rpos`/`rneg` scale → trim (saved + runtime) → travel limit → `mid`.
 
-### 2.7 Acro trainer — [trainer.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/trainer.c)
+- There are 24 servos; servo N goes to PWM output N where the board has one and to channel N of an SBUS/F.Bus
+  output, from one output stage. Every servo has the signal range 880-2159 µs and one PWM update rate
+  (`servo_pwm_rate`).
+- **Trim never edits `mid`**, so min/max (offsets from `mid`) stay where they are. Saved and runtime trim are
+  added before the travel limit, so the output stays inside min/max.
 
-Angle-limits roll/pitch in rate flight using a projected-angle lookahead. Stateless
-(no latch), with no self-leveling inside the envelope. API 22.4 adds independent
-roll and pitch limits to both TRAINER and ANGLE (including consumers of
-`angleModeApply`, such as GPS navigation). Explicit limits use 10–90° roll and
-10–75° pitch; zero inherits the existing shared limit. The separate
-`PG_ATTITUDE_LIMITS` array preserves the stored PID-profile layout. Four optional
-U8 fields are appended to `MSP_PID_PROFILE`/`MSP_SET_PID_PROFILE` in order:
-ANGLE roll, ANGLE pitch, TRAINER roll, TRAINER pitch. Old writes leave them intact;
-PID profile copy/reset includes this array. CLI uses its own profile stride.
+### 2.9 Motor output — `flight/motors.c`, `drivers/`
 
-Trainer retains normal rate-mode I-term decay on each axis whose command passes
-through unchanged, including helping input back into the envelope. Decay is
-suspended only while the limiter changes that axis's rate command. The limit
-extension does not change self-leveling gains or the prediction algorithm. Its envelope is a control objective; finite
-control authority and the body-rate-based Euler prediction can still permit
-overshoot. It does not measure angle of attack or provide stall protection.
+Every motor defaults to `motor_control_mode` bidirectional, with `min_throttle` 1000 and `max_throttle` 2000. A
+zero command to a bidirectional motor is neutral: on PWM, SRXL2 and SITL the midpoint of
+`min_throttle`..`max_throttle`, never `min_command`, which a car ESC reads as full brake/reverse and many learn as
+their neutral at power-up. On DShot zero is the motor-stop command, positive commands use the forward range and
+negative ones the reverse range.
 
-### 2.8 Thrust-vector loop — [tv_pid.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/tv_pid.c), [tv_hold.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/tv_hold.c)
+### 2.10 Attitude estimator — `flight/imu.c`
 
-A second, independent rate PID for vectored-thrust actuators (commit `107cfee43`), feeding `MIXER_IN_STABILIZED_TV_*`. It runs after the main PID and reuses the main loop's final setpoint, so it inherits any leveling/hold shaping. `BOXTHRUSTVECTOR` gates it live; while off it is reset so re-engaging ramps from zero instead of bumping. The optional TV hold (commit `83a99b1ba`) lets a jet hold attitude on the nozzle alone while the surfaces stay in acro, useful post-stall. It yields to the safety set so a stale target never fights a recovery.
+The inherited Mahony quaternion filter still runs on all three axes (gyro integration corrected by the
+accelerometer, plus magnetometer or GPS course when available). Accelerometer readings are only used within
+0.9-1.1 g; the gain is x10 while disarmed, with a quick re-convergence after a disarm. Nothing in the steering
+loop or the drive aids uses the attitude: it feeds the arming check (§2.11), telemetry and the Blackbox.
 
-Its defaults are its own ([firmware#211](https://github.com/WingFlight/wingflight-firmware/pull/211)), from prop-hang logs of a pusher with a pitch/yaw nozzle: P 150 on every axis, I 15, F 30, error limit 25, decay 0.30 s with no cap, hold gain 25. The main loop's defaults left I holding the nozzle at up to half its travel for over a second after a stick move, and F dominated in the hang, where a nozzle deflection gives angular acceleration rather than a steady rate. An axis that no mixer rule drives from its TV input outputs zero and builds no I, and TV hold leaves it free (`quatHoldSetFree`, see 2.5): torque roll in a hang otherwise rotated the pitch/yaw correction with the airframe.
+### 2.11 Arming, running latch, failsafe — `fc/core.c`, `flight/failsafe.c`, `rx/rx.c`
 
-It deliberately has no TPA, cross-axis relax, `TRADITIONAL_MODE`, or `rotateAxisError`.
-
-### 2.9 Mixer — [mixer.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/mixer.c)
-
-A rule table: `output (SET/ADD/MUL) = offset + weight · curve(input · rate)`, with a separate negative weight, an optional slew (`speed`), and an optional logic-condition gate. Default wing layout (S1/S2 ailerons from stabilized roll, S3 elevator, S4 rudder, M1 throttle) is in [pg/mixer.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/pg/mixer.c).
-
-- **Live-adjustable rule weights** (flap compensation, differential-thrust yaw) find rules by *role tag*, because nothing reserves fixed rule slots and the configurator reorders freely. The adjustment writes only |weight|; the pilot's polarity is kept in a separate `mixerRuleSign[]` because a live magnitude passes through 0, which has no sign.
-- **Saturation flags** last `MIXER_SATURATION_TIME` (5) ticks and gate the PID's anti-windup.
-- **Overrides and wiggle** apply only while disarmed.
-
-### 2.10 Servo output — [servos.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/servos.c), [autotrim.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/autotrim.c)
-
-Order: mixer output → geometry correction → **balance curve** → speed limit → reverse → `rpos`/`rneg` scale → trim (saved + runtime) → travel limit → `mid`.
-
-- **One servo, two transports** ([firmware#273](https://github.com/WingFlight/wingflight-firmware/pull/273)). There are 24 servos; servo N goes to PWM output N where the board has a pad and to channel N of an SBUS / F.Bus output. `servoUpdate()` is the only output stage, and the bus drivers only convert its result to the wire format (`busServoValue()`). Before, bus servos were separate outputs (S9 and up) with a second copy of this pipeline in the bus drivers and a switch to clone the PWM outputs onto them; the bus copy stepped its speed limit once per bus frame instead of at the PID loop rate. The servos in use are S1 up to the larger of the PWM pad count and the bus channel count. Every servo has the same signal range, 880–2159 µs, which is the whole 11-bit bus channel field, and one PWM update rate (`servo_pwm_rate`) replaces the per-servo rate that servos on one timer had to share.
-
-- **Balance curve** (commit `aa362d09a`): a small additive delta so two servos on one surface can be matched across the throw, the same idea as ETHOS "Balance channels". Additive, not a reshape, so an unconfigured curve is a zero delta.
-- **Trim never edits `mid`** ([firmware#202](https://github.com/WingFlight/wingflight-firmware/pull/202)). Min/max are offsets from `mid`, so trimming the centre also moved the end stops. Switch-stepped and auto trim write a **saved** per-servo trim (`servoTrims` PG). A continuous pot/channel trim is a **runtime-only** offset, never saved (commit `220980d8d`): if it were saved, the pot would apply itself on top of its own saved result after every reboot, and a bad reading at boot would leave a wrong centre behind. Saved and runtime trim together are limited to 20% of the larger scale and added before the travel limit, so the output stays inside min/max. Trim direction folds together three independent reversals (axis input rate sign, rule weight sign, servo REVERSED flag) so paired surfaces stay coordinated, and an axis stops as a whole when any of its servos reaches the limit.
-- **Stepped trim** gives one step per press (40 ms debounce), repeats after a 500 ms hold every 50 ms, and beeps only on the first step. Its value is absolute, so it no longer re-baselines on every save.
-- **Auto trim** (from iNav's BOXAUTOTRIM): while the switch is on and armed, averages each stabilized servo's final output for 2 s and stores the difference from `mid` as the saved trim. Turning the switch off before disarm reverts it. It removes the runtime trim from what it stores.
-
-### 2.11 Throttle, governor, motors — [governor.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/governor.c), [motors.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/motors.c)
-
-Throttle goes `getThrottle()` → `governorApply()` → mixer M1 → `motorUpdate()`. The governor has four modes (off, RPM idle-hold, fixed throttle, RPM range) plus an RPM max limiter. Notable decisions:
-
-- When a governor mode is configured **and** a switch is assigned to `BOXGOVERNOR`, that switch is a **hard motor interlock**: stick has no authority until it is engaged. The `isModeActivationConditionPresent()` guard stops a configured-but-unwired governor from hard-cutting the motor forever.
-- **RX loss bypasses the governor** so a held-on governor switch cannot override the failsafe throttle cut. It tests `!rxIsReceivingSignal()` first, ahead of `failsafeIsActive()`, to close the ~100ms gap before the failsafe phase machine (see **H-1**) actually engages; `failsafeIsActive()` is a second, belt-and-suspenders check once it has.
-- The P term is low-passed at 2 Hz for idle modes because a fixed-wing prop has almost no inertia and an unfiltered P limit-cycles on RPM quantisation.
-
-### 2.12 Attitude estimator — [imu.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/imu.c)
-
-Mahony quaternion filter (gyro integration corrected by accelerometer, plus magnetometer or GPS course when available).
-
-- Accelerometer accepted only within 0.9–1.1 g.
-- Gain is ×10 while disarmed, and after a disarm a 250 ms gyro-quiet period triggers a 500 ms high-gain re-convergence, to recover from a crash-induced bad attitude.
-- Integral feedback stops above 20 °/s spin.
-- Heading: magnetometer, else GPS course over ground above 5 m/s with ≥5 satellites.
-
-### 2.13 Airborne detection — [airborne.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/airborne.c)
-
-The detector was replaced by [firmware PR #138](https://github.com/WingFlight/wingflight-firmware/pull/138).
-While armed with a live receiver signal, it looks for flight response.
-The replacement requires a continuous 250 ms response on roll or pitch: pilot deflection at least
-10% and gyro rate at least 15°/s in the same direction. Confirmation is separate
-for each axis and direction; loss of input, matching response or RX resets the
-pending timer. Once confirmed, flight stays latched until disarm rather than inferring touchdown
-from quiet flight. Armed GPS-rescue/failsafe still forces flight authority.
-`isHandsOn()` retains its original peak-filtered stick behavior, including yaw.
-Motor output and altitude are not used, avoiding assist feedback and altitude-source
-ambiguity. AIRBORNE debug indexes 3/5 show roll/pitch candidate duration in ms;
-6 has confirmation/disarmed flags; 7 retains state IDs 1 grounded and 2 airborne.
-This is response evidence, not proof of flight or a ground safety interlock.
-It can miss centered-stick launches and can be imitated by hand movement.
-Landing while armed retains flight authority. Unit scenarios cover boundaries,
-direction/axis changes, RX loss, disarm/rearm, timer wrap and hands-on behavior;
-bench/flight validation of the initial thresholds remains required.
-
-### 2.14 Arming, failsafe, navigation
-
-- **Arming.** `isAttitudeEstimateReady()` checks only that the attitude estimate is established, not that the aircraft is level (see **L-4**). That suits hand-launched wings. A re-arm grace window after an in-flight disarm relaxes the throttle and attitude checks.
-- **Failsafe.** Re-enabled, see **H-1**. `failsafe_procedure` now selects AUTO-LAND or DROP (self-level under ANGLE, then motor cut and disarm after `failsafe_off_delay`) or GPS-RESCUE (flies home via the RTH controller below, then falls back to the same self-level/motor-cut ending once `failsafe_off_delay` elapses). `failsafe_throttle` is applied to the mixer while any procedure is active; before this it was accepted by the CLI/MSP but never read.
-- **RTH and Loiter** ([gps_nav.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/gps_nav.c), commit `255829c23`): produce roll and pitch *angle* targets that flow through the ANGLE-mode path. Track error → bank (P only, default 2.0 °/°, max 25°); altitude error → pitch (default 1 °/m, max 15°, sign fixed, see **H-3**). No throttle, no wind compensation. Also driven by `BOXGPSRESCUE` and the failsafe GPS-RESCUE procedure now, not only `BOXRTH` (see **H-2**).
-- **GPS health and dead reckoning** ([firmware#157](https://github.com/WingFlight/wingflight-firmware/pull/157)). A GPS sample counts when the provider can navigate (`gpsProviderSupportsNav()`: UBLOX on a port faster than 9600 baud, or MSP for the simulator feed), the link is receiving, `GPS_FIX` is set and `numSat >= nav_min_sats`. NMEA, FBUS and CRSF are refused outright ([firmware#263](https://github.com/WingFlight/wingflight-firmware/pull/263)): they are slow or supply no HDOP or `hAcc`. u-blox auto-config asks for 10 Hz and falls back to 5 Hz if the module refuses or the port is below 38400 baud; with auto-config off the rate is not checked. On a provider that can't navigate the RTH and LOITER switches don't set their mode flags, so the mixer never takes the throttle. `MSP_SET_RAW_GPS` carries no ground course, so on the MSP feed it is derived from positions at least 1 m apart. Each good sample records position, ground speed, course and the IMU heading. Through a dropout the position is carried forward at that speed along the course turned by the IMU heading change since, taking the chord of the turn. It stays valid for 5 s. While the estimate is fresh, `nav_min_sats − 1` (floor 4) is accepted, so the count can't chatter on the threshold. Engaging always activates nav; the target is captured when a position is first usable, because `core.c` only starts nav on the switch's off→on edge. RTH with no `GPS_FIX_HOME` never steers. Pitch is held level when `hasEstimatedAltitude()` is false.
-
-### 2.15 Altitude and vario — [position.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/position.c), [alt_fusion.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/alt_fusion.c)
-
-`position.c` picks the measurement: the barometer relative to its disarmed ground offset, else GPS altitude relative to its own (GPS needs `position_gps_min_sats`, default 6). While armed with both, the baro offset slowly follows GPS. `alt_fusion.c` fuses that measurement with the earth-frame vertical acceleration, `rMat[2]·accADC / acc_1G − 1 g`.
-
-- **Filter.** Third-order complementary filter, as INAV's `navigation_pos_estimator.c` vertical channel and ArduPilot's AP_InertialNav. The gains are 3/τ on altitude, 3/τ² on velocity and 1/τ³ on accelerometer bias, placing all three poles at −1/τ. τ is `position_fusion_baro_tc` (2 s) or `position_fusion_gps_tc` (4 s), depending on the measurement.
-- **Why.** Vario used to be a filtered derivative of the filtered baro, so it lagged, and the GPS nav altitude PD damps on it. A constant vertical-acceleration error (calibration, or IMU attitude error from centripetal load in a sustained turn) is absorbed as bias with no steady-state altitude error.
-- **Limits.** Vertical acceleration is clipped at ±30 m/s² and bias at ±2 m/s², so a snap or a tumbled attitude estimate can't run it away. With no measurement it coasts on the accelerometer for 5 s, then goes invalid: the altitude is held, vario reads 0 and `hasEstimatedAltitude()` is false. A returning measurement restarts the estimate from it.
-- **Without an accelerometer** the filtered measurement and its derivative are used directly.
-- `DEBUG_ALTITUDE` logs fused and measured altitude/vario, baro and GPS altitude, vertical acceleration and bias.
-- **GPS Rescue**: Betaflight's quad rescue controller in `gps_rescue.c` could not be reached from anywhere and has been removed ([firmware#284](https://github.com/WingFlight/wingflight-firmware/pull/284)). The `gps_rescue_*` settings remain; the minimum satellites and arming-without-fix rules still apply. See **H-2**.
-
----
-
-## 3. Decision log
-
-Rationale reconstructed from commit messages. Dates are commit dates.
-
-| Date | Commit | Decision | Why |
-|---|---|---|---|
-| 2026-06-28 | `d60575985` | Fork Rotorflight into a fixed-wing firmware | Wing-first behaviour; heli slots kept as reserved IDs for MSP/BOX compatibility |
-| 2026-07-05 | `e10a57cd4`, `16b0e68d9` | Remove Euler ATTHOLD; add quaternion AUTOHOVER | Euler math gimbal-locks at 90° pitch, the one attitude hover lives at |
-| 2026-07-05 | `621dd3712` | Split MANUAL from PASSTHROUGH | Separate a "no gyro but rates/expo" mode from a raw bail-out |
-| 2026-07-08 | `b9d03d122` | Allow aileron control in AUTOHOVER | Roll is world-vertical at hover, so it is the pirouette control |
-| 2026-07-09 | `3799be71d` | Re-add ATTHOLD on quaternion math | Works through any attitude |
-| 2026-08-09 | `107cfee43` | Independent thrust-vector PID loop | Vectored nozzles need tuning separate from surfaces |
-| 2026-08-29 | `83a99b1ba` | Independent TV attitude hold | Hold heading on the nozzle while surfaces stay in acro (low airspeed, post-stall) |
-| 2026-09-11 | `062e79151`, `ec909933a` | MANUAL built from `sp.deflection` and the rate curve | Boost saturated early; normalizing by own rcRates cancelled the rates |
-| 2026-09-17 | `4d714a433` | Hold each ATTHOLD axis independently | Real-flight blackbox: roll was uncorrected while elevator was held |
-| 2026-09-17 | `7bc87e81b` | Hold AUTOHOVER roll once the stick centres | Torque roll went uncorrected |
-| 2026-09-17 | `8a2b5233c` | 25% pre-airborne authority; suspend I decay under leveling; near-vertical gate on roll hold | Bench: modes looked dead, correction "gave up", roll-hold runaway |
-| 2026-09-17 | `a40c7860a` | MANUAL scaled through F | Track the airframe's real tuning |
-| 2026-09-18 | `92c9de190`, `05bc541c5` | Settle-then-capture for ATTHOLD and AUTOHOVER roll | Remove release snap-back |
-| 2026-09-18 | `10bf9b81d` | 10% I decay and stall timeout on holds | Re-centre surfaces when nothing is happening |
-| 2026-09-18 | `50b444423`, `83a5965e0` | Extract shared hold engine | One fix, both loops |
-| 2026-09-18 | `befd8f6cf`, `fa54e333d` | Optional AUTOHOVER throttle assist; fix stale targets under safety modes, unclamped deadbands, zero-max-rate trigger | Under-thrust hovers; MSP has no clamping |
-| 2026-09-18 | `aa362d09a` | Per-servo balance curve | Twin servos on one surface can bind |
-| 2026-09-19 | `220980d8d` | Continuous servo trim is runtime-only | Saved pot trim re-applied itself every boot |
-| 2026-09-19 | `51ba254f0` | Two-stage roll lock; `max_rate` 300 → 120 | Snap-back mid-flare; hard 90° snap on engage |
-| 2026-09-21 | `f07a4a8bb` | Level the wings, then rotate the target up to vertical | Torque roll went uncorrected during the pull-up |
-| 2026-09-21 | (reverted) | Remove the roll hold and the level-then-rotate entry; roll is a free pass-through again | Flight test: the level phase was hit and miss, often rolling a full turn before levelling, and the `b9d03d122` entry flew better |
-| 2026-09-23 | [firmware#146](https://github.com/WingFlight/wingflight-firmware/pull/146) | Re-enable failsafe stage 2; retarget `BOXGPSRESCUE` and the failsafe GPS-RESCUE procedure to the existing fixed-wing RTH controller instead of Betaflight's quad GPS Rescue code; fix the inverted RTH/loiter altitude sign; expose `nav_*` GPS Navigation settings over MSP | Stage 2 was a disabled stub (H-1); the quad rescue algorithm doesn't fly a wing home (H-2); the altitude controller commanded a descent when below target (H-3); those settings were CLI-only |
-| 2026-09-26 | [firmware#157](https://github.com/WingFlight/wingflight-firmware/pull/157) | Dead-reckon GPS nav through dropouts (5 s), `nav_min_sats` hysteresis, engage without a fix; accelerometer-fused altitude/vario; GPS altitude on the default source; `nav_min_sats` 8 → 6, `position_gps_min_sats` 12 → 6 | Flight test: LOITER called "unavailable" in flight at 9 satellites; baro-derivative vario lagged; boards without a baro had no altitude (`source & ALT_SOURCE_DEFAULT` is always 0) |
-| 2026-09-28 | [firmware#168](https://github.com/WingFlight/wingflight-firmware/pull/168) | Remove AUTOHOVER, its throttle assist and the yaw-authority widening; keep every slot reserved (box 58, mode bit 9, adjustment 87, debug 79, MSP and profile bytes) | Mode dropped from the firmware; reserving the slots keeps MSP layouts and saved PID profiles valid, so no profile reset |
-| 2026-09-29 | [firmware#177](https://github.com/WingFlight/wingflight-firmware/pull/177) | ANGLE target slews in from the current attitude; rate command capped at the rate profile's full-stick rate; new `angle_level_damping` subtracts measured rate from the command | Engaging far from level stepped the surfaces (49° asked for 196 °/s at once); L-6 uncapped command; the P-term was too small to damp the level loop |
-| 2026-09-29 | [firmware#178](https://github.com/WingFlight/wingflight-firmware/pull/178) | TPA/SPA attenuation also scales F and B; combined factor floored at 25%; MANUAL not attenuated | One airframe rolled at 1.22× the setpoint at low throttle and 1.70× at high; P/D-only attenuation could not correct the rate. The floor stops a curve removing all throw |
-| 2026-10-01 | [firmware#181](https://github.com/WingFlight/wingflight-firmware/pull/181) | MANUAL full-stick throw floored at 30%; I not integrated while MANUAL or PASSTHROUGH is active | M-3: the F floor did not cover low rates or `rc_rate` adjustments; I wound up while bypassed and bumped on switching back |
-| 2026-10-07 | [firmware#202](https://github.com/WingFlight/wingflight-firmware/pull/202) | Stepped and auto trim write a saved per-servo trim added at the output, never `mid`; one step per press; bus servos trimmed unless cloned | Trimming `mid` also moved the min/max end stops; the stepped window re-baselined on every save and walked; a tap gave nothing, a hold gave 50 steps/s |
-| 2026-10-17 | [firmware#211](https://github.com/WingFlight/wingflight-firmware/pull/211) | Own TV defaults (P 150, I 15, F 30, error limit 25, decay 0.30 s, hold gain 25); TV axes with no mixer rule output zero; TV hold keeps only the thrust direction when roll has no actuator | Prop-hang logs: I parked the nozzle off centre, F over-drove the hang, torque roll rotated hold corrections from pitch onto yaw |
-| 2026-10-31 | [firmware#234](https://github.com/WingFlight/wingflight-firmware/pull/234) | Hold I accumulation and decay normally until airborne | Tail-dragger in ANGLE wound pitch I to `error_limit` on the ground between arming and takeoff |
-| 2026-11-03 | [firmware#263](https://github.com/WingFlight/wingflight-firmware/pull/263) | GPS nav only on a u-blox (or MSP simulator) GPS; u-blox auto-config at 10 Hz instead of 5 Hz, 5 Hz fallback; `TELEM_CONFIG_GPS_NAV_UNSUPPORTED` (config word bit 29); 10 Hz only at 38400 baud or faster and no nav on a 9600 baud u-blox port; RTH/LOITER switches ignored on a GPS that can't navigate; MSP feed derives ground course | NMEA, FBUS and CRSF are too slow or report too little about their fix to steer on; even u-blox ran at 5 Hz. 10 Hz of NAV-PVT plus NAV-SAT overruns a slow port, and the module ACKs the rate anyway |
-| 2026-11-12 | [firmware#273](https://github.com/WingFlight/wingflight-firmware/pull/273) | 24 servos, each sent on PWM output N and bus channel N from one output stage; `bus_servo_clone_pwm` and the bus drivers' own pipeline removed; one signal range (880–2159 µs) and default travel for every servo; 760 µs servos dropped; one `servo_pwm_rate`; MSP API 22.16 | The PWM/bus split forced a clone switch, a second pipeline and index remapping in every client; a servo should be set up the same way however it is wired |
+- **Arming** is blocked unless the throttle is at neutral (`ARMING_DISABLED_THROTTLE`) and the attitude estimate
+  is established (`isAttitudeEstimateReady()`, which does not check that the car is level), among the other
+  arming-disable flags. While armed with the throttle at neutral the armed beeper sounds; with stick arming,
+  `auto_disarm_delay` (default 5 s) at neutral disarms.
+- **Running latch** (`INFLIGHT_MODE`, the telemetry RUNNING bit): set once armed and |throttle| > 0.1, held
+  through stops, cleared on disarm. There is no airborne detection any more. A disarm while running, after at
+  least `rearm_min_armed_seconds` (5 s) armed, opens a `rearm_grace_seconds` (10 s) window in which re-arming
+  skips the throttle and attitude checks, so an accidental disarm can be recovered while the car is moving.
+- **Receiver signal loss** (`rx.c`): bad channels hold their last value for 300 ms, then each channel takes its
+  `rxfail` value. The default (AUTO) puts roll, pitch and steering at centre and the throttle at neutral
+  (`getFailsafeThrottle()` returns the throttle centre); other channels hold their last value.
+- **Failsafe** (`failsafe.c`) is monitoring from start-up and runs its state machine:
+    - Armed with the throttle at neutral for at least `failsafe_throttle_low_delay` (10 s) before the link drops:
+      disarm straight away ("just disarm").
+    - Otherwise, after `failsafe_delay` (1.5 s) without a valid signal, `failsafe_procedure` runs: `DROP`
+      (default) disarms at once; `AUTO-LAND` holds `failsafe_throttle` (default 1500 µs, neutral) for
+      `failsafe_off_delay` (1 s), then disarms.
+    - While a procedure is active, `failsafe_throttle` replaces the drive aids' output on the stabilized throttle,
+      and GYRO OFF is ignored. Re-arming needs `failsafe_recovery_delay` (1 s) of valid signal.
+    - A FAILSAFE mode switch acts as stage 1 (default), `KILL` (disarm at once) or `STAGE2`
+      (`failsafe_switch_mode`).
 
 ---
 
-## 4. Review findings
+## 3. Decision log (Gripora)
 
-Severity reflects consequence in flight, not effort to fix. **Confirmed** = follows directly from the code as read. **Needs verification** = depends on a convention or runtime behaviour I could not observe.
+Gripora was forked from WingFlight 0.0.43 in November 2026. The fixed-wing history (attitude hold, thrust
+vectoring, GPS navigation, the governor and so on) is in the WingFlight repository; none of that code remains.
+
+| Commit | Decision | Why |
+|---|---|---|
+| `6a4250e76` | Remove the aircraft features (attitude hold, trainer, angle/leveling, GPS nav and rescue, airborne detection, auto trim, trim monitor, thrust vectoring, hold engine, governor, tune advisor); stabilise yaw only; signed throttle around `rc_center`; bidirectional neutral; ids kept reserved | Car conversion, step 1; reserved ids keep MSP, BOX and saved-profile layouts valid |
+| `24ab3af49` | Car mixer preset (S1 steering, M1 ESC), steering-only wiggle, `yaw_gyro_reverse` | A gyro that corrects the wrong way must be fixable without reversing the driver's steering |
+| `6a94592d0` | Drive state: gyro negated in reverse, correction faded with speed and reduced in reverse | Reversing turned the correction into positive feedback; at a standstill I wound up and slammed the steering |
+| `4dff3f73b` | Default channel order CH1 steering, CH2 throttle | Car radios |
+| `36fdb2256` | Gyro corrects on the bench (no speed fade disarmed); yaw I held at zero disarmed | The setup wizard's gyro-direction check needs a correction with the car still; no I bump on arming |
+| `f67886c8f` | MSP API 33.0; `MSP2_GRIPORA_*` names | Gripora's protocol is its own from here |
+| `d5e28efef` | Timed ABS, per PID profile; DRIVE AIDS OFF mode | First drive aid; a profile switch changes it with the tune |
+| `259d57c55` | `fw_spa_speed_max` default 60 km/h, range 10-300 | Car speeds |
+| `8afcd9c4d` | Timed traction control (ramp) | Second drive aid |
+
+---
+
+## 4. Known defects and limitations
+
+**Confirmed** = follows directly from the code. **Needs verification** = depends on behaviour that can only be
+observed on a car.
 
 ### High
 
-**H-1. The flight-controller failsafe state machine never runs. Fixed ([firmware#146](https://github.com/WingFlight/wingflight-firmware/pull/146)).**
-[failsafe.c:118](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/failsafe.c#L118) `failsafeStartMonitoring()` had its body commented out ("RTFL: Keep disabled until code refactored"), so `failsafeIsMonitoring()` was always false and `failsafeUpdateState()` returned immediately. That call is uncommented and `FAILSAFE_MODE` now engages on link loss as configured by `failsafe_procedure`: AUTO-LAND/DROP self-level under ANGLE and then cut the motor and disarm after `failsafe_delay`/`failsafe_off_delay`; GPS-RESCUE flies home and orbits instead (see **H-2**), then falls back to the same ending once `failsafe_off_delay` elapses if it hasn't recovered. `failsafe_throttle`, previously accepted by the CLI/MSP but never read anywhere, is now applied to the mixer while a procedure is active (default 1000 = off, so existing configs see no change). See [Failsafe](../../configurator/tabs/failsafe.md).
-- What used to happen -- and still happens up to the ~100ms/300ms detection and hold, before a procedure takes over -- is [rx.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/rx/rx.c) `detectAndApplySignalLossBehaviour()`: hold last value 300 ms, then per-channel fallback (default AUTO: roll/pitch/yaw centred, throttle just below the off-throttle threshold, **all other channels hold last value**, including the arm switch and any mode switches). That per-channel Channel Fallback behaviour is unchanged by this fix.
-- The `failsafe` and `gps-rescue` docs pages, corrected for the disabled state in wingflight-docs#20, are updated again to describe the re-enabled behaviour.
+**H-1. Without an RPM source there is no low-speed fade.** *Confirmed.* The speed factor is 1 without RPM
+(`driveSpeedFactor()`), so armed at a standstill the full P and I correction runs. Holding steering off centre on
+a stopped car then makes P push and I wind up towards full lock, because the car cannot yaw at the commanded rate.
+The Configurator says so on the Motors tab. Fix: an RPM source (DShot telemetry, ESC telemetry or a frequency
+sensor).
 
-*Still open:* no altitude-managed powered landing or flare -- deliberately out of scope, see [GPS RTH](../../flight-modes/gps-rth.md). `flight_failsafe_unittest.cc.txt` remains disabled; there is still no automated test coverage for the phase machine itself (§5, item 3).
-
-**H-2. GPS Rescue does not steer or control altitude on a wing. Fixed ([firmware#146](https://github.com/WingFlight/wingflight-firmware/pull/146)), by retargeting rather than repairing.**
-`gpsRescueGetYawRate()` and `gpsRescueGetThrottle()` ([gps_rescue.c:653](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/gps_rescue.c#L653), [:658](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/gps_rescue.c#L658)) are still declared but called from nowhere, and `gpsRescueAngle[AI_ROLL]` is still only ever set to 0 -- that code itself is untouched. Both routes that used to reach it are gone instead: `BOXGPSRESCUE` and the failsafe GPS-RESCUE procedure now both drive the existing fixed-wing [gps_nav.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/gps_nav.c) controller through `RTH_MODE`, exactly like `BOXRTH` already did (see [GPS RTH](../../flight-modes/gps-rth.md)). `gps_rescue.c` and `USE_GPS_RESCUE` are still compiled in but permanently unreachable -- a good candidate for a follow-up pruning PR, not bundled into this safety-critical change.
-
-**H-3. RTH altitude hold was inverted. Fixed ([firmware#146](https://github.com/WingFlight/wingflight-firmware/pull/146)).**
-[gps_nav.c:139](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/gps_nav.c#L139) is now `pitchDdeg = -Kp · (target − current)`: being below target now commands nose-up (climb), matching the positive-nose-down convention (§1). Covered by a new test, `GpsNavAltitudeTest` in `gps_nav_unittest.cc`, which fails against the old sign and passes against the fix -- that is unit-test confirmation of the sign, not the bench/SITL check this finding originally asked for (§5, item 1); worth a bench check of the actual pitch response before trusting it in the field.
-
-**H-4. Hands-off flight reduced attitude correction to 25%. Fixed (#138).**
-The old stick/tilt detector could classify a level, hands-off aircraft as landed.
-The replacement detects sustained roll/pitch response and latches flight until
-disarm; see [Airborne detection](#213-airborne-detection-airbornec) above.
-The 25% pre-flight correction remains. Centered-stick launches may still fail to
-establish flight, and hand movement can imitate a qualifying response. Landing
-while armed does not clear the state. These limits need bench/flight validation;
-the detector is not a ground safety interlock.
+**H-2. `FWD_REV` with no RPM: braking is taken for reverse, and ABS never runs.** *Confirmed.* Without RPM,
+`driveNextState()` cannot know the car is still rolling, so every below-neutral command is REVERSE. The travel
+direction flips at once: the gyro rate is negated during what is physically still a forward brake, softened only by
+the 1 s correction fade-in, and the yaw I-term is cleared. ABS needs state BRAKE, so it never runs. The Configurator
+warns on the drive aids panel. Fixes: an RPM source, or `FWD_BRK_REV` if the ESC supports it.
 
 ### Medium
 
-**M-1. AUTOHOVER throttle assist ignored the throttle stick and RX loss. Fixed (#104); the mode was later removed ([firmware#168](https://github.com/WingFlight/wingflight-firmware/pull/168)).**
-The boost was added to `getThrottle()` unconditionally, up to `throttle_assist_max` (default 15%, hard cap 50%), so with the stick at idle the motor could spin up, and on link loss a held-on AUTOHOVER switch kept assisting (H-1 means no failsafe mode clears it). `autoHoverThrottleBoost()` now returns 0, and resets the ramp, whenever the throttle is at or below the off-throttle threshold or `rxIsReceivingSignal()` is false. Disabled by default (`throttle_assist_gain=0`).
+**M-1. The ESC model can disagree with the ESC.** *Needs verification.* Without RPM the direction is only what the
+model predicts. `FWD_BRK_REV` reverses after 50 ms at neutral (`DRIVE_NEUTRAL_DWELL_S`); a real ESC may need a
+longer or shorter neutral, or have its own reverse threshold. With RPM, a reversal the model missed is caught when
+the wheels speed up from zero; without RPM it is not.
 
-**M-2. Loiter direction was inverted. Fixed (#139).** Clockwise added +90° to the *bearing to the target*, so an aircraft south of the target (bearing 0°) was sent east (90°), which is counter-clockwise, and `nav_loiter_direction = CW` orbited CCW and vice versa. Clockwise keeps the target on the right, so it is now −90°, with fixture tests on all four sides of the target for both directions. Anyone who set the opposite value as a workaround has to set it back.
-*Still open:* the orbit has no radial correction, so it circles at whatever radius it entered, and it steers on GPS course over ground, which is undefined at low groundspeed.
+**M-2. Default steering authority from F is small.** *Confirmed arithmetic; needs verification on a car.* With the
+defaults (yaw F 65, 150 °/s at full stick) feedforward gives about 24 % of full travel at full stick. With an RPM
+source and the car below `drive_gyro_min_speed`, P, I and D are scaled to zero, so F and the transient B are all the
+steering there is: an armed, stopped car may not reach full lock until it moves. Whether this matters in practice,
+and whether F or the default rate should change, has not been checked on a car.
 
-**M-3. MANUAL authority was coupled to F and to the rate profile. Fixed ([firmware#181](https://github.com/WingFlight/wingflight-firmware/pull/181)).**
-MANUAL's output is `Kf · rate`. At F=100 a 400 °/s rate is full travel (default F=75: 533 °/s); at `F=0` MANUAL output **nothing**, and a milder rate profile gave proportionally less throw. That was intended (commit `a40c7860a`), but MANUAL is the fallback a pilot reaches for when the stabilized loop is misbehaving, and a tuning choice made for the PID (lower F, lower rates) silently shrank it. The F-gain floor (`PID_F_GAIN_MIN` = 50, [firmware#164](https://github.com/WingFlight/wingflight-firmware/pull/164)) covered F only: at the default 250 °/s it gave 31% travel, and an `rc_rate` adjustment down to 1 (5 °/s) still left under 1%. MANUAL's full-stick throw is now floored at 30% (`MANUAL_MIN_THROW`), with the stick shape still taken from the rates/expo curve.
+**M-3. Wheel speed is driven-wheel speed.** *Inferred, not verified.* Speed comes from motor RPM through the gear
+ratio, so it reads the driven wheels. Wheelspin or locked wheels under braking make it differ from ground speed,
+which affects the low-speed gyro fade, the "stopped" detection (which gates ABS) and speed attenuation.
 
-**M-4. No guard against NaN/Inf at the servo boundary. Fixed ([firmware#145](https://github.com/WingFlight/wingflight-firmware/pull/145)).** `servoUpdate()` and the mixer input and output stages now replace a non-finite value with centre/zero and count it as saturation. The original finding follows.
-[servos.c:370](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/servos.c#L370) writes `lrintf(pos · resolution)` straight to the timer compare register. `limitTravel` uses `>`/`<`, which are false for NaN, so a NaN from any upstream source would pass through as an undefined integer. I found no unguarded divide today ([rc.c:235](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/fc/rc.c#L235) `range = deflection − deadband` would divide by zero only if the config allowed deadband ≥ deflection). One `isfinite` check in `servoUpdate()` and in `mixerUpdate()` closes it.
-
-**M-5. Attitude estimator assumes the accelerometer reads gravity.** *Needs flight data.*
-[imu.c:320](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/imu.c#L320) accepts 0.9–1.1 g. For a wing, sustained banked turns below ~25° bank and thrust acceleration both stay inside that window and bias the tilt estimate toward the turn or the acceleration. ATTHOLD and every leveling mode depend on that estimate. There is no centripetal or airspeed correction. Kp and Ki defaults were not reviewed here. Worth checking against a blackbox of a sustained turn before tuning hold gains.
-
-**M-6. Servo `speed` limiting couples every roll/pitch surface. Fixed ([firmware#144](https://github.com/WingFlight/wingflight-firmware/pull/144)).** Each servo is now speed-limited on its own. The original finding follows.
-[servos.c:424–455](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/servos.c#L424): a slow servo's overrun scales *all* servos fed by roll or pitch (`cyclic_ratio`), so one rate-limited flap or aileron slows the elevator too. That is right for a helicopter swashplate and wrong for independent wing surfaces. `DEFAULT_SERVO_SPEED` is 0, so it only bites when a pilot sets a speed.
+**M-4. Drive aids act on the stick, not on the wheels.** *Confirmed (by design).* ABS and traction control are timed
+from the stick and the clock. The ABS "steering" adjustments use the steering-stick deflection, not the actual
+wheel angle. There is no slip detection; sensor-based modes are planned as separate modes.
 
 ### Low
 
-- **L-1. Heli remnants in the adjustment code. Fixed (#110).** The roll D, pitch B and roll B adjustment setters in [pid.c](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/pid.c) scaled their coefficient by `pidMode == 4`, a mode that does not exist here. The dead branches are removed.
-- **L-2. Roll D scale was 10× smaller than pitch and yaw. Fixed.** `ROLL_D_TERM_SCALE` was `0.1e-6` against `1.0e-6`, inherited from the helicopter firmware and mirrored in the TV loop. All three axes now share one D scale ([pid.h](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/pid.h)). D defaults to 0; a tune with a non-zero roll D gets 10× the roll damping and should divide it by 10.
-- **L-3. Cross-axis relax was applied twice to I. Fixed (#137).** It scaled the accumulation *and* the I output, so I output dropped immediately on rudder input and jumped back on release (limited only by the relax filter's 1–100 Hz cutoff). Now it scales the accumulation only, which is what removes the step; scaling the output only would have kept the drop and made the release jump larger. P and D are unchanged. Default strength is 0, so it was latent.
-- **L-4. `isUpright()` did not check attitude. Fixed (#113).** It returned "attitude established", so arming was not blocked by tilt, which is right for wings but not what the name said. It is renamed `isAttitudeEstimateReady()` and its intent is documented at the definition. `ARMING_DISABLED_ANGLE` keeps its name because it is user-visible.
-- **L-5. GPS heading re-initialisation is a no-op. Fixed ([firmware#283](https://github.com/WingFlight/wingflight-firmware/pull/283)) by removing it.** Snapping the heading in flight would step the yaw ATTHOLD holds, so the heading keeps converging through the course-over-ground correction. [imu.c:481](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/imu.c#L481) writes into the quaternion *products* `qP`, then `imuComputeRotationMatrix()` recomputes `qP` from the unchanged `q`. Only `attitudeIsEstablished` and the one-shot flag change. Harmless in effect, but the code does not do what its comment says.
-- **L-6. Angle rate command was uncapped. Fixed.** `error × gain` reached 180° × 4 = 720 °/s on a recovery from inverted, above the configured rate profile. The command is now clamped to the rate profile's full-stick rate, and the target slews in from the current attitude instead of stepping (see 2.4).
-- **L-7. MANUAL and PASSTHROUGH bypass mixer input limits. Kept and documented** in [Passthrough and Manual](../../flight-modes/setup-gyro-off.md) ([mixer.c:309–330](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/mixer.c#L309)). Intentional for bail-out; note that a tightened `min/max` on a stabilized input does not apply in those modes.
-- **L-8. TV loop I-decay ignores leveling modes. Fixed ([firmware#285](https://github.com/WingFlight/wingflight-firmware/pull/285)).** The TV loop now suspends decay under the same leveling modes as the main loop, when airborne. The main loop suspends decay under ANGLE/RTH; the TV loop only slows it under its own hold. In ANGLE mode the two loops therefore bleed I differently.
-- **L-9. Hold stall re-capture is silent to the pilot. Partly addressed (#118).** After 3 s pinned above 5° error the target ratchets to the current attitude with no beep or OSD cue. A genuine slow disturbance (cross-wind hover) could be walked off target this way without the pilot knowing. It is now visible in a Blackbox log: set the debug mode to `ATTHOLD` (or `TVHOLD`) and read `debug[1..6]` -- attitude error (°x10), stall timer (ms, fires at 3000), I-bleed timer (ms), re-capture count (all axes), last re-captured axis (-1 none) and a tracking bitmask (roll 1, pitch 2, yaw 4). `debug[0]` is the setpoint or rate as before, and the per-axis fields follow `debug_axis`. A step in the count is a re-capture. There is still no audible cue.
-- **L-10. Auto trim captures whatever the sticks and stabilization are doing** during its 2 s window, not a true neutral. It needs hands-off, straight-and-level flight to give a good centre.
-- **L-11. First IMU update integrates over a huge `dt`.** [imu.c:460](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/flight/imu.c#L460) initialises `previousIMUUpdateTime` to 0, so the first step is seconds long. Inherited from Betaflight and converges quickly on the bench; noted because it happens once per boot.
-- **L-12. SmartFuel sag compensation used the wrong load. Fixed (#121).** It added voltage in proportion to the combined roll and pitch control demand (`getCyclicDeflection()`), inherited from the helicopter firmware, and only when `isAirborne()` was true. It now follows the averaged motor outputs, so it tracks current, runs whenever the motor is working, and does nothing on a model with no motor.
+- **L-1. GYRO OFF bypasses the stabilized-yaw input limits.** *Confirmed, intentional.* `mixerSetBypassInput()`
+  writes the input directly, so a tightened `mixer input` min/max on stabilized yaw does not apply in GYRO OFF.
+  Servo min/max still do.
+- **L-2. GYRO OFF does not bypass the drive aids.** *Confirmed.* Only the steering is raw; ABS and traction control
+  still shape the throttle unless DRIVE AIDS OFF is on. User-facing text that says the throttle "passes straight"
+  in GYRO OFF is describing the steering only.
+- **L-3. Arming does not check that the car is level.** *Confirmed.* `isAttitudeEstimateReady()` only checks that
+  the attitude estimate is established. `ARMING_DISABLED_ANGLE` keeps its name because it is user-visible.
+- **L-4. First IMU update integrates over a huge `dt`.** *Confirmed.* `previousIMUUpdateTime` starts at 0, so the
+  first step is long. Inherited from Betaflight; converges quickly, happens once per boot.
+- **L-5. Accelerometer accepted at 0.9-1.1 g with no correction for cornering or acceleration.** *Confirmed.* Only
+  attitude telemetry and the arming check depend on it.
 
-### Checked and found sound
+### Fixed in the inherited code and still in place
 
-- Fast 8-multiply quaternion product matches the Hamilton product (random test, max error 7e-16).
-- Hold engine: shortest-path sign fix, magnitude clamp over frozen axes only, unit renormalisation, and no drift accumulation when all axes are frozen.
-- PID anti-windup logic and its use of servo-travel saturation; yaw sign handling consistent between setpoint, MANUAL and PASSTHROUGH.
-- Governor failsafe bypass and the interlock guard.
-- Runtime servo trim design: trim direction folds the three reversal sources correctly.
-- Mode arbitration: safety modes cleanly preempt ATTHOLD and force a re-capture on release.
+- **Failsafe state machine runs.** The inherited Rotorflight code had `failsafeStartMonitoring()` commented out,
+  so failsafe never ran; WingFlight re-enabled it, and it is called from `core.c`. (Older notes that say "stage 2
+  is disabled" are out of date.) There is still no running automated test (`flight_failsafe_unittest.cc.txt`).
+- **Non-finite guard** at the mixer inputs, rule outputs and the servo boundary.
+- **Each servo is speed-limited on its own** (the inherited helicopter code scaled all cyclic servos together).
 
 ### Not reviewed
 
-Dynamic notch and RPM filters, gyro/accelerometer drivers and calibration, `logic_condition.c`, `wiggle.c`, blackbox, MSP and CLI plumbing. The pilot-facing docs in `docs/` were audited separately.
+Dynamic notch and RPM filters, gyro/accelerometer drivers and calibration, `logic_condition.c`, Blackbox, MSP and
+CLI plumbing.
 
 ---
 
-## 5. Test coverage and verification plan
+## 5. Test coverage
 
-Unit tests exist for PID, setpoint, curves, maths and the acro trainer. The tests for the mixer, IMU and failsafe are present but **disabled** (`flight_mixer_unittest.cc.txt`, `flight_imu_unittest.cc.txt`, `flight_failsafe_unittest.cc.txt`). The airborne detector now has 15 focused tests, and the trainer/leveling suite has 30 tests covering independent limits, limiter-dependent I-term state, and the ANGLE engagement ramp, rate cap and damping. There are still no tests for the hold engine, ATTHOLD, the TV loop, servos, or nav. Unit coverage does not replace bench/flight validation.
+Running unit tests (`make test`, `src/test/unit`) cover the PID (`pid_unittest`), setpoint, curves, maths, speed
+attenuation, the drive state (`drive_unittest`), the drive aids (`drive_aids_unittest`), servos and telemetry
+status. The mixer, IMU, failsafe and arming-prevention tests exist but are **disabled**
+(`flight_mixer_unittest.cc.txt`, `flight_imu_unittest.cc.txt`, `flight_failsafe_unittest.cc.txt`,
+`arming_prevention_unittest.cc.txt`), so the mixer, failsafe and `fc/core.c` arming paths have no running tests.
 
-Suggested order, cheapest and highest-value first:
+Worth adding, cheapest first:
 
-1. **Signs (H-3, M-2). Both fixed, both unit-tested.** `updateGpsNav()` now has fixtures for aircraft south/north/east/west of target for CW and CCW (M-2), and above/below target altitude (H-3). Still open: one SITL or bench confirmation of the actual pitch response, which was not done as part of either fix.
-2. **Airborne (H-4).** Test the state machine directly: armed, level, sticks centred → must stay AIRBORNE if throttle is up. Then a SITL or blackbox replay of a hands-off hold.
-3. **Failsafe (H-1). Fixed, still no automated test.** The intended behaviour was decided and implemented (see H-1). `flight_failsafe_unittest.cc.txt` remains disabled; re-enabling and adapting it is still open.
-4. **Hold engine.** Synthetic quaternion sequences: release mid-rotation (no snap-back), disturbance while frozen, stall timeout, per-axis independence, and a 90°/180° error.
-5. **Throttle assist (M-1).** Assist must be zero with the stick at idle and with no RX signal.
-6. **NaN guard (M-4). Fixed, still no automated test.** Inject NaN into a mixer input and assert servo output stays finite.
+1. **Drive state with the real ESC** (M-1): Blackbox the `DRIVE` debug mode while braking, reversing and
+   re-reversing with and without RPM, and compare the commanded state and direction with what the car did.
+2. **Standstill steering** (H-1, M-2): armed, stopped, full steering, with and without RPM; record
+   `mixer[2]` and the servo output.
+3. **Failsafe**: revive `flight_failsafe_unittest` for the just-disarm, DROP and AUTO-LAND paths with a signed
+   neutral throttle.
+4. **Mixer**: revive `flight_mixer_unittest` for GYRO OFF, the drive aids hand-off and the failsafe throttle
+   replacement.
 
-Nothing in this document has been flight tested by the review itself.
+Nothing in this document has been verified by driving.

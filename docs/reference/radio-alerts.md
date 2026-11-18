@@ -1,7 +1,7 @@
 # Radio Callouts and Alerts
 
-The Gripora Lua suite for Ethos radios reads the flight controller's
-status over telemetry. It tells you about important changes in two ways:
+The Gripora Lua suite for Ethos radios reads the controller's status over
+telemetry. It tells you about important changes in two ways:
 
 - **Spoken callouts**, such as "Backup receiver active" or "GPS not
   responding".
@@ -10,28 +10,31 @@ status over telemetry. It tells you about important changes in two ways:
 
 This page explains what each one means and what to do about it.
 
+!!! note "The suite is being converted to the car"
+    The Ethos suite's alerts and callouts are being reworded for cars. The
+    list below follows the alerts the firmware reports and the suite
+    currently shows; some wording on the radio may still differ.
+
 ## What you need
 
-- Telemetry working between the flight controller and the radio, over FrSky
+- Telemetry working between the controller and the radio, over FrSky
   S.Port, F.Port or FBUS, or over CRSF (ELRS and Crossfire). Telemetry is on in
   new and reset configurations. For CRSF, `crsf_telemetry_mode` must be
   `CUSTOM`, which is the default; native CRSF telemetry doesn't carry the
   status sensors. See [Telemetry](telemetry.md).
 - The **System Status** and **System Config** telemetry sensors selected on the
-  [Receiver tab](../configurator/tabs/receiver.md#telemetry-sensors). They are
-  in the default sensor list, and the suite's **Default** button on the radio
-  selects them too.
-- Firmware and Lua suite versions that include the status sensors. Older
-  firmware does not send them, so none of the alerts on this page appear.
+  [Receiver tab](../configurator/tabs/receiver.md). They are in the default
+  sensor list, and the suite's **Default** button on the radio selects them
+  too.
 
 ## The dashboard banner
 
-When the flight controller reports a problem, a banner appears across the
-bottom of the dashboard:
+When the controller reports a problem, a banner appears across the bottom of
+the dashboard:
 
-- **Red**: critical. Something is wrong now and needs your attention in the
-  air.
-- **Amber**: warning. Usually something to fix before you fly.
+- **Red**: critical. Something is wrong now and needs your attention while
+  driving.
+- **Amber**: warning. Usually something to fix before you drive.
 
 Only one banner shows at a time, the most important one. If other problems are
 active too, the banner ends with a count, for example
@@ -43,49 +46,21 @@ out, and there's nothing to dismiss.
 
 ## Status alerts
 
-These come from the flight controller's status telemetry. In the table, "When
-it starts" and "When it clears" are the callouts.
+These come from the controller's status telemetry. In the table, "When it
+starts" and "When it clears" are the callouts.
 
 | Banner | When it starts | When it clears | What it means | What to do |
 |---|---|---|---|---|
-| **BACKUP RX IN CONTROL** (red) | "Backup receiver active" | "Main receiver restored" | The main receiver has lost its signal and the [backup receiver](../flight-modes/backup-rx-input.md) is now flying the model. See the note below. | Fly back towards you and land. Find out why the main link dropped before the next flight. |
-| **FAILSAFE** (red) | (the flight mode callout says "Failsafe") | – | The flight controller is in a failsafe stage. You will rarely see this, because telemetry travels over the main link, so a link loss usually cuts telemetry too. | Follow your failsafe plan. See [Failsafe](../configurator/tabs/failsafe.md). |
-| **BATTERY CRITICAL** (red) | (the low voltage callout covers this) | – | Pack voltage is below the critical level set on the [Power tab](../configurator/tabs/power.md), or, if consumption alerts are on, the pack capacity is used up. | Land now. |
-| **GYRO OVERFLOW** (red) | "Gyro overflow" | – | The gyro has been driven past its measuring range, usually by violent vibration or a crash. The stabiliser can't trust its readings while this lasts. | Land and check the flight controller's mounting, props and motor balance. |
-| **BACKUP RX NO SIGNAL** (amber) | "Backup receiver lost" | "Backup receiver OK" | A configured backup receiver isn't receiving. With two backups, this fires when either is down. If the main link drops now, part or all of the backup is missing. | Check that each backup receiver is powered and bound, and that its transmitter module is on. The Rx Backup diagnostics page shows which one is down. |
-| **RTH UNAVAILABLE** or **LOITER UNAVAILABLE** (amber) | (the flight mode callout says "RTH, unavailable" or "GPS Loiter, unavailable") | – | The RTH or Loiter switch is on, but the mode can't fly. It needs the model armed, an accelerometer, a good GPS fix and, for RTH, a recorded home position. Short GPS dropouts (up to 5 s) are ridden through without this callout, so in flight it means the fix has been lost for longer. | Wait for a GPS fix before arming. See [GPS RTH and Loiter](../flight-modes/gps-rth.md). |
-| **GPS CAN'T NAVIGATE** (amber) | – | – | A GPS RTH or GPS LOITER switch, or the GPS Rescue failsafe, is set up, but the GPS protocol is NMEA, FBUS or CRSF, or it is a u-blox GPS on a 9600 baud port. Navigation only runs on a u-blox GPS at 19200 baud or faster. This comes from the settings, so it shows on the bench without a fix. | Fit a u-blox GPS and set the protocol to UBLOX on the [GPS tab](../configurator/tabs/gps.md). If it already is, raise the GPS port's baud rate (see [Serial Ports](serial-ports.md)). |
-| **GPS NOT RESPONDING** (amber) | "GPS not responding" | – | The GPS was working earlier in this session and has stopped talking to the flight controller. This is a wiring or power fault, not a lost fix. | Check the GPS wiring and power. GPS modes will not work until it comes back. |
-| **ACC NOT CALIBRATED** (amber) | – | – | The accelerometer has never been calibrated. Self-levelling, Attitude Hold and GPS modes level to the wrong attitude. | Calibrate the accelerometer on the [Setup tab](../configurator/tabs/setup.md) with the model level. |
-| **SETUP ACTIVE** (amber) | (the flight mode callout says "Setup") | – | The model is in the [setup state](../flight-modes/setup-gyro-off.md#the-setup-state): a setup tool is holding it, such as the Configurator's setup wizard or a servo, motor or mixer test override. The outputs aren't under normal control, and flight mode callouts pause until it ends. | Close the setup wizard or turn the override off in the Configurator. Arming is blocked meanwhile. |
-| **REBOOT REQUIRED** (amber) | – | – | A setting was changed that only takes effect after a reboot. | Power cycle the flight controller. |
-| **BLACKBOX FULL** (amber) | "Blackbox full" | – | The onboard [Blackbox](../configurator/tabs/blackbox.md) log storage is full, so this flight isn't being logged. | Download the logs if you want them, then erase the flash. |
-| **TRIM NOSE UP** or **TRIM NOSE DOWN**, **TRIM ROLL RIGHT** or **TRIM ROLL LEFT**, **TRIM RUDDER RIGHT** or **TRIM RUDDER LEFT** (amber) | "Trim nose up", "Trim roll left", "Trim rudder right", … | "Trim OK" | The model is out of trim on that axis, and the stabiliser is holding the difference. See [Out of trim](#out-of-trim) below. | Trim the way it says until "Trim OK". |
-
-### Out of trim
-
-In normal (rate) flight, the stabiliser's I-term quietly holds whatever
-steady control surface deflection the model needs. A model that is out of
-trim still flies straight, and a trim press seems to do nothing, because the
-I-term backs off by the same amount. Manual and Passthrough don't use the
-I-term, so the missing trim shows up there: the model pitches, rolls or yaws
-away as soon as you switch.
-
-The flight controller watches the I-term while you fly hands-off and roughly
-level in a stabilised rate mode (not Angle, Attitude Hold, GPS modes, Manual
-or Passthrough). Each axis counts only while its stick is centred and the
-model isn't rotating on it. If an axis's I-term holds more than about 4% of
-full surface travel, the callout tells you which way to trim. Once every axis
-is back below about 2%, you hear "Trim OK".
-
-- Each flight is measured afresh, after about 3 s of qualifying flight. Until
-  then, and after you land, the last report stays on the dashboard, so you can
-  still see what to fix.
-- Trim with the [in-flight servo trims](../configurator/tabs/servos.md#trimming-in-flight),
-  or use [Auto Trim](../flight-modes/auto-trim.md). The out-of-trim alert only
-  reports. It doesn't change a trim itself.
-- Torque, a strong crosswind or a gust that lasts a few seconds can also make
-  the I-term hold steadily, so trim only for what stays after a few passes.
+| **BACKUP RX IN CONTROL** (red) | "Backup receiver active" | "Main receiver restored" | The main receiver has lost its signal and the [backup receiver](../driving/backup-rx-input.md) is now driving the car. See the note below. | Bring the car back and stop. Find out why the main link dropped before the next run. |
+| **FAILSAFE** (red) | (the mode callout says "Failsafe") | – | The controller is in a failsafe stage. You will rarely see this, because telemetry travels over the main link, so a link loss usually cuts telemetry too. | See [Failsafe](../configurator/tabs/failsafe.md). |
+| **BATTERY CRITICAL** (red) | (the low voltage callout covers this) | – | Pack voltage is below the critical level set on the [Power tab](../configurator/tabs/power.md), or, if consumption alerts are on, the pack capacity is used up. | Stop now. |
+| **GYRO OVERFLOW** (red) | "Gyro overflow" | – | The gyro has been driven past its measuring range, usually by violent vibration or a crash. The steering stabiliser can't trust its readings while this lasts. | Stop and check how the controller is mounted, and for vibration from the drivetrain. |
+| **BACKUP RX NO SIGNAL** (amber) | "Backup receiver lost" | "Backup receiver OK" | A configured backup receiver isn't receiving. With two backups, this fires when either is down. If the main link drops now, part or all of the backup is missing. | Check that each backup receiver is powered and bound, and that its transmitter module is on. |
+| **GPS NOT RESPONDING** (amber) | "GPS not responding" | – | The GPS was working earlier in this session and has stopped talking to the controller. This is a wiring or power fault, not a lost fix. | Check the GPS wiring and power. |
+| **ACC NOT CALIBRATED** (amber) | – | – | The accelerometer has never been calibrated, so the attitude estimate uses the wrong level. | Calibrate the accelerometer with the car on a level surface, for example in the [setup wizard](../getting-started/car-setup.md). |
+| **SETUP ACTIVE** (amber) | (the mode callout says "Setup") | – | A setup tool is holding the car, such as the Configurator's setup wizard or a servo, motor or mixer test override. The outputs aren't under normal control, and mode callouts pause until it ends. | Close the setup wizard or turn the override off in the Configurator. Arming is blocked meanwhile. |
+| **REBOOT REQUIRED** (amber) | – | – | A setting was changed that only takes effect after a reboot. | Power cycle the controller. |
+| **BLACKBOX FULL** (amber) | "Blackbox full" | – | The onboard [Blackbox](../configurator/tabs/blackbox.md) log storage is full, so this run isn't being logged. | Download the logs if you want them, then erase the flash. |
 
 !!! note "When you'll hear the backup receiver callouts"
     Telemetry reaches the radio through the main receiver. With ELRS,
@@ -95,39 +70,27 @@ is back below about 2%, you hear "Trim OK".
     and when the link comes back you'll hear "Main receiver restored".
 
     You'll hear "Backup receiver active" when the main receiver keeps its
-    radio link but stops delivering control to the flight controller, for
-    example a broken signal wire while S.Port telemetry uses its own wire.
+    radio link but stops delivering control to the controller, for example a
+    broken signal wire while S.Port telemetry uses its own wire.
 
     "Backup receiver lost" and "Backup receiver OK" are the ones to rely on:
-    they tell you before takeoff whether the backup can take over.
+    they tell you before a run whether the backup can take over.
 
 A problem that is already present when the radio connects shows its banner,
 but isn't announced. You'll hear it when it changes after that. Link changes
 must hold for a moment before they're announced, so a flickering link doesn't
 chatter.
 
-## Other status callouts
-
-These callouts have no banner:
-
-| Callout | What it means |
-|---|---|
-| "Trim captured" | [Auto Trim](../flight-modes/auto-trim.md) has measured the new trim. It's kept if you disarm with the Auto Trim switch still on. |
-| "Trim saved" | You disarmed with the new trim captured, and it's being saved. |
-| "Trim cancelled" | The Auto Trim switch went off before you disarmed, so the old trim is back. |
-| "Control limit" | The stabiliser asked for full control surface travel: it has run out of authority. Off by default, because it can be chatty on 3D models. If you hear it often in normal flight, increase the surface throws or reduce the gains. |
-
-## Flight mode and other callouts
-
-These existed before the status alerts, and work the same way.
+## Other callouts
 
 | Callout | When |
 |---|---|
-| "Armed" / "Disarmed" | The model is armed or disarmed. |
-| Flight mode name ("Angle", "Att Hold", "RTH", "GPS Loiter", "GPS Rescue", "Failsafe", "Manual", "Passthrough", "Normal", …) | The active flight mode changes. "Unavailable" follows the name when a GPS mode is switched on but can't engage. "Traditional" is announced when it's switched on. |
-| "Setup" | A setup tool starts holding the model (the [setup state](../flight-modes/setup-gyro-off.md#the-setup-state)). Flight mode callouts pause until it ends, and then only a mode that changed meanwhile is announced. |
-| "GPS Fix" / "GPS Fix Lost" | The GPS gains or loses its position fix. Useful on the bench while you wait to arm. |
-| "Profile" + number, "Rates" + number, "Thrust Vector" + number | The PID, rate or thrust vector profile changes. |
+| "Armed" / "Disarmed" | The car is armed or disarmed. |
+| Mode name ("Normal", "Passthrough" for GYRO OFF, "Failsafe") | The active mode changes. |
+| "Setup" | A setup tool starts holding the car. Mode callouts pause until it ends. |
+| "Control limit" | The steering stabiliser asked for full servo travel: it has run out of authority. Off by default, because it can be chatty. |
+| "GPS Fix" / "GPS Fix Lost" | The GPS gains or loses its position fix. |
+| "Profile" + number, "Rates" + number | The PID or rate profile changes. |
 | "Battery" + capacity and cell count | The battery profile changes. |
 | "Low Voltage" | Pack voltage is below the warning level, repeated at the set interval. |
 | "Fuel" + percentage, "Low Fuel" | SmartFuel crosses a callout step, or reaches empty. |
@@ -135,20 +98,16 @@ These existed before the status alerts, and work the same way.
 
 ## Turning callouts on and off
 
-On the radio, open the Gripora suite and go to
-**Settings → Audio → Events**:
+On the radio, open the Gripora suite and go to **Settings → Audio**. The
+state callouts (armed, mode, GPS fix and profile changes) and the status
+alerts have their own switches:
 
-- **State callouts**: armed, flight mode, GPS fix and profile changes.
-- **FC status**: the status alerts above.
-
-| FC status switch | Covers | Default |
+| Status switch | Covers | Default |
 |---|---|---|
 | Backup receiver | Backup receiver active / main restored, backup lost / OK | On |
 | Gyro overflow | Gyro overflow | On |
 | GPS not responding | GPS not responding | On |
 | Blackbox full | Blackbox full | On |
-| Autotrim | Trim captured / saved / cancelled | On |
-| Out of trim | Trim nose up / down, roll and rudder left / right, Trim OK | On |
 | Control limit | Control limit | Off |
 
 The switches only control the callouts. The dashboard banners always show.

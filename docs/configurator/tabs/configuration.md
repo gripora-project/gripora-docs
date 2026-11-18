@@ -1,86 +1,74 @@
 # Configuration
 
 The Configuration tab covers system-level setup that doesn't belong to a
-more specific tab: board/sensor alignment, ESC/motor protocol selection,
-arming behavior, and other one-time-per-build settings.
+more specific tab: board and sensor alignment, loop rates, sensors, the
+ready-to-arm wiggle, features and the serial ports.
 
-![Configuration tab](../../assets/images/configurator-configuration.png)
-
-Board alignment in particular is worth getting right early -- if the flight
-controller isn't mounted flat/forward in the airframe, the alignment offsets
-here correct for that so the IMU's reported attitude matches reality.
+Get the board alignment right early. If the controller isn't mounted flat
+and facing forward in the car, the alignment here corrects for it, so the
+gyro's yaw axis is the car's vertical axis and the steering correction
+works on the right axis.
 
 ## Board Alignment
 
-Board Alignment is the coarse correction for how the FC is physically
-mounted, typically in 90° steps (sideways, upside down, rotated). Rather
-than working out the rotation by hand, **Auto-Align FC** detects it for you:
-place the aircraft flat and disarmed, press Start, then briefly lift the
-tail by at least 20° -- the wizard reads the resulting accelerometer
-movement and reports the detected roll/pitch/yaw. It requires a calibrated
-accelerometer and only runs while disarmed.
+Board Alignment is the coarse correction for how the controller is
+physically mounted, typically in 90° steps (sideways, upside down,
+rotated). Rather than working out the rotation by hand, **Auto-Align FC**
+detects it for you: place the car flat and disarmed, press Start, then
+briefly lift the rear by at least 20° within 15 seconds. The wizard reads
+the accelerometer movement and reports the detected roll, pitch and yaw. It
+needs a calibrated accelerometer and only runs while disarmed.
 
 ## Mounting Trim
 
-Mounting Trim is a separate, fine-grained correction (in degrees) for a
-mounting surface that isn't perfectly level, applied *after* Board Alignment
-rather than by adjusting it. Keeping the two independent matters because
-Board Alignment's roll/pitch/yaw are composed in a fixed order -- once a
-large 90°-step correction lands on one axis, a small correction entered as
-more board alignment can visually show up on the wrong axis. Mounting Trim
-always corrects the intended physical axis regardless of the board
-alignment already set.
+Mounting Trim is a separate, fine correction (in degrees) for a mounting
+surface that isn't perfectly level, applied *after* Board Alignment rather
+than by changing it. Keep the two apart: Board Alignment's roll, pitch and
+yaw are applied in a fixed order, so once a 90° correction is on one axis, a
+small correction entered as more board alignment can end up on the wrong
+axis. Mounting Trim always corrects the intended physical axis, whatever
+the board alignment.
 
-Roll and pitch mounting trim can be auto-detected the same way as board
-alignment (place the aircraft level and disarmed, press Start, don't touch
-it) -- yaw can't be measured from a resting accelerometer and stays manual.
-If the residual tilt is too large (over 30°), that usually means Board
-Alignment itself is wrong; run Auto-Align FC first, then retry.
+Roll and pitch mounting trim can be detected automatically: place the car
+level and disarmed, press **Auto-Detect Trim** and don't touch it. Yaw
+can't be measured from a resting accelerometer and stays manual. If the
+remaining tilt is over 30°, Board Alignment itself is usually wrong; run
+Auto-Align FC first, then try again.
 
-Mounting Trim rotates the gyro as well as the accelerometer. Use it to line
-the FC up with the axis the aircraft rolls about (roughly the thrust line),
-not to make the horizon read level. To move the level reference for the
-self-leveling modes, use `acc_trim_pitch` / `acc_trim_roll` instead: these
-change only the attitude the leveling modes aim for and leave the gyro axes
-alone. Auto-detect sets the trim so that the resting accelerometer reads
-level, so run it with the thrust line level. With a taildragger resting on
-its tail wheel, auto-detect measures the ground angle, and that angle ends
-up in the trim.
+Mounting Trim rotates the gyro as well as the accelerometer, so use it to
+square the board up with the car, not to make the attitude display read
+level on a sloping bench.
 
-### Yaw that follows roll
+## System configuration
 
-**Symptom:** the aircraft swings in yaw whenever it rolls, worst in fast
-rolls, and changing the yaw PIDs or rates makes little difference. In a
-Blackbox log, with the rudder stick centred, the yaw gyro follows the roll
-gyro at a fixed ratio: there is no delay, and the ratio is the same upright,
-inverted and in knife edge. The yaw I-term builds up during each roll and
-drives the rudder against it.
+- **Gyro update frequency** and **PID loop frequency** set how fast the
+  gyro is read and the steering loop runs. The real-time load should stay
+  under 70% at the loop rate you choose.
+- **Accelerometer**, **Barometer** and **Magnetometer** turn those sensors
+  on or off. The accelerometer is used for the board orientation and level.
+  Altitude and compass heading are not used by the control loops; they are
+  only reported, for example in telemetry.
+- **Ready-to-arm steering wiggle** moves the steering briefly when the car
+  becomes ready to arm, as a visual confirmation. See
+  [Ready-to-Arm Wiggle](../../driving/ready-to-arm-wiggle.md).
 
-**Cause:** the gyro's yaw axis isn't square to the axis the aircraft
-actually rolls about. A pitch tilt of θ makes the yaw gyro read
-`sin θ × roll rate` even when the aircraft isn't yawing; about 5° gives
-around 9%, which is 60°/s of false yaw in a 700°/s roll. The yaw loop
-cancels that false reading with real rudder, so the aircraft really does
-yaw. A pitch Mounting Trim set to level the horizon on the ground is a common
-source; a tilted FC tray is another.
+## Personalization
 
-Real airframe coupling looks different. Rolling about the flight path at an
-angle of attack reverses sign when inverted. Adverse yaw from the ailerons
-lags the stick and follows aileron deflection, not roll rate.
+**Craft name** names the car. It shows in the Configurator, in telemetry,
+and as the prefix of Blackbox log files.
 
-**Fix:** measure the ratio `k` = yaw gyro ÷ roll gyro in fast rolls with
-the rudder centred, then change `align_board_trim_pitch` by about
-`−573 × k` (decidegrees), adding to the current value rather than
-replacing it:
+## Features
 
-```
-get align_board_trim_pitch      # e.g. -67
-set align_board_trim_pitch = -17   # k = -0.09: -67 + 52
-save
-```
+Optional features of the firmware. If a feature is off again after **Save
+and Reboot**, this controller or build doesn't support it.
 
-If the coupling gets worse, the sign is reversed: go the other way from the
-original value. If the horizon then reads off in the leveling modes, correct
-it with `acc_trim_pitch`, not with Mounting Trim. To confirm the fix, fly
-fast rolls with the rudder centred: yaw rate and rudder mixer output should
-stay near zero.
+## Serial Ports
+
+Each serial port (UART) gets a function and a speed, for example
+**Receiver: Primary**, **Receiver: Backup 1** / **Backup 2**, **ESC:
+Telemetry**, **ESC: SRXL2**, **GPS**, **Bus: S.BUS Output**, **Bus: F.BUS
+Master**, **Bus: S.PORT Master**, **Bus: CRSF Sensors**, a telemetry
+protocol, **Blackbox Logging** or **MSP**. Changes need **Save and Reboot**.
+
+The CLI command `serialdebug` helps when a device on a port isn't working;
+see the [CLI Command Reference](../../reference/cli-reference.md).

@@ -1,6 +1,6 @@
 # Receivers (RX)
 
-A receiver is used to receive radio control signals from your transmitter and convert them into signals that the flight controller can understand.
+A receiver is used to receive radio control signals from your transmitter and convert them into signals that the controller can understand.
 
 There are 2 basic types of receivers:
 
@@ -30,8 +30,8 @@ http://www.lemon-rx.com/index.php?route=product/product&product_id=118
 
 16 channels via serial currently supported.  See below how to set up your transmitter.
 
-* You probably need an inverter between the receiver output and the flight controller. However, many flight controllers have this built in, and don't need one.
-* Some receivers produce a non-inverted SBUS signal. Use the `serialrx_inverted` setting to match the polarity of your receiver, if your flight controller supports it.
+* You probably need an inverter between the receiver output and the controller. However, many controllers have this built in, and don't need one.
+* Some receivers produce a non-inverted SBUS signal. Use the `serialrx_inverted` setting to match the polarity of your receiver, if your controller supports it.
 * Softserial ports cannot be used with SBUS because it runs at too high of a bitrate (1Mbps).  Refer to the chapter specific to your board to determine which port(s) may be used.
 * You will need to configure the channel mapping in the GUI (Receiver tab) or CLI (`map` command). Note that channels above 8 are mapped "straight", with no remapping.
 
@@ -192,9 +192,10 @@ reasons.
 The `rx_pulse_min` and `rx_pulse_max` settings help detect when your receiver stops sending data,
 enters failsafe mode or loses signal.
 
-When signal loss is detected the flight controller holds the last values for 300 ms, and then sets
-roll, pitch and yaw to `rc_center` and the throttle to just below the off-throttle threshold. See
-[Failsafe](../configurator/tabs/failsafe.md) for what does, and what does not, happen next.
+When signal loss is detected the controller holds the last values for 300 ms, and then sets
+the steering (and the unused roll and pitch) to `rc_center` and the throttle to **neutral**
+(`rc_center`), so the car neither drives nor brakes. AUX channels hold their last value. See
+[Failsafe](../configurator/tabs/failsafe.md) for what happens next.
 
 Signal loss can be detected when:
 
@@ -206,13 +207,13 @@ Signal loss can be detected when:
 
 The `rxfail` cli command is used to configure per-channel rx-loss behaviour.
 You can use the `rxfail` command to change this behaviour.
-A flight channel can be AUTOMATIC, HOLD or SET. An AUX channel can be HOLD or SET.  
+A control channel (roll, pitch, yaw, throttle) can be AUTOMATIC, HOLD or SET. An AUX channel can be HOLD or SET.  
 
-* AUTOMATIC - Flight channels are set to safe values (low throttle, mid position for yaw/pitch/roll).
+* AUTOMATIC - Control channels are set to safe values: centre for steering, roll and pitch, and neutral for the throttle.
 * HOLD - Channel holds the last value.
 * SET - Channel is set to a specific configured value. 
 
-The default mode is AUTOMATIC for flight channels and HOLD for AUX channels. 
+The default mode is AUTOMATIC for control channels and HOLD for AUX channels. 
 
 The rxfail command can be used in conjunction with mode ranges to trigger various actions.
 
@@ -221,7 +222,8 @@ The `rxfail` command takes 2 or 3 arguments.
 * Mode ('a' = AUTOMATIC, 'h' = HOLD, 's' = SET)
 * A value to use when in SET mode.
 
-Channels are always specified in the same order, regardless of your channel mapping.
+Channels are always specified in the firmware's order, regardless of your channel mapping
+(with the default car map, CH1 steering is yaw and CH2 is throttle).
 
 * Roll is 0
 * Pitch is 1
@@ -303,12 +305,12 @@ Do __NOT USE__ the mode indicated with FAILSAFE instead, as this combination is 
 
 The channels defined in Gripora are as follows:
 
-| Channel number | Channel name |
-| ----- | --------- |
-| 0     | Roll |
-| 1     | Pitch |
-| 2     | Yaw |
-| 3     | Throttle |
+| Channel number | Channel name | Default receiver channel (car map `RT1234AE`) |
+| ----- | --------- | --------- |
+| 0     | Roll (unused on a car) | CH7 |
+| 1     | Pitch (unused on a car) | CH8 |
+| 2     | Yaw (steering) | CH1 |
+| 3     | Throttle | CH2 |
 
 If you have a transmitter/receiver, that output a non-standard pulse range (i.e. 1070-1930 as some Spektrum receivers)
 you could use rx channel range configuration to map actual range of your transmitter to 1000-2000 as expected by Gripora.
@@ -329,7 +331,7 @@ save
 ```
 
 Now reboot your FC, connect the configurator, go to the `Receiver` tab move sticks on your transmitter and note min and
-max values of first 4 channels. Take caution as you can accidentally arm your craft. Best way is to move one channel at 
+max values of first 4 channels. Take care: the car can arm by accident, so keep the wheels off the ground. Best way is to move one channel at 
 a time.
 
 Go to CLI and set the min and max values with the following command:
@@ -337,21 +339,21 @@ Go to CLI and set the min and max values with the following command:
 rxrange <channel_number> <min> <max>
 ```
 
-For example, if you have the range 1070-1930 for the first channel you should use `rxrange 0 1070 1930` in
+For example, if you have the range 1070-1930 on the steering channel you should use `rxrange 2 1070 1930` in
 the CLI. Be sure to enter the `save` command to save the settings.
 
-After configuring channel ranges use the sub-trim on your transmitter to set the middle point of pitch, roll, yaw and throttle.
+After configuring channel ranges use the sub-trim on your transmitter to set the middle point of steering and throttle: the throttle's middle is neutral.
 
 
-You can also use rxrange to reverse the direction of an input channel, e.g. `rxrange 0 2000 1000`.
+You can also use rxrange to reverse the direction of an input channel, e.g. `rxrange 2 2000 1000`.
 
 ## Disabling the OpenTx/EdgeTx ADC Filter
 
 OpenTx and EdgeTx both enable an `ADC filter` by default.  Gripora users should turn this off.
 
-The `ADC filter` converts what would otherwise be smooth changes in channel values into a series of steps, where each step is about 1% of the full stick travel.  It is intended to reduce 'chatter' when the Rx is connected to a *servo, so that the servo only changes position when a meaningful change has occurred.  It is not intended for use with flight controllers.
+The `ADC filter` converts what would otherwise be smooth changes in channel values into a series of steps, where each step is about 1% of the full stick travel.  It is intended to reduce 'chatter' when the Rx is connected to a *servo, so that the servo only changes position when a meaningful change has occurred.  It is not intended for use with controllers.
 
-When the `ADC Filter` is active, Gripora does not receive the most recent position of the gimabl with each new RC packet.  Instead, the Rx repeatedly provides the same data, until a moving-averaged smoothed estimate of gimbal position has increased by about 1% of full stick resolution.  
+When the `ADC Filter` is active, Gripora does not receive the most recent position of the gimbal or wheel with each new RC packet.  Instead, the Rx repeatedly provides the same data, until a moving-averaged smoothed estimate of gimbal position has increased by about 1% of full stick resolution.  
 
 Gripora needs a non-delayed, smooth and continuous representation of the stick travel to give the PID system a smooth target setpoint value.  Our RC Smoothing is based on the assumption that every packet is unique and that each is a new representation of the most recent position of the gimbal.  Feedforward is calculated from the packet-to-packet position difference, and absolutely relies on smooth and regular updates in measured gimbal position.
 
@@ -360,9 +362,9 @@ When active with Gripora firmware, the `ADC filter` causes:
 - sustained transient impacts
 - steps in setpoint
 - spikes and noise in feedforward, with reduced feedforward precision
-- spikes in motor control signals that may cause noticeable jerking in HD video
+- spikes in the servo and ESC signals
 
-This is why, whenever an OpenTx or EdgeTx user is using Gripora, the OpenTx/EdgeTx `ADC Filter` **MUST** be disabled, for accurate smooth flight control.
+This is why, whenever an OpenTx or EdgeTx user is using Gripora, the OpenTx/EdgeTx `ADC Filter` **MUST** be disabled, for accurate, smooth steering control.
 
 The user only has to find the `ADC Filter` checkbox in the Hardware tab of the Global Settings for their radio, and ensure it is un-checked.  For example, with the Frsky Taranis X9D+ pre 2019 model:
 

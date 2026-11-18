@@ -182,7 +182,7 @@ Variables with limited use may be declared at the point of first use. It makes P
 ## Initialisation
 
 The pattern with "lazy initialisation" may be advantageous in the Configurator to speed up the start when the initialisation is "expensive" in some way.
-In the FC, however, it’s always better to use some milliseconds extra before take-off than to use them while flying.
+In the FC, however, it’s always better to use some milliseconds extra before arming than to use them while driving.
 
 So don't use "lazy initialisation".
 

@@ -49,12 +49,15 @@ defined for the group then initial settings can be defined by the system.
 
 ## Upgrading
 
-Upgrades are done at the PG level and are detected by a difference in
-size or version.  New fields can be added to the end of the parameter group.
-The reset and initialisation function is called before upgrading so new
-fields will first be reset to 0 and then initialised by the system if defined.
+Upgrades are done at the PG level. `pgLoad()` (`src/main/pg/pg.c`) first
+resets the group to its defaults, then restores the stored data only if the
+stored version matches the registered one, copying no more than the smaller of
+the two sizes. A version mismatch keeps the defaults for that whole group.
 
-Note: Currently the code does not check the version field.
+Gripora bumps the PG version on every change to a group, including new
+fields, defaults and ranges, so an upgrade resets a changed group to its
+defaults instead of mixing old and new data. See
+[Parameter Groups](parameter-groups.md#gripora-rule-bump-the-version-on-every-change).
  
 ## Downgrading
 

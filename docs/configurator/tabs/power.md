@@ -4,10 +4,8 @@ The Power tab configures battery voltage and current monitoring: cell count
 detection/limits, voltage divider scaling, and current sensor scaling if
 fitted.
 
-![Power tab](../../assets/images/configurator-power.png)
-
 Accurate voltage readings here feed the low-voltage warnings/beeper and any
-battery-based failsafe behavior, so it's worth calibrating against a real
+SmartFuel, so it's worth calibrating against a real
 multimeter reading rather than trusting default scale values.
 
 ## Meter source
@@ -29,7 +27,7 @@ present.
 
 There are six battery profiles, and each one carries its own **capacity**,
 **cell count** and **Min / Warn / Full / Max** cell voltages. This lets one
-model switch between, for example, a 3S LiPo and a 4S LiHV pack. Click a
+car switch between, for example, a 2S LiPo and a 3S LiPo pack. Click a
 profile's name to make it the active profile; the active row is highlighted.
 
 A cell count of 0 detects the cell count automatically when the battery is
@@ -39,7 +37,7 @@ defaults when the configuration is loaded.
 
 Battery monitoring, the low-voltage warnings and SmartFuel all use the
 active profile. If the profile is changed while armed (for example with an
-adjustment), the change is applied as soon as the model is disarmed.
+adjustment), the change is applied as soon as the car is disarmed.
 
 Firmware that predates per-profile cell settings shows the older layout: a
 single set of cell count and cell voltages shared by all profiles, with only
@@ -48,7 +46,7 @@ the capacity set per profile.
 ## Calibration Manager
 
 Rather than computing a voltage divider or current-shunt scale by hand,
-plug in a battery (props off!), measure its actual voltage/current with a
+plug in a battery (wheels off the ground), measure its actual voltage/current with a
 multimeter, and type those true values into the Calibration Manager --
 it back-computes the corrected Scale for you from the difference between
 what it's currently reading and what you measured. Only available for ADC
@@ -71,4 +69,4 @@ Rate cap how fast the voltage-based estimate is allowed to fall, and Sag
 Gain compensates for voltage sag under load -- raise it if SmartFuel reads
 too pessimistic under load, lower it if too optimistic. Sag Gain is entered
 in volts per cell at full throttle (0.40 V by default), and the
-compensation follows the motor output, so a model with no motor gets none.
+compensation follows the motor output, in either direction.

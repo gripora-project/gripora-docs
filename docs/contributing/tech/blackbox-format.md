@@ -1,8 +1,9 @@
 # Blackbox logging internals
 
-The Blackbox is designed to record the raw internal state of the flight controller at near-maximum rate. By logging the
-raw inputs and outputs of key flight systems, the Blackbox log aims to allow the offline bench-top simulation, debugging,
-and testing of flight control algorithms using data collected from real flights. 
+The Blackbox is designed to record the raw internal state of the controller at near-maximum rate. By logging the
+raw inputs and outputs of the control loop, the Blackbox log aims to allow the offline bench-top simulation, debugging,
+and testing of control algorithms using data collected from real runs. The format was designed for flight controllers
+(Cleanflight), and the text below keeps its original wording.
 
 A typical logging regime might capture 30 different state variables (for an average of 28 bytes per frame) at a sample
 rate of 900Hz. That's about 25,000 bytes per second, which is 250,000 baud with a typical 8-N-1 serial encoding.
@@ -18,6 +19,26 @@ Please refer to the source code to clarify anything this document leaves unclear
 
 The encodings and predictors below are the same as in the original Cleanflight/Betaflight format. The field names
 and the flight-mode fields differ: the firmware source is the reference for which fields a Gripora log contains.
+
+## What is specific to a Gripora log
+
+The rest of this page is the inherited format specification. These points are where a Gripora log differs from
+what that text suggests (checked against `src/main/blackbox/blackbox.c`):
+
+- **Firmware type** is `Gripora`; **Firmware revision** is `Gripora <version> (<git short sha>) <target>`.
+- **Throttle is signed.** `rcCommand[4]` is the throttle command x1000 around neutral (`rc_center`): positive is
+  forward, negative is brake or reverse. `rcCommand[0..2]` are the roll, pitch and yaw sticks (-500..500), and
+  `rcCommand[3]` is a zero placeholder kept so the field group's encoding does not change.
+- **Only yaw (steering) is stabilised.** The roll and pitch entries of `setpoint`, `mixer` and `axisP/I/D/F/B`
+  are kept for layout but are always zero. `setpoint[3]` and `mixer[3]` are zero placeholders. `mixer[2]` is
+  the stabilized yaw input, which the car mixer preset sends to the steering servo (S1).
+- **Motor fields are signed**, so brake/reverse output to a bidirectional motor logs as a negative value.
+- **Gripora headers** record the active profile's settings: `fw_tpa` (gain, curve), `fw_spa` (gain, curve,
+  speed max in km/h), `drive_abs` (mode, freq, floor, hold, trigger, dyn freq, dyn hold, corner freq,
+  corner hold, in the order of the `drive_abs_*` CLI settings) and `drive_tc` (mode, ramp time in ms), along
+  with `master_gain`, `gain_curve`, `iterm_decay` and `iterm_relax_level`.
+- **Debug modes** `DRIVE` (drive state) and `DRIVE_AIDS` (ABS and traction control) log the car-specific
+  state; their fields are listed in the firmware's `Changes.md`.
 
 ## Logging cycle
 Blackbox is designed for flight controllers that are based around the concept of a "main loop". During each main loop

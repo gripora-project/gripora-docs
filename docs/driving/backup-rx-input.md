@@ -2,8 +2,8 @@
 
 Backup RX Input lets spare UARTs carry up to two independent backup
 receivers ("satellites") purely as fallbacks for the main RF link. If the
-main receiver's signal is lost, the flight controller takes over all RC
-channels -- including aux/mode switches, so arm state and flight-mode
+main receiver's signal is lost, the controller takes over all RC
+channels -- including aux/mode switches, so arm state and mode
 switching keep working -- from the first backup that is receiving,
 bypassing the normal failsafe stages entirely. The moment a higher-priority
 link's signal comes back, control reverts to it automatically. Takeover and
@@ -13,7 +13,7 @@ revert happen within the main receiver's own signal-loss detection window
 This is a cheap way to get a backup-receiver setup (e.g. a small
 FrSky/compatible satellite bound to a second transmitter module or a
 different protocol entirely) without needing a full second RF system. A
-second backup gives three-way redundancy for models where a single lost
+second backup gives three-way redundancy for cars where a single lost
 link is not an acceptable risk.
 
 Each backup port speaks a single, configurable protocol, chosen from the
@@ -23,7 +23,7 @@ Each backup port speaks a single, configurable protocol, chosen from the
 ones. By default (before a protocol is chosen) a port is reserved but not
 decoding anything.
 
-Flight-controller telemetry only ever travels over the main receiver. The
+Controller telemetry only ever travels over the main receiver. The
 backup links are receive-only: nothing is sent to a backup receiver, whatever
 its protocol.
 
@@ -64,12 +64,12 @@ order they take over. Put the receiver you trust most as Backup 1.
    on the live port and reports the one that receives frames. Changing any
    of these needs **Save & Reboot** to take effect.
 4. **Turn off telemetry on the backup receivers themselves.** These links
-   are receive-only -- the flight controller never reads anything a backup
+   are receive-only -- the controller never reads anything a backup
    receiver's own telemetry system might send, so this has no effect on
-   the feature's flight-control behavior at all. It matters for a
+   how the feature controls the car at all. It matters for a
    different reason: a second, independent telemetry stream is exactly
    what can confuse your radio's Lua scripts about which link is the
-   real telemetry path back from the flight controller.
+   real telemetry path back from the controller.
     - **FrSky/compatible satellites:** in the receiver's own RX options
       (on the transmitter, not the Configurator), turn telemetry off
       for this receiver.
@@ -102,7 +102,7 @@ through the primary receiver's channel map.
   takes over the moment Backup 1 is down while it is still receiving.
 - **Full channel takeover.** All channels are taken from the backup in
   control during fallback, not just roll/pitch/yaw/throttle -- aux switches
-  (flight mode, arming, etc.) are driven from the backup stick exactly
+  (modes, arming, etc.) are driven from the backup stick exactly
   as they would be from the main receiver. Channels a backup doesn't
   carry go to stick center (1500 by default): for example CH19-24 when the
   main receiver sends 24 channels but the backup sends a 16-channel F.Bus
@@ -113,10 +113,10 @@ through the primary receiver's channel map.
 - **Auto-revert.** As soon as a higher-priority receiver's signal is valid
   again (the main receiver within that same ~100ms window, Backup 1 within
   ~50ms), control reverts to it -- a backup does not latch for the rest of
-  the flight.
+  the run.
 - **Not a second failsafe system.** If the main link *and* every backup
-  link are down, ordinary staged failsafe behavior (hold/land/cut,
-  per the [Failsafe](../configurator/tabs/failsafe.md) tab) takes over
+  link are down, ordinary staged failsafe behavior (neutral, then
+  disarm, per the [Failsafe](../configurator/tabs/failsafe.md) tab) takes over
   exactly as it would without this feature. Backup RX input is a bridge
   for lost links, not a replacement for failsafe.
 - A **Failsafe** switch on an aux channel still invalidates control
@@ -125,7 +125,7 @@ through the primary receiver's channel map.
 
 ## Arming check
 
-Every configured backup receiver has to prove it works before you can fly
+Every configured backup receiver has to prove it works before you can drive
 relying on it. Once the boot arming-grace window has passed, arming is
 blocked -- the Status tab shows the **BACKUP_RX** arming-disable flag --
 until each backup receiver that has a protocol selected has linked at least
@@ -135,7 +135,7 @@ need it.
 The check only guards the **first arm after power-up**. Once you have armed
 successfully, a backup that later drops out during the same powered session
 will not block re-arming for the rest of that session; a battery change that
-powers the flight controller off starts a new session and the check runs
+powers the controller off starts a new session and the check runs
 again. A backup port left unconfigured (no protocol chosen) takes no part in
 the check. A backup with a protocol chosen whose port fails to open counts as
 configured but never linked, so it blocks the first arm until the wiring or
@@ -148,20 +148,20 @@ is also shown on the dashboard and announced:
 
 - **BACKUP RX NO SIGNAL** (amber banner, "Backup receiver lost" /
   "Backup receiver OK"): at least one configured backup isn't receiving.
-  Check this before takeoff. The **Rx Backup** diagnostics page shows
+  Check this before a run. The **Rx Backup** diagnostics page shows
   which one.
 - **BACKUP RX IN CONTROL** (red banner, "Backup receiver active" /
-  "Main receiver restored"): a backup is flying the model.
+  "Main receiver restored"): a backup is driving the car.
 
 Telemetry normally travels over the main link, so while the main link is
-down the radio often can't hear the flight controller. See
+down the radio often can't hear the controller. See
 [Radio Callouts and Alerts](../reference/radio-alerts.md) for when each
 callout can reach you.
 
-## Bench-testing before you fly
+## Bench-testing before you drive
 
-As with any failsafe-adjacent behavior, test this on the bench (props off)
-before relying on it in the air:
+As with any failsafe-adjacent behavior, test this on the bench (wheels off the
+ground) before relying on it on the track:
 
 1. Power up with the backup satellites bound and powered, and
    confirm the **BACKUP_RX** flag on the Status tab clears once every

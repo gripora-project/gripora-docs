@@ -1,16 +1,22 @@
 # Flight Tuning
 
-**Flight Tuning** holds the settings you change most at the field: PIDs,
-rates and how the model feels. The pages are the same settings as the
-Configurator's, so each section below links to the Configurator page that
-explains them.
+**Flight Tuning** (the suite still uses this aircraft name for it) holds the
+settings you change most at the track: the steering gyro's PIDs, the rates,
+how the car feels, and the drive aids. The pages are the same settings as
+the Configurator's, so each section below links to the Configurator page
+that explains them.
 
 ![The Flight Tuning menu](../assets/images/ethos-suite/flight-tuning-menu.png)
 
-The menu scrolls: below **Advanced** there is a third row with **Thrust
-Vector**.
+The menu has three groups: **Flight Tuning** (PIDs, Rates, Flight Feel),
+**Drive Aids** (ABS) and **Advanced** (Filters, PID Controller, PID
+Bandwidth, Gain Curves, Rate Response).
 
-![The Flight Tuning menu, scrolled down to Thrust Vector](../assets/images/ethos-suite/flight-tuning-menu-2.png)
+!!! note "Only steering is stabilised"
+    Gripora only stabilises yaw, which is the steering. The suite's tuning
+    pages still show a roll, pitch and yaw column, as they did on WingFlight;
+    on a car only the **yaw** values do anything. Roll and pitch are held at
+    zero by the firmware, whatever the pages show.
 
 Most of these pages belong to a PID profile, shown in the title as
 *PIDs #1* and so on. To work on another profile, switch to it (from the radio,
@@ -19,43 +25,52 @@ follows.
 
 ## PIDs
 
-P, I, D, F and B for roll, pitch and yaw.
+P, I, D, F and B per axis. On a car, use the yaw row: it is the steering
+gyro's gains.
 
 ![PIDs page](../assets/images/ethos-suite/pids.png)
 
-See [Profiles: PID Gains](../configurator/tabs/profiles.md#pid-gains).
+See [Profiles](../configurator/tabs/profiles.md).
 
 ## Rates
 
-RC Rate, Rate and RC Expo for each axis, for the active rate profile (the
-title shows its number).
+RC Rate, Rate and RC Expo per axis, for the active rate profile (the title
+shows its number). The yaw rates set how fast the car is asked to turn at
+full steering.
 
 ![Rates page](../assets/images/ethos-suite/rates.png)
 
-See [Rates](../configurator/tabs/rates.md#rate-shape-and-expo).
+See [Rates](../configurator/tabs/rates.md).
 
 ## Flight Feel
 
 Gain, Decay and Relax per axis, plus the overall Throttle and Speed gains.
+The Configurator calls this **Driving Feel**. The Speed gain follows the
+car's speed from the motor RPM, or from GPS without an RPM source.
 
 ![Flight Feel page](../assets/images/ethos-suite/master_gains.png)
 
-See [Profiles: Flight Feel](../configurator/tabs/profiles.md#flight-feel).
+See [Profiles](../configurator/tabs/profiles.md).
 
-## Tune Advisor
+## ABS
 
-Unlike the other pages, the Tune Advisor is the radio's own. While you fly in
-rate mode, the flight controller measures how the model answers the sticks,
-and each time you disarm the radio stores that flight's results. Pick an axis
-to see how it responds and stops, and what the advisor suggests changing and
-why. **Save** writes the suggested changes for that axis to the flight
-controller; **Tool** clears the data it has collected.
+Under the **Drive Aids** group. The timed ABS for the current PID profile
+(the title shows it, such as *ABS #1*): **Mode** (Off, Static or Dynamic),
+**Trigger**, **Pulse Rate**, **Release Floor** and **Hold**, the **Full
+Brake Rate** and **Full Brake Hold** that Dynamic moves towards, and the
+**Rate Added at Lock** and **Hold at Lock** that follow the steering. Each
+PID profile has its own settings, so a profile switch changes them with the
+tune.
 
-![Tune Advisor page](../assets/images/ethos-suite/tune_advisor_changes.png)
+A switch for the **DRIVE AIDS OFF** mode (on the Modes page) turns the drive
+aids off from the transmitter. ABS is also off while disarmed and in
+failsafe.
 
-See [Tune Advisor](tune-advisor.md) for how flights are collected and
-combined, what each suggestion means, what **Save** checks before it writes,
-and how in-flight adjustments affect it.
+The suite has no traction control page yet: set traction control in the
+Configurator or with the EdgeTX scripts.
+
+See [Drive Aids](../driving/drive-aids.md) for what each setting does and
+which ESC setups ABS can run on.
 
 ## Filters
 
@@ -68,13 +83,13 @@ See [Gyro](../configurator/tabs/gyro.md).
 
 ## PID Controller
 
-How the PID loop handles error: in-flight error decay, error limits, I-term
-relax, and the [Cross-Axis Relax](../flight-modes/cross-axis-relax.md) and
-[Snap Relax](../flight-modes/snap-relax.md) settings. The page scrolls.
+How the PID loop handles error: error decay, error limits and I-term relax.
+The page scrolls. It still has a **Cross-Axis Relax** group from WingFlight;
+the firmware no longer has that feature, so leave it alone.
 
 ![PID Controller page](../assets/images/ethos-suite/pid_controller.png)
 
-See also [Profiles: I-Term Relax](../configurator/tabs/profiles.md#i-term-relax).
+See [Profiles](../configurator/tabs/profiles.md).
 
 ## PID Bandwidth
 
@@ -84,44 +99,21 @@ Cutoff frequencies for the gyro, D-term and B-term, per axis.
 
 ## Gain Curves
 
-A gain curve for roll, pitch, yaw, throttle and speed, and the speed range
-the speed curve covers.
+A gain curve per axis, for throttle and for speed, and the speed range the
+speed curve covers. The firmware takes 10 to 300 km/h here (default 60);
+the current suite still offers up to 600 km/h, and the firmware limits a
+value above 300 to 300.
 
 ![Gain Curves page](../assets/images/ethos-suite/gain_curves.png)
 
-See [Profiles: Gain Curves](../configurator/tabs/profiles.md#gain-curves).
+See [Profiles](../configurator/tabs/profiles.md) and
+[Curves](../configurator/tabs/curves.md).
 
 ## Rate Response
 
-How quickly the model follows the sticks: response time, acceleration limit,
-setpoint boost and its cutoff for each axis, and the dynamic ceiling gain.
+How quickly the car follows the steering: response time, acceleration limit,
+setpoint boost and its cutoff per axis, and the dynamic ceiling gain.
 
 ![Rate Response page](../assets/images/ethos-suite/rates_advanced.png)
 
-See [Rates: Dynamics](../configurator/tabs/rates.md#dynamics-expert-mode).
-
-## Flight Modes
-
-The self-levelling modes, one page each.
-
-![Flight Modes menu](../assets/images/ethos-suite/autolevel_menu.png)
-
-| Page | Settings | More |
-| --- | --- | --- |
-| Acro Trainer | Gain, and the bank and pitch limits | [Trainer Mode](../flight-modes/trainer.md) |
-| Angle Mode | Gain, damping, and the bank and pitch limits | [Profiles: Flight-mode settings](../configurator/tabs/profiles.md#flight-mode-settings) |
-| Att Hold | Gain, deadband and rate | [Attitude Hold](../flight-modes/atthold.md) |
-
-![Angle Mode page](../assets/images/ethos-suite/autolevel_angle.png)
-
-## Thrust Vector
-
-For models with thrust vectoring: the same tuning pages again, for the thrust
-vector profile, plus **Att/Hdg Hold**.
-
-![Thrust Vector menu](../assets/images/ethos-suite/thrust_vector_menu.png)
-
-![Thrust Vector Att/Hdg Hold page](../assets/images/ethos-suite/thrust_vector_hold.png)
-
-See [Thrust Vector](../configurator/tabs/thrust-vector.md) and
-[Thrust Vector Attitude Hold](../flight-modes/tv-hold.md).
+See [Rates](../configurator/tabs/rates.md).

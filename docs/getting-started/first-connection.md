@@ -1,16 +1,14 @@
 # First Connection
 
-Once firmware is flashed, connect to the flight controller from the main
+Once firmware is flashed, connect to the controller from the main
 Configurator window (not the Firmware Flasher tab).
 
 ## Connecting
 
-1. Plug in the flight controller via USB (or connect over its configured
+1. Plug in the controller via USB (or connect over its configured
    serial link, e.g. Bluetooth).
 2. Select the correct port in the port picker at the top of the window.
 3. Click **Connect**.
-
-![Configurator welcome screen, with the port picker and Connect button at the top right](../assets/images/configurator-welcome.png)
 
 ## If the firmware version isn't recognized
 
@@ -25,5 +23,6 @@ the CLI even when the full Configurator UI can't be used yet.
 
 Once connected, the **[Status](../configurator/tabs/status.md)** and
 **[Sensors](../configurator/tabs/sensors.md)** tabs are the first useful
-stops -- confirm the gyro/accelerometer are live and the board orientation
-matches your installation before moving on to mixer and servo setup.
+stops -- confirm the gyro/accelerometer are live and the receiver channels move
+before moving on to the [Setup Wizard](car-setup.md), which finds the board
+orientation and sets up the mixer, servos and ESC.

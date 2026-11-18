@@ -1,135 +1,120 @@
 # Failsafe
 
-The Failsafe tab configures how the flight controller *detects* a lost
-radio link, what value each channel takes once it has, and what the
-aircraft does if the link stays down.
+The Failsafe tab sets how the controller *detects* a lost radio link, what
+value each channel takes once it has, and what the car does if the link
+stays down.
 
-![Failsafe tab](../../assets/images/configurator-failsafe.png)
-
-Configure and bench-test failsafe behavior *before* flying -- turn off your
-transmitter at a safe distance from the aircraft (props off) and confirm the
-flight controller actually enters failsafe and behaves the way you expect.
+Set up and bench-test failsafe *before* driving: with the wheels off the
+ground, turn the transmitter off and check that the controller enters
+failsafe and does what you expect.
 
 !!! note
-    If a [Backup RX Input](../../flight-modes/backup-rx-input.md)
-    is configured, losing the main link doesn't reach any of the stages below
-    on its own -- control switches to the backup receiver instead, within
-    the main receiver's own ~100ms signal-loss detection window. The staged
-    failsafe behavior described on this page only takes over if *both* the
-    main link and the backup link are down.
+    If a [Backup RX Input](../../driving/backup-rx-input.md) is configured,
+    losing the main link doesn't reach any of the stages below on its own:
+    control switches to the backup receiver instead. The staged failsafe on
+    this page only takes over if the main link and every backup link are
+    down.
 
 ## Pulse Width Limit
 
-Sets the valid pulse-width range (default 885-2115μs, expert mode only) --
-any channel reporting a value outside it is treated as failed and enters
-failsafe individually, which is what actually feeds the per-channel
-Channel Fallback behavior below and the overall link-loss detection.
+**Minimum Pulse Width** and **Maximum Pulse Width** (default 885-2115 µs)
+set the valid channel range. A channel outside it counts as failed, which
+feeds the Channel Fallback below and the link-loss detection.
 
 ## Channel Fallback
 
-Per-channel behavior once that channel is judged failed:
+What each channel does once it is judged failed:
 
-- **Auto** drives it to a safe value automatically -- center for Roll,
-  Pitch, Yaw; low for Throttle.
-- **Hold** freezes it at its last known-good position.
-- **Set** drives it to a specific value you choose.
+- **Auto** sets a safe value: center for the steering, and neutral for the
+  throttle. Auto is only offered for the steering and throttle channels
+  (and the unused roll and pitch slots).
+- **Hold** keeps the channel at its last good value. This is the default
+  for every channel after the control channels, so an arm or mode switch
+  that was on stays on.
+- **Set** sets the channel to a value you choose, in µs.
+
+The Configurator's help text says Auto sets the throttle "low". On a car the
+firmware sets it to neutral (the Channel Center from the
+[Receiver](receiver.md) tab), so the ESC neither drives nor brakes.
 
 ## What happens when the link is lost
 
-1. **Detects the loss.** No valid frame for about 100ms, a receiver failsafe
-   flag, or a control channel outside the Pulse Width Limit counts as a bad
-   signal.
-2. **Holds for 300ms.** Each channel keeps its last good value.
-3. **Applies Channel Fallback.** After 300ms each channel takes the value
-   set above. With the defaults, roll, pitch and yaw go to center and
-   throttle goes just below the off-throttle threshold. Channels set to
-   **Hold**, which is the default for everything after the four stick
-   channels, keep their last value, so an arm switch or mode switch that was
-   on stays on.
-4. **Runs the Stage 2 - Failsafe Procedure**, below, if the link is still
-   down after `Guard Delay`.
-5. **Blocks arming** while there is no valid signal.
-6. **Bypasses the [Governor](../../flight-modes/governor.md)**, so a
-   governor switch held on cannot keep the motor running past what the
-   procedure commands.
+1. **Detects the loss.** No valid frame for about 100 ms, a receiver
+   failsafe flag, or a control channel outside the Pulse Width Limit counts
+   as a bad signal. Arming is blocked from here on until the link is back.
+2. **Holds for 300 ms.** Each channel keeps its last good value.
+3. **Applies Channel Fallback (stage 1).** After 300 ms each channel takes
+   its fallback value: with the defaults, steering to center and throttle
+   to neutral, aux channels held. The controller keeps steering with the
+   gyro at this point.
+4. **Runs the Stage 2 procedure** if the link is still down after the
+   guard time.
+
+If the car was armed but the throttle had been at neutral for at least
+**Failsafe Throttle Low Delay** when the link was lost, it skips the
+procedure and disarms at once instead. This catches a car that was left
+armed on the bench, or a transmitter switched off after the car stopped.
 
 ## Stage 2 - Failsafe Procedure
 
-Once `Guard Delay` (0.1s units, `failsafe_delay`) elapses with the link
-still down, the flight controller takes over:
+Once the guard time (**Guard time for stage 2 activation**,
+`failsafe_delay`, 0.1 s units, default 1.5 s) has passed with the link
+still down:
 
-- **Land** and **Drop** both switch the aircraft to Angle-style
-  self-leveling immediately -- wings level, controlled pitch -- then cut the
-  motor and disarm after `Land Delay` (`failsafe_off_delay`). Nothing
-  currently distinguishes the two: neither one flares or manages descent
-  rate, so pick either.
-- **GPS Rescue** flies the aircraft home and orbits there, using the
-  settings on the [GPS Navigation](gps-navigation.md) tab -- the same
-  controller as [GPS RTH](../../flight-modes/gps-rth.md), started
-  automatically. If there is no GPS fix or no home position yet, it falls
-  back to the same self-level-and-cut behavior as Land/Drop instead of
-  steering toward an unknown location. If it can't recover the link, it
-  also falls back to the self-level-and-cut ending, after `Land Delay`.
+- **Drop** (the default, `DROP` in the CLI) disarms the car at once, which
+  stops the motor.
+- **Stop** (`AUTO-LAND` in the CLI) sends the **Failsafe throttle**
+  (`failsafe_throttle`, default 1500 µs = neutral) to the ESC for **Delay
+  for turning off the Motors** (`failsafe_off_delay`, 0.1 s units, default
+  1 s), then disarms.
 
-While a procedure is running:
+While a failsafe is active:
 
-- **Throttle** is driven to the `Throttle` setting on this tab
-  (`failsafe_throttle`, PWM, default 1000 = off/motor cut), not to whatever
-  Channel Fallback set for the throttle channel. Raise it if you want the
-  motor to keep running during GPS Rescue or a glide-assisted landing;
-  leave it at the default for a dead-stick landing.
-- Control surfaces keep flying the aircraft regardless of arm state --
-  disarming only cuts the motor.
-- If the link recovers and you bring the sticks back near center, the
-  flight controller hands control back to you (a brief, deliberate check,
-  so a flickering link doesn't hand control back and forth). Once
-  `Recovery Delay` (`failsafe_recovery_delay`) has passed since recovery,
-  the procedure fully exits.
+- The throttle is the **Failsafe throttle**, not the throttle channel's
+  fallback value, and the [drive aids](../../driving/drive-aids.md) don't
+  shape it. Leave it at 1500 (neutral) unless you have a reason not to; a
+  value below neutral brakes (and on some ESCs reverses).
+- [GYRO OFF](../../driving/gyro-off.md) is ignored, so the gyro keeps
+  steering even if the GYRO OFF switch was on when the link went.
+- Once the link returns, the controller needs **Failsafe Recovery Delay**
+  (`failsafe_recovery_delay`) of good signal before you can arm again.
 
-There is no altitude-managed powered landing or flare here -- once the
-motor is cut, it's a glide down in whatever attitude self-leveling holds.
-
-!!! note
-    GPS Rescue flies home and orbits using the aircraft's GPS Navigation
-    settings, on the [GPS Navigation](gps-navigation.md) tab.
+Older configurations may still hold `failsafe_procedure` 2 (GPS Rescue),
+which the Configurator then shows as **GPS Rescue**. GPS Rescue no longer
+exists; choose Drop or Stop.
 
 ## Setting up a safe failsafe
 
-**The receiver's own failsafe is still your first line of defense** -- it
-acts faster (no ~100ms detection window) and does not depend on the flight
-controller's own logic:
+**The receiver's own failsafe is still your first line of defence.** It
+acts faster (no 100 ms detection) and doesn't depend on the controller:
 
-1. On your receiver or transmitter, set failsafe to throttle off (or idle for
-   a glider) and a switch position that selects self-leveling (Angle).
-2. Do this at the receiver, rather than relying on the flight controller
-   fallback alone, because auxiliary channels default to Hold.
-3. To make a mode switch fall back to a known position from the flight
-   controller side, set that channel to **Set** with the value that selects
-   the mode you want, or from the CLI:
+1. On your receiver or transmitter, set failsafe to steering centered and
+   throttle at neutral, or to "no pulses" so the controller detects the
+   loss.
+2. Aux channels default to Hold on the controller side. To make a mode
+   switch fall back to a known position, set that channel to **Set** with
+   the value you want, or in the CLI:
 
    ```
    rxfail 4 s 1900
    ```
 
-   `rxfail <channel> <a|h|s> [value]`, with the channel counted from 0. `a` is
-   Auto (stick channels only), `h` is Hold, and `s` is Set.
-4. Pick a `Stage 2 - Failsafe Procedure` and set `Throttle` deliberately --
-   the default (1000, motor off) means a dead-stick landing; raising it
-   means the motor keeps running through the procedure.
-5. Test it: turn the transmitter off with the props off, and check the
-   surfaces and the motor for each procedure you might use. A receiver that
-   keeps sending normal-looking frames when the link is lost cannot be
-   detected by the flight controller.
+   `rxfail <channel> <a|h|s> [value]`, with the channel counted from 0. `a`
+   is Auto (control channels only), `h` is Hold and `s` is Set.
+3. Pick the Stage 2 procedure and check the Failsafe throttle is neutral.
+4. Test it: wheels off the ground, turn the transmitter off, and check the
+   wheels and the steering for the procedure you use. A receiver that keeps
+   sending normal-looking frames after the link is lost can't be detected
+   by the controller.
 
-## Failsafe switch
+## Failsafe Test Switch
 
-The **FAILSAFE** mode on the [Modes](auxiliary.md) tab makes the flight
-controller treat the four stick channels as invalid, which after the 300ms
-hold and `Guard Delay` runs the same Stage 2 procedure as a real link loss.
-Use it to bench-test your procedure and fallback values, or as a panic
-switch, without needing to actually turn off the transmitter.
+The **FAILSAFE** mode on the [Modes](auxiliary.md) tab triggers failsafe
+from a switch, to bench-test your settings or as a panic switch.
+**Failsafe Switch Action** picks what it does:
 
-`Switch Mode` picks what the **FAILSAFE** switch does: **Stage 1** runs
-Channel Fallback only (as if the link were still there but the four stick
-channels were invalid); **Kill** disarms immediately; **Stage 2** runs the
-full procedure above.
+- **Stage 1** treats the control channels as invalid, as on a real signal
+  loss: after the 300 ms hold and the guard time it runs the Stage 2
+  procedure.
+- **Stage 2** skips stage 1 and runs the procedure at once.
+- **Kill** disarms at once.

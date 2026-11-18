@@ -18,3 +18,29 @@ The following rules have to be taken into consideration when dealing with parame
 7. All changes to parameter group arrays (declared with `PG_DECLARE_ARRAY()`) or arrays contained within the struct of a parameter group require that the version of the parameter group (as defined in `PG_REGISTER..` has to be incremented as well, and the same considerations as for 6. apply;
 8. When creating a new parameter group, the `PG_DECLARE()` / `PG_DECLARE_ARRAY()` shall be placed right after the definition of the struct used as the type of the parameter group in the code. This serves the purpose of making it easy for developers to determine when a struct they are working on is used in a parameter group and subject to these rules;
 9. Any struct that is used as an element in a struct that is used in a parameter group (directly or indirectly) is subject to constraints 6. and 7. above. In order to make it possible for developers to determine that this is the case, a comment `// Used in parameter group <group name>` shall be added after the definition of the struct for every parameter group that the struct is used in.
+
+## Gripora rule: bump the version on every change
+
+Gripora is stricter than rule 5 above. Bump the PG version, the last argument of `PG_REGISTER*`
+(for example `PG_REGISTER_WITH_RESET_TEMPLATE(pidConfig_t, pidConfig, PG_PID_CONFIG, 3)`), in the
+same change whenever a parameter group changes at all:
+
+- fields added, removed, reordered or resized;
+- array lengths changed;
+- default values changed;
+- value ranges changed.
+
+When the firmware loads a stored group whose version does not match, `pgLoad()` (`src/main/pg/pg.c`)
+keeps the defaults instead of restoring it. So a bump makes settings saved by an older build reset to
+the current defaults, rather than being misread or keeping a stale default. That is the intended
+behaviour for an upgrade, and the change should be noted in `Changes.md` (for example "the mixer config
+PG is reset on upgrade (v3)").
+
+The version is stored in the top 4 bits of the PG number (`PGR_PGN_VERSION_MASK`), so it runs from 0
+to 15 and wraps after 15.
+
+## PG numbers
+
+PG numbers are defined in `src/main/pg/pg_ids.h`. Gripora's own groups take numbers from 1000 up,
+for example `PG_DRIVE_CONFIG` (1028) and `PG_DRIVE_AIDS_CONFIG` (1029). Numbers of removed groups are
+kept as reserved comments and are never reused, so an old stored record is never read as a new group.

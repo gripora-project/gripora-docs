@@ -66,13 +66,12 @@ nav:
       - Installing the Configurator: getting-started/installing-the-configurator.md
       - Flashing the Firmware: getting-started/flashing-the-firmware.md
       - First Connection: getting-started/first-connection.md
-      - Set Up Your Aircraft: getting-started/aircraft-setup.md
+      - Set Up Your Car: getting-started/car-setup.md
       - Backup & Restore: getting-started/backup-and-restore.md
       - Safety: getting-started/safety.md
   - Configurator:
       - configurator/index.md
       - Status: configurator/tabs/status.md
-      - Setup: configurator/tabs/setup.md
       - Configuration: configurator/tabs/configuration.md
       - Power: configurator/tabs/power.md
       - Receiver: configurator/tabs/receiver.md
@@ -83,10 +82,8 @@ nav:
       - Curves: configurator/tabs/curves.md
       - Profiles: configurator/tabs/profiles.md
       - Rates: configurator/tabs/rates.md
-      - Thrust Vector: configurator/tabs/thrust-vector.md
       - Gyro: configurator/tabs/gyro.md
       - Modes: configurator/tabs/auxiliary.md
-      - GPS Navigation: configurator/tabs/gps-navigation.md
       - Adjustments: configurator/tabs/adjustments.md
       - Conditions: configurator/tabs/logic.md
       - GPS: configurator/tabs/gps.md
@@ -94,10 +91,21 @@ nav:
       - Beepers: configurator/tabs/beepers.md
       - Sensors: configurator/tabs/sensors.md
       - ESC Programming: configurator/tabs/esc-programming.md
+      - Remap FC: configurator/tabs/remap-fc.md
+      - XACT Servo Programming: configurator/tabs/xact-servo.md
       - FBUS/S.Port Sensors: configurator/tabs/fbus-sensors.md
       - CRSF Sensors: configurator/tabs/crsf-sensors.md
       - Blackbox: configurator/tabs/blackbox.md
+      - Maintenance: configurator/tabs/setup.md
       - CLI: configurator/tabs/cli.md
+  - Driving Modes & Features:
+      - driving/index.md
+      - Car Mixer and Channels: driving/car-mixer.md
+      - Drive State: driving/drive-state.md
+      - Drive Aids: driving/drive-aids.md
+      - GYRO OFF: driving/gyro-off.md
+      - Ready-to-Arm Wiggle: driving/ready-to-arm-wiggle.md
+      - Backup RX Input: driving/backup-rx-input.md
   - Setup:
       - FrSky Servos: setup/frsky-servos.md
   - Ethos Lua Suite:
@@ -105,28 +113,12 @@ nav:
       - Installing: ethos-suite/installing.md
       - Using the App: ethos-suite/using-the-app.md
       - Flight Tuning: ethos-suite/flight-tuning.md
-      - Tune Advisor: ethos-suite/tune-advisor.md
       - Setup: ethos-suite/setup.md
       - Tools and Logs: ethos-suite/tools-and-logs.md
       - Settings: ethos-suite/settings.md
       - Dashboard: ethos-suite/dashboard.md
       - Dashboard Themes: ethos-suite/dashboard-themes.md
-  - Flight Modes & Features:
-      - flight-modes/index.md
-      - Attitude Hold: flight-modes/atthold.md
-      - Thrust Vector Attitude Hold: flight-modes/tv-hold.md
-      - Auto Trim: flight-modes/auto-trim.md
-      - Trainer Mode: flight-modes/trainer.md
-      - Traditional: flight-modes/traditional.md
-      - Passthrough and Manual: flight-modes/setup-gyro-off.md
-      - Ready-to-Arm Wiggle: flight-modes/ready-to-arm-wiggle.md
-      - Cross-Axis Relax: flight-modes/cross-axis-relax.md
-      - Snap Relax: flight-modes/snap-relax.md
-      - Prop-Hang Relax: flight-modes/prop-hang-relax.md
-      - Governor: flight-modes/governor.md
-      - Backup RX Input: flight-modes/backup-rx-input.md
-      - GPS RTH and Loiter: flight-modes/gps-rth.md
-      - GPS Rescue: flight-modes/gps-rescue.md
+  - EdgeTX Lua Scripts: edgetx/index.md
   - Reference:
       - reference/index.md
       - CLI Command Reference: reference/cli-reference.md
@@ -160,10 +152,9 @@ nav:
           - Custom Board Configuration: contributing/tech/custom-boards.md
           - Blackbox Log Format: contributing/tech/blackbox-format.md
           - SmartFuel Internals: contributing/tech/smartfuel.md
-          - Tune Advisor Internals: contributing/tech/tune-advisor.md
           - Hardware Debugging: contributing/tech/hardware-debugging.md
           - Debugging with VS Code and J-Link: contributing/tech/hardware-debugging-vscode-jlink.md
-          - Flight Dynamics: contributing/tech/flight-dynamics.md
+          - Steering Control Dynamics: contributing/tech/flight-dynamics.md
           - RX Wiring Auto-detect: contributing/tech/rx-wiring-autodetect.md
           - ESC Signalling Auto-detect: contributing/tech/esc-signaling-autodetect.md
           - MSP over Telemetry: contributing/tech/msp-over-telemetry.md

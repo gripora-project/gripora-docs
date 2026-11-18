@@ -2,15 +2,15 @@
 
 This page describes how the SmartFuel estimator works and how it is wired into telemetry and MSP. For setting it up from the Configurator, see the [Power tab](../../configurator/tabs/power.md#smartfuel).
 
-SmartFuel provides an intelligent remaining-charge percentage for the flight pack. It is intended to give a more useful "fuel remaining" value than the simple linear voltage-to-percent curve, especially for telemetry display on the radio.
+SmartFuel provides an intelligent remaining-charge percentage for the drive battery. It is intended to give a more useful "fuel remaining" value than the simple linear voltage-to-percent curve, especially for telemetry display on the radio.
 
-SmartFuel always uses pack voltage as its primary input. A configured battery voltage sensor is required; if no voltage sensor is configured, SmartFuel forces itself to `OFF` at startup. In `CURRENT` and `COMBINED` modes, when both `bat_capacity` and used mAh are non-zero, the mAh counter is folded in against the initial voltage-derived anchor (see **Modes** below).
+SmartFuel always uses pack voltage as its primary input. A configured battery voltage sensor is required; if no voltage sensor is configured, SmartFuel stays off (the saved mode is kept, so it starts working once a voltage source is set). In `CURRENT` and `COMBINED` modes, when both `bat_capacity` and used mAh are non-zero, the mAh counter is folded in against the initial voltage-derived anchor (see **Modes** below).
 
 Measured consumption is reported separately by the battery monitoring code and is unaffected by which SmartFuel mode is selected.
 
 ## Modes
 
-`smartfuel` is a four-way lookup parameter:
+`smartfuel` is a four-way lookup parameter (default `CURRENT`):
 
 - `OFF` — SmartFuel does not run; `getBatteryChargeLevel()` falls through to the legacy sources.
 - `VOLTAGE` — voltage-only estimator. Pack voltage drives the percentage (with throttle-based sag compensation); current/consumption are ignored.
@@ -86,14 +86,14 @@ This limiter only applies to the **voltage** half of the estimate. In `CURRENT` 
 
 ### `smartfuel_sag_gain`
 
-Amount of sag compensation applied to the voltage reading before it is turned into a percentage. Voltage sag follows motor current, so the compensation is driven by the motor outputs actually being sent (after the governor), averaged across motors: `0` at idle, `1` at full power on every motor. The firmware adds `smartfuel_sag_gain` hundredths of a volt, multiplied by that load, to the per-cell voltage. It runs whenever the motor is working, not only when the aircraft counts as airborne.
+Amount of sag compensation applied to the voltage reading before it is turned into a percentage. Voltage sag follows motor current, so the compensation is driven by the motor outputs actually being sent (after the output slew), taken as magnitudes because a motor braking or reversing draws current too, and averaged across motors: `0` at neutral, `1` at full power on every motor. The firmware adds `smartfuel_sag_gain` hundredths of a volt, multiplied by that load, to the per-cell voltage. It runs whenever the motor is working.
 
 - Increase it if SmartFuel is too pessimistic under load.
 - Decrease it if SmartFuel is too optimistic under load.
 
 Units: hundredths of a volt per cell at full power, so the default `40` adds up to 0.40 V per cell at full throttle. Valid range **0**–**100** in the CLI and MSP.
 
-A model with no motor (a glider, say) gets no compensation, and a throttle channel that drives something else cannot inject any. Earlier firmware followed roll and pitch stick load and only ran while the aircraft counted as airborne, so at the default it added at most about 0.11 V per cell; if SmartFuel read well on that firmware, it may now read a little more optimistic under load, and lowering the gain compensates.
+A model with no motor output gets no compensation, and a channel that drives something else cannot inject any.
 
 ## Tuning guidance
 
@@ -101,22 +101,22 @@ Start with the defaults and change one parameter at a time.
 
 Suggested workflow:
 
-1. Fly with the default values.
+1. Drive with the default values.
 2. Check whether SmartFuel settles quickly and sensibly after plugging in.
-3. Watch how it behaves during strong climb-outs, hard pitch pumps and unloaded recovery.
-4. Compare the displayed remaining fuel at landing with the pack voltage and with how much reserve you wanted to keep.
+3. Watch how it behaves during hard acceleration, long full-throttle straights and coasting.
+4. Compare the displayed remaining fuel at the end of the run with the pack voltage and with how much reserve you wanted to keep.
 
 Use these adjustment patterns:
 
 - Drops too hard during load: reduce `smartfuel_charge_drop_rate` or increase `smartfuel_sag_gain`.
 - Feels too pessimistic overall under load: increase `smartfuel_sag_gain`.
 - Feels too optimistic overall: reduce `smartfuel_sag_gain`.
-- Tracks real depletion too slowly throughout the flight: increase `smartfuel_voltage_drop_rate` (mV/s) or increase `smartfuel_charge_drop_rate`.
+- Tracks real depletion too slowly throughout the run: increase `smartfuel_voltage_drop_rate` (mV/s) or increase `smartfuel_charge_drop_rate`.
 
 ## Practical notes
 
-- Tune with the battery type and flying style you actually use.
-- Large changes are rarely needed; make small adjustments and re-fly.
+- Tune with the battery type and driving style you actually use.
+- Large changes are rarely needed; make small adjustments and drive again.
 - Different packs may want slightly different behaviour, but the defaults are intended to be a reasonable starting point.
 - SmartFuel is still an estimate. If you have a well-calibrated current sensor and a correctly configured `bat_capacity`, `smartfuel = CURRENT` derives the percentage directly from used mAh (`initial − used / capacity`), independent of voltage sag, and `smartfuel = COMBINED` takes the more pessimistic of the voltage track and that consumption-derived value. To bypass SmartFuel entirely, set `smartfuel = OFF`; `getBatteryChargeLevel()` then uses the legacy behaviour (consumption-based when `bat_capacity` is non-zero, otherwise linear voltage when cell count is known).
 

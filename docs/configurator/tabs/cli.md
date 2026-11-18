@@ -1,6 +1,6 @@
 # CLI
 
-The CLI tab gives direct, text-based access to the flight controller's
+The CLI tab gives direct, text-based access to the controller's
 command-line interface -- the same interface documented in the
 [CLI Command Reference](../../reference/cli-reference.md).
 

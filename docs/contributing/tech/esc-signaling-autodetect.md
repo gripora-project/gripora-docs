@@ -9,7 +9,7 @@ uncovered and fixed). This note only covers what's different here.
 
 ## What's different from the RX version
 
-- **No `inverted` bit.** `escSensorInit()` ([esc_sensor.c:4471](https://github.com/gripora-project/gripora-firmware/blob/master/src/main/sensors/esc_sensor.c#L4471))
+- **No `inverted` bit.** `escSensorInit()` (`src/main/sensors/esc_sensor.c`)
   always opens the port `SERIAL_NOT_INVERTED` - ESC telemetry protocols don't
   invert. So this is a 4-combo search (`halfDuplex` × `pinSwap`), not 8.
 - **No baud confound.** Every protocol here has a baud fixed by the protocol

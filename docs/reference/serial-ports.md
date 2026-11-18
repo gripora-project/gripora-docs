@@ -17,7 +17,7 @@ UART is the most efficient in terms of CPU usage.
 SoftSerial is the least efficient and slowest, SoftSerial should only be used for low-bandwidth usages, such as telemetry transmission.
 
 UART ports are sometimes exposed via on-board USB to UART converters, such as the CP2102.
-If the flight controller does not have an on-board USB to UART converter and doesn't support VCP then an external USB to UART board is required.
+If the controller does not have an on-board USB to UART converter and doesn't support VCP then an external USB to UART board is required.
 These are sometimes referred to as FTDI boards.  FTDI is just a common manufacturer of a chip (the FT232RL) used on USB to UART boards.
 
 When selecting a USB to UART converter choose one that has DTR exposed as well as a selector for 3.3v and 5v since they are more useful.
@@ -305,13 +305,13 @@ For example. If you have your MWOSD connected to UART 2, you could enable commun
 
     serialpassthrough 1
 
-If a baud rate is not specified, or is set to 0, then `serialpassthrough` supports changing of the baud rate over USB. This allows tools such as the MWOSD GUI to dynamically set the baud rate to, for example 57600 for reflashing the MWOSD firmware and then 115200 for adjusting settings without having to powercycle your flight control board between the two.
+If a baud rate is not specified, or is set to 0, then `serialpassthrough` supports changing of the baud rate over USB. This allows tools such as the MWOSD GUI to dynamically set the baud rate to, for example 57600 for reflashing the MWOSD firmware and then 115200 for adjusting settings without having to powercycle your controller board between the two.
 
 _To use a tool such as the MWOSD GUI, it is necessary to disconnect or exit Gripora Configurator._
 
-**To exit serial passthrough mode, power cycle your flight control board.**
+**To exit serial passthrough mode, power cycle your controller board.**
 
-In order to reflash an Arduino based device such as a MWOSD via `serialpassthrough` if is necessary to connect the DTR line in addition to the RX and TX serial lines. The DTR is used as a reset line to invoke the bootloader. The DTR line may be connected to any GPIO pin on the flight control board. This pin must then be associated with a PINIO resource, the instance of which is then passed to the serialpassthrough command. If you don't need it, you can ignore it or set it to `none`. The DTR line associated with any given UART may be set using the CLI command `resource` specifying it as a PINIO resource.
+In order to reflash an Arduino based device such as a MWOSD via `serialpassthrough` if is necessary to connect the DTR line in addition to the RX and TX serial lines. The DTR is used as a reset line to invoke the bootloader. The DTR line may be connected to any GPIO pin on the controller board. This pin must then be associated with a PINIO resource, the instance of which is then passed to the serialpassthrough command. If you don't need it, you can ignore it or set it to `none`. The DTR line associated with any given UART may be set using the CLI command `resource` specifying it as a PINIO resource.
 
 For example, the following configuration for an OpenPilot Revolution shows the UART6 serial port to be configured with TX on pin C06, RX on pin C07 and a DTR connection using PINIO on pin C08.
 
@@ -347,10 +347,10 @@ This will connect using UART 6, with the baud rate set over USB, full duplex, an
 
 A (desirable) side effect of configuring the DTR line to be associated with a PINIO resource, is that when the FC is reset, the attached Arduino device will also be reset.
 
-Note that if DTR is left configured on a port being used with a standard build of MWOSD firmware, the display will break-up when the flight controller is reset. This is because, by default, the MWOSD does not correctly handle resets from DTR. There are two solutions to this:
+Note that if DTR is left configured on a port being used with a standard build of MWOSD firmware, the display will break-up when the controller is reset. This is because, by default, the MWOSD does not correctly handle resets from DTR. There are two solutions to this:
 
 1. Assign the DTR pin using the resource command above prior to reflashing MWOSD, and then dissasociate DTR from the pin.
-2. Rebuild MWOSD with MAX_SOFTRESET defined. The MWOSD will then be reset correctly every time the flight controller is reset.
+2. Rebuild MWOSD with MAX_SOFTRESET defined. The MWOSD will then be reset correctly every time the controller is reset.
 
 ### Passthrough between UARTs
 
@@ -359,7 +359,7 @@ you can make a serial passthrough between UARTs.
 the last three arguments of `serialpassthrough` are used to the passthrough between UARTs: `[port2 id]` `[port2 baud]` `[port2 mode]`, if you don't need passthrough between UARTs, just ignore them, and use `serialpassthrough` according to above description.
 if you want passthrough between UARTs, `[port2 id]` is a required argument, the value range is same with `port1 ID` argument, it is the internal identifier of the serial port. `[port2 baud]`and`[port2 mode]` is optional argument, the default of them are `57600` and `MODE_RXTX`.
 
-For example. If you using a filght controller built-in BLE chip, and the BLE chip was inner connected to a UART, you can use the following command to let the UART to talk with other UART:
+For example. If you using a controller built-in BLE chip, and the BLE chip was inner connected to a UART, you can use the following command to let the UART to talk with other UART:
 ```
 serialpassthrough 0 115200 rxtx none 4 19200
 ```

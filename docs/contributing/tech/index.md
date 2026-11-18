@@ -22,8 +22,6 @@ Configurator. Most users will not need these pages.
   encodings of the log.
 - [SmartFuel Internals](smartfuel.md) -- how the charge estimator works, and its
   MSP interface.
-- [Tune Advisor Internals](tune-advisor.md) -- what the Tune Advisor measures,
-  its advice rules, and exactly which settings it writes.
 
 ## Debugging
 
@@ -31,12 +29,24 @@ Configurator. Most users will not need these pages.
   use them.
 - [Hardware Debugging with VS Code and J-Link](hardware-debugging-vscode-jlink.md)
 
-## Flight control and wiring design
+## Steering control and wiring design
 
-- [Flight Dynamics](flight-dynamics.md) -- the flight-control signal chain, sign
-  conventions, the rationale behind each stage, and a review of known defects
-  with a test plan. Read it before changing flight-control code.
+- [Steering Control Dynamics](flight-dynamics.md) -- the signal chain from the
+  receiver to the steering servo and the ESC, sign conventions, the rationale
+  behind each stage, and the known defects and limitations. Read it before
+  changing the PID, mixer, drive state or drive aids code.
 - [RX serial wiring auto-detect](rx-wiring-autodetect.md) and
   [ESC telemetry signalling auto-detect](esc-signaling-autodetect.md) -- the
   design of the live trial that finds the right inversion, half-duplex and
   pin-swap settings.
+
+## Protocols
+
+- [MSP over Telemetry](msp-over-telemetry.md) -- how the radio scripts carry MSP
+  over S.Port, F.Port, FBUS and CRSF, and what limits the speed.
+
+The firmware identifies itself over MSP as `Gripora` / `GRPA` and speaks MSP API
+33.0. Gripora's own MSP2 messages are named `MSP2_GRIPORA_*` (ids `0x5Fxx`, in
+`src/main/msp/msp_protocol.h`). The Configurator and both radio suites check the
+identifier and accept API 33.x only, so a change to an MSP message affects all of
+them. See also [MSP Overview](../../reference/msp-overview.md).

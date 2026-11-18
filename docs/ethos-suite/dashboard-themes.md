@@ -2,8 +2,8 @@
 
 The dashboard widget comes with several themes. A theme decides what the
 dashboard shows and how it looks. Each theme has three layouts: preflight
-before you arm, inflight while you fly, and postflight after you land. The
-dashboard switches between them by itself.
+before you arm, inflight while you drive, and postflight after you disarm.
+The dashboard switches between them by itself.
 
 Choose the theme under [Settings → Dashboard](settings.md#dashboard): one
 theme for all three phases or a different one for each, and optionally a
@@ -29,9 +29,8 @@ a tile under Settings → Dashboard → Settings.
 
 ## Default
 
-A large voltage arc beside the flight time and link quality. Before the
-flight it also shows the model image, profiles, flight count and Blackbox
-use.
+A large voltage arc beside the run time and link quality. Before the run
+it also shows the model image, profiles, run count and Blackbox use.
 
 === "Preflight"
 
@@ -48,7 +47,7 @@ use.
 ## AERC
 
 Arcs for throttle, RPM and ESC temperature, each with its maximum, under the
-flight time and a fuel bar with pack voltage and mAh used.
+run time and a fuel bar with pack voltage and mAh used.
 
 === "Preflight"
 
@@ -64,8 +63,8 @@ flight time and a fuel bar with pack voltage and mAh used.
 
 ## AERC Nitro
 
-For nitro models: RPM and throttle arcs either side of a segmented BEC
-voltage bar, with the flight time on top.
+For nitro cars: RPM and throttle arcs either side of a segmented BEC
+voltage bar, with the run time on top.
 
 === "Preflight"
 
@@ -81,7 +80,7 @@ voltage bar, with the flight time on top.
 
 ## Basic Timer
 
-A large flight timer, with the profiles, flight count and link quality below
+A large run timer, with the profiles, run count and link quality below
 it.
 
 === "Preflight"
@@ -99,7 +98,7 @@ it.
 ## Claude
 
 A voltage arc, a large fuel ring and an RPM dial, with the timer and
-governor state.
+arming state.
 
 === "Preflight"
 
@@ -116,7 +115,7 @@ governor state.
 ## DanielRC
 
 A text panel in three groups (power, RPM and status, or the second motor on
-twins) with the governor state and flight time.
+twin-motor cars) with the PID profile and run time.
 
 === "Preflight"
 
@@ -150,7 +149,7 @@ voltage on the other.
 ## Kevd
 
 Arcs for ESC temperature, RPM and throttle with their maximums, beside a
-column with the timer, fuel and governor state.
+column with the run time, fuel and arming state.
 
 Needs a dashboard area of at least 784 × 294 pixels, so it is hidden on
 smaller radios such as the X18.
@@ -188,7 +187,7 @@ fuel bar. It takes its colours from the radio's Ethos theme.
 ## KSE5
 
 A ring dashboard after Kyle Stacy's KSE5: rings for fuel, RPM, current and
-ESC temperature, with the governor, voltages and mAh used in tiles below.
+ESC temperature, with the arming state, voltages and mAh used in tiles below.
 Its settings set the full scale of each ring. It takes its colours from the
 radio's Ethos theme.
 
@@ -206,7 +205,7 @@ radio's Ethos theme.
 
 ## RF Status
 
-Voltage and fuel arcs above the governor state, link quality, RPM and timer.
+Voltage and fuel arcs above the arming state, link quality, RPM and timer.
 
 === "Preflight"
 
@@ -222,8 +221,8 @@ Voltage and fuel arcs above the governor state, link quality, RPM and timer.
 
 ## RT-RC
 
-Pack voltage and fuel arcs above the governor state, link quality, RPM and
-timer. Before the flight it adds the model image, profiles, flight count and
+Pack voltage and fuel arcs above the arming state, link quality, RPM and
+timer. Before the run it adds the model image, profiles, run count and
 Blackbox use.
 
 === "Preflight"
@@ -240,7 +239,7 @@ Blackbox use.
 
 ## RT-RC Nitro
 
-RT-RC for nitro models: BEC voltage and throttle arcs in place of pack
+RT-RC for nitro cars: BEC voltage and throttle arcs in place of pack
 voltage and fuel.
 
 === "Preflight"
@@ -257,8 +256,8 @@ voltage and fuel.
 
 ## SRB-RC
 
-A grid of tiles: governor state, BEC voltage, link, RPM, profiles, ESC
-temperature, current and timer above a full-width flight battery bar.
+A grid of tiles: arming state, BEC voltage, link, RPM, profiles, ESC
+temperature, current and timer above a full-width drive battery bar.
 
 === "Preflight"
 
@@ -273,4 +272,12 @@ temperature, current and timer above a full-width flight battery bar.
     ![SRB-RC postflight](../assets/images/ethos-suite/themes/srb-rc-postflight.png)
 
 The screenshots come from the Ethos simulator, so the values are examples.
-The postflight screens use sample flight figures.
+The postflight screens use sample figures.
+
+!!! note "Screenshots from before the car conversion"
+    These screenshots were taken with the WingFlight suite. Since then the
+    themes have been changed for cars: the governor state is replaced by the
+    arming state (or the PID profile on DanielRC), and some *flight* labels
+    now read *run* (FLIGHT TIME is RUN TIME, for example). The layouts are
+    otherwise as shown. The car conversion of the themes is still in
+    progress.

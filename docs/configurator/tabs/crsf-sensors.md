@@ -5,7 +5,7 @@ CRSF Sensors is a dedicated listener for a CRSF-protocol sensor accessory
 spare UART -- separate from the receiver link itself. It's for accessories
 that speak CRSF telemetry frames independently, not for reading data off
 your main RX link, and it's unrelated to [Backup RX
-Input](../../flight-modes/backup-rx-input.md)'s own CRSF option, which is
+Input](../../driving/backup-rx-input.md)'s own CRSF option, which is
 about failing over the *control* link, not reading a sensor.
 
 ## Setting it up
@@ -50,20 +50,23 @@ each consumer needs its own source set explicitly:
 `crsf_sensors_use_baro`: each motor's normal RPM value (whatever it would
 otherwise be -- DShot telemetry, a frequency sensor, none) is replaced with
 the sensor's decoded reading for that index, feeding straight into
-`motor1Speed`/`motor2Speed` (blackbox, OSD, this firmware's own outbound
-CRSF telemetry), RPM Filter, and the Governor's RPM modes alike. There's no
+`motor1Speed`/`motor2Speed` (Blackbox, this firmware's own outbound CRSF
+telemetry), the RPM filter and the car's speed from RPM (the
+[drive state](../../driving/drive-state.md) and speed attenuation) alike.
+The override replaces the values only: on its own it doesn't count as an
+RPM source for the drive state. There's no
 separate protocol selection involved, and no ESC Telemetry setting on the
 Motors tab to touch.
 
 !!! warning
     This is telemetry-rate, not motor-rate. It is **not** a substitute for
     bidirectional DShot or a dedicated RPM/frequency-pin sensor, and
-    **use at your own risk** applies if you turn this on while RPM Filter
-    or the Governor's RPM Idle/Max or RPM Range modes are active -- see
-    the [Gyro](gyro.md#which-filter-should-i-use) tab's and the
-    [Governor](../../flight-modes/governor.md)'s own notes on the same
-    limitation. It's genuinely fine for OSD, blackbox, or telemetry
-    display, where the update rate doesn't matter.
+    **use at your own risk** applies if you turn this on with the RPM
+    filter active -- see the [Gyro](gyro.md#which-filter-should-i-use)
+    tab's note on the same limitation. Where the motor also has another
+    RPM source, the drive state then takes this RPM as the car's speed, so
+    a slow or stale reading makes the gyro fade in and out late. It's fine for Blackbox or telemetry display, where the
+    update rate doesn't matter.
 
 Only voltage/current has a source-selection setting
 (`crsf_sensors_battery_source`, below) -- RPM has nothing else to choose
@@ -129,7 +132,7 @@ Anything else on the wire is safely ignored.
 | `crsf_sensors_use_baro` | `OFF` | Replace a physical barometer's altitude reading with the sensor's, see [above](#what-it-feeds-and-how-to-enable-it). CLI-only. |
 | `crsf_sensors_pinswap` | `ON` | Swap which physical pin this UART uses for RX, see [Setting it up](#setting-it-up). CLI-only. |
 | `crsf_sensors_battery_source` | `AUTO` | Which frame type feeds Voltage Meter Type = CRSF Sensor, see [Battery source](#battery-source). CLI-only. |
-| `crsf_sensors_use_rpm` | `OFF` | Override each motor's RPM with the sensor's reading -- see [RPM](#rpm) for the important caveat before using this for filtering or governing. CLI-only. |
+| `crsf_sensors_use_rpm` | `OFF` | Override each motor's RPM with the sensor's reading -- see [RPM](#rpm) for the important caveat before using this for filtering or the drive state. CLI-only. |
 
 None of these are on the Configurator UI yet -- set them from the CLI, then
 `save`.

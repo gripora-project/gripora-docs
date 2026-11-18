@@ -4,15 +4,12 @@ The Curves tab has three categories -- **Mixer**, **Gain** and **Servo** --
 selected from the tabs along the top. Mixer and Gain each hold a pool of up
 to 8 reusable curves. You edit a curve here, then assign it *by number*
 wherever it's used -- a [Mixer](mixer.md) rule, or a
-[Profiles](profiles.md#flight-feel) axis -- rather than defining the shape
+[Profiles](profiles.md#gain-curves) gain -- rather than defining the shape
 inline there. That reuse is the point: editing curve 3 here updates every
 rule or axis currently assigned to curve 3, so one curve can shape several
 things identically at once. Servo balance curves work differently: there is
 one per physical servo, not a shared pool (see [Servo Balance
 Curves](#servo-balance-curves)).
-
-![Curves tab](../../assets/images/configurator-curves.png)
-
 
 ## Mixer Curves
 
@@ -20,32 +17,32 @@ Curves](#servo-balance-curves)).
 place once weighted onto the output. Both share the rule's own -1000..1000
 scale. The default is a straight diagonal -- input passes straight through
 unchanged -- so there's nothing to assign until you deliberately bend it:
-more resolution near center, a dead zone, an asymmetric response, a
-non-linear throttle-to-motor curve, and so on. Assign one to a rule from
+more resolution near center, a dead zone, an asymmetric steering throw, a
+non-linear throttle-to-ESC curve, and so on. A curve on the ESC rule shapes
+both sides of neutral, forward and brake/reverse. Assign one to a rule from
 the [Mixer](mixer.md) tab.
 
 ## Gain Curves
 
-**X**: stick deflection, 0% (centered) to 100% (full throw) -- the same
-curve applies in both directions, it doesn't distinguish left from right.
-**Y**: a gain multiplier, 0-500%, where 100% means no change. The gain
-actually applied in flight is Master Gain (set per axis in Flight Feel on(profiles.md#flight-feel), with the curve assigned in the Expert
-Mode [Gain Curves](profiles.md#gain-curves) panel) multiplied by this curve's value at
-the current stick position -- so a flat line at 100% has no effect at all.
-Drag a point below 100 to taper gain out as the stick moves that way (a
-softer response out toward the ends of the stick), or above 100 to sharpen
-it there.
+**X**: steering deflection, 0% (centered) to 100% (full lock); the same
+curve applies in both directions. **Y**: a gain multiplier, 0-500%, where
+100% means no change. The gain actually used is Master Gain (set in
+[Driving Feel](profiles.md#driving-feel) on the Profiles tab, with the
+curve assigned in the [Gain Curves](profiles.md#gain-curves) panel)
+multiplied by this curve's value at the current stick position, so a flat
+line at 100% has no effect at all. Drag a point below 100 to taper the gain
+out towards full lock, or above 100 to sharpen it there.
 
-Assigned to the Throttle row, the X axis is throttle (0-100%) instead of
-stick deflection. Assigned to the Speed row, it is GPS speed, from 0 to the
-speed curve range set in the Gain Curves panel -- see
-[Speed](profiles.md#speed-gps-speed-attenuation).
+Assigned to the Throttle row, the X axis is throttle (0-100%, forward and
+brake/reverse alike) instead of steering deflection. Assigned to the Speed
+row, it is the car's speed, from 0 to the speed curve range set in the Gain
+Curves panel; see [Speed](profiles.md#speed-speed-attenuation).
 
 ## Servo Balance Curves
 
-When two or more servos drive the same control surface -- dual ailerons,
-say -- small differences in the servos or linkages mean they never track
-each other perfectly, and the surface can twist or bind at the extremes. A
+When two servos drive the same steering (dual steering servos), small
+differences in the servos or linkages mean they never track each other
+perfectly, and they fight each other or bind at full lock. A
 balance curve trims one servo's travel to match its partner across the
 whole throw, the same idea as the "Balance channels" tool on FrSky ETHOS.
 

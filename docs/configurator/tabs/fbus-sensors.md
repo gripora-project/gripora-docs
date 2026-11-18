@@ -25,17 +25,15 @@ ways:
   observed.
   !!! warning
       The RPM this feeds is telemetry-rate, not motor-rate -- **use at your
-      own risk** for [RPM Filter](gyro.md#rpm-filter) or the
-      [Governor](../../flight-modes/governor.md)'s RPM Idle/Max and RPM
-      Range modes, both of which need bidirectional DShot or a dedicated
-      RPM/frequency-pin sensor to actually track real motor speed. Nothing
-      in firmware stops you selecting it there anyway. It's fine for OSD,
-      blackbox logging, or telemetry display, where the update rate doesn't
-      matter.
+      own risk** for the [RPM Filter](gyro.md#rpm-filter), which needs
+      bidirectional DShot or a dedicated RPM/frequency-pin sensor to track
+      real motor speed. Nothing in firmware stops you selecting it there
+      anyway. It's fine for Blackbox logging or telemetry display, where
+      the update rate doesn't matter.
 - **Forwarding** -- relays a sensor's raw telemetry frames back out over the
   receiver link, so your transmitter/radio displays them directly. This
   matters most for sensor types the firmware doesn't consume itself (a
-  vario or airspeed sensor, for example) -- forwarding is the only way to
+  temperature or vario sensor, for example) -- forwarding is the only way to
   see those values on the radio. The **Forwarded** toggle on this page
   controls it.
 

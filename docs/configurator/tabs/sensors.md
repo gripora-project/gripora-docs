@@ -1,7 +1,7 @@
 # Sensors
 
-The Sensors tab shows live raw sensor data -- gyro, accelerometer,
-magnetometer, barometer -- useful for diagnosing a sensor that seems to be
-misbehaving, or for confirming noise levels before/after a filtering change.
+The Sensors tab shows live raw sensor data (gyro, accelerometer and, where
+fitted, magnetometer and barometer), to diagnose a sensor that seems to be
+misbehaving or to compare noise levels before and after a filtering change.
+The yaw gyro is the one the steering uses.
 
-![Sensors tab](../../assets/images/configurator-sensors.png)

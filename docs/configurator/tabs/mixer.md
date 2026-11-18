@@ -1,205 +1,141 @@
 # Mixer
 
-The Mixer tab defines how virtual control axes (roll, pitch, yaw, throttle)
-map onto your aircraft's actual control surfaces and motor(s) -- the core of
-what makes Gripora a *fixed-wing* mixer rather than a helicopter swashplate
-mixer.
+The Mixer tab decides what drives each output: which servo steers, which
+output is the ESC, and anything else you wire up. It also holds the
+steering throw, the steering invert and the gyro direction.
 
-![Mixer tab](../../assets/images/configurator-mixer.png)
-
-Typical fixed-wing mixer setups include conventional aileron/elevator/rudder
-layouts, flying wings (elevon mixing), V-tails, and multi-motor
-configurations. The **Mixer Setup Wizard** builds a starting rule set from a
-few questions (wing layout, aileron count, tail type) -- a much faster start
-than building rules from scratch, and a good way to see a working example of
-the patterns below.
-
-If your airframe changes (e.g. converting ailerons to flaperons, or adding a
-second motor), this is the tab to revisit.
-
-A rule's output is a servo (1-24) or a motor. It makes no difference
-whether the servo is wired to a PWM output or is a digital bus servo
-(SBUS/FBUS output): servo N is PWM output N and bus channel N alike, so one
+A rule's output is a servo (S1-S24) or a motor (M1-M4). It makes no
+difference whether a servo is wired to a PWM output or is a bus servo on an
+SBUS or F.Bus line: servo N is PWM output N and bus channel N alike, so one
 rule drives both. See [Servos → Bus Servos](servos.md#bus-servos).
+
+## Model Type
+
+**Model Type** is **Car** or **Custom**. **Change Model Type** switches
+between them.
+
+- **Car** builds the rules for you from a few options and shows a summary
+  instead of the rule list. This is the default.
+- **Custom** shows the full rule list for a mix built by hand.
+
+### The car setup
+
+With **Car**, **Edit Configuration** opens the car options. These are always
+set:
+
+- **Steering servo** (front wheels) on **S1**, from the steering stick
+  through the gyro (Stabilized Yaw).
+- **ESC** on **M1**, reversible: forward, brake and reverse (Stabilized
+  Throttle).
+
+Two options can be added:
+
+- **Rear steering (4-wheel steering)** puts a second steering servo on
+  **S2**. **Opposite to the front wheels** gives tighter turns; **Same
+  direction as the front wheels** gives crab steering. **Amount** (0-100%,
+  default 50%) is how far the rear wheels turn compared with the front.
+- **Second ESC** (dual motor, or front and rear motors) on **M2**. It gets
+  the same throttle as M1: forward, brake and reverse.
+
+**Apply** replaces all current mixer rules with the car set. If the board
+doesn't have enough servo outputs for rear steering, the dialog says so;
+assign more outputs on the [Remap FC](remap-fc.md) tab or turn rear
+steering off.
+
+The summary shows what the rules do, for example *Steering on S1, ESC on
+M1*. If the rules were changed by hand and no longer match a car setup, it
+says so; **Edit Configuration** rebuilds them.
+
+If the wheels steer or drive the wrong way, reverse the servo on the
+[Servos](servos.md) tab or the motor direction in the ESC. The mix stays as
+it is.
+
+The car setup names the servos it uses: `STEER`, or `F STEER` and `R STEER`
+with rear steering. See [Servos → Name](servos.md#name).
+
+More on the defaults, the channel order and the gyro direction:
+[Car Mixer and Channels](../../driving/car-mixer.md).
+
+## Steering Throw, Gyro Direction and Steering Invert
+
+- **Steering Throw** scales every rule that reads the steering (Stabilized
+  Yaw) by one percentage, 0-200% (100% is the servo's normal travel). It
+  raises or lowers the throw of all steering servos together, without
+  changing each rule's weight. Pair it with **Steering Override** below to
+  set a target throw: enable the override, command a known percentage,
+  measure the wheel angle, and adjust the throw until it matches.
+- **Gyro Direction** → **Reverse gyro (steering)** reverses only the gyro's
+  correction of the steering, not the stick. Turn it on if, with the wheels
+  off the ground, turning the car by hand makes the steering turn *with*
+  the movement instead of against it. Don't use servo reverse for this: that
+  reverses your steering too. The CLI setting is `yaw_gyro_reverse`. Board
+  orientation and the attitude display are not affected.
+- **Steering Invert** flips every rule that reads the steering, the stick
+  and the gyro correction together.
+
+The gyro correction is turned round for reverse by the controller itself,
+so Gyro Direction is set once, driving forward. See
+[Drive State](../../driving/drive-state.md).
+
+## Steering Override
+
+**Enable steering override** forces a stabilized input to a fixed value
+(-100% to 100%) for setup, for example to center or measure the steering.
+It only works while disarmed, isn't saved, and is reset after a reboot.
+While an override is active, arming is blocked.
 
 ## Rules
 
-Each rule reads one input (a stabilized axis, throttle, an RC channel, etc.)
-and writes it to one output (a servo or motor), combined with whatever's
-already on that output via an **Operator**:
+With **Custom**, the rule list is shown. Each rule reads one input and
+writes it to one output, combined with what's already on that output by its
+**Operator**:
 
-- **Set** overwrites the output outright.
-- **Add** sums onto whatever's already there.
-- **Mul** multiplies whatever's already there.
+- **Set** overwrites the output.
+- **Add** adds to what's already there.
+- **Mul** multiplies what's already there.
 
-Rules run top to bottom in list order, so this matters: the **first** rule
-for a given output should normally be **Set** (it establishes the baseline),
-and any later rule for that *same* output should normally be **Add**
-(layering more input on top) -- a later **Set** silently wipes out
-everything earlier rules wrote to that output, which is rarely what you
-want. The Configurator flags both cases inline so a misordered rule set
-doesn't quietly go unnoticed. This is exactly the pattern behind e.g.
-elevon mixing: Pitch is **Set** on the elevon servo, then Roll is **Add**ed
-on top of it.
+Rules run from top to bottom. The **first** rule for an output should
+normally be **Set**, and later rules for the *same* output **Add**: a later
+**Set** wipes out everything written before it. The Configurator flags both
+cases on the rule.
 
-Other per-rule fields:
+Other fields of a rule:
 
-- **Weight** (0-5000) is how strongly this rule's input drives the output --
-  values above 1000 amplify the input rather than just passing it through.
-- **Differential** (-100% to 100%) suppresses (positive) or boosts
-  (negative) the *negative*-deflection side of this rule relative to the
-  positive side -- the classic aileron-differential trick of reducing
-  down-aileron throw to cut adverse yaw, without touching the input source
-  itself.
-- **Offset** (-2500 to 2500) adds a fixed bias to the output, independent of
-  the input's value.
-- **Speed** (0-60000) limits how fast this rule's output can move, for a
-  slower/softer mechanical response on a specific surface.
-- **Curve** assigns a reshaping curve from the [Curves](curves.md) tab to
-  this rule's input before it's weighted onto the output.
-- **Condition** gates the rule on a condition from the [Conditions](logic.md) tab -- while
-  false, the rule doesn't apply, and its row dims in the table so it's
-  obvious at a glance which rules are actually contributing right now.
-- The rule's **Input** can be a stabilized axis, throttle, or an RC channel,
-  named **CH #N** like every other channel picker in the Configurator. The
-  **Roll**, **Pitch**, **Yaw** and **Throttle** bypass inputs (the raw stick,
-  without stabilization) resolve to whichever receiver channel you've
-  actually mapped to that stick on the [Receiver](receiver.md) tab, not to a
-  fixed channel order.
-- **Role** tags a rule with a recognized job in the mix -- see
-  [Rule Roles](#rule-roles) below.
+- **Input source**: a stabilized input (**Stabilized Yaw** for the
+  steering, **Stabilized Throttle** for the ESC), a commanded input (the
+  stick after rates, without the gyro), an RC input that bypasses
+  everything (**RC Steering (bypass)**, **RC Throttle (bypass)**), or any
+  receiver channel, **CH #N**. The bypass and AUX inputs are labelled with
+  the physical channel they come from in your channel order, for example
+  `CH #1 (Steering)` or `CH #3 (AUX 1)`. Stabilized Roll and Pitch are
+  always zero on a car.
+- **Weight**: how strongly the input drives the output; 1000 is full.
+  **Reverse** flips it.
+- **Differential %** reduces (positive) or boosts (negative) the negative
+  side of the rule relative to the positive side, for example to give a
+  steering servo less throw one way.
+- **Offset** adds a fixed amount to the output.
+- **Speed** limits how fast the rule's output can move.
+- **Curve** reshapes the input with a curve from the [Curves](curves.md)
+  tab before the weight.
+- **Condition** applies the rule only while a condition from the
+  [Conditions](logic.md) tab is true; a rule that is off is dimmed.
+- **Role** tags a rule, see below.
 
-## Rule Roles
+!!! warning "Feed the ESC from Stabilized Throttle"
+    The [drive aids](../../driving/drive-aids.md) (ABS and traction control)
+    and the failsafe throttle act on **Stabilized Throttle**. A rule that
+    feeds an ESC from the RC throttle (bypass) or a raw channel skips them,
+    and the ESC then doesn't get the failsafe throttle either. Stabilized
+    Throttle runs from -1000 (full brake/reverse) to 1000 (full forward),
+    with 0 at neutral.
 
-Most rules are just an ordinary axis-to-surface mapping, unique to your
-airframe and identified by where they sit in the list. A few jobs are
-common enough, and important enough to find again later, that they get
-a **Role** instead: a label on the rule itself, independent of its
-position in the list. Right now that's flap-to-elevator compensation and
-differential-thrust yaw (below), both tagged automatically by the Mixer
-Setup Wizard when you enable them.
+### Rule roles
 
-A rule's Role changes nothing about how it runs -- the mixer itself
-never reads it. A role-tagged rule keeps its own **Reverse** setting no
-matter what an Adjustment does to it: a live adjustment is a *signed scale*
-on top of each tagged rule's own configured direction, not a replacement for
-it. Positive values behave as the Weight and Reverse you set. A negative
-value flips every tagged rule together, so a model that needs the
-compensation the opposite way can get it without editing each rule, the two
-differential-thrust rules stay opposite each other, and same-signed
-flap-compensation rules on a V-tail or flying wing keep their relative
-polarity. What it unlocks is everything *around* the rule:
-
-- Any model type other than Custom shows a **Compensation** table
-  listing just the tagged rules' weights, so tuning one doesn't require
-  opening the full rule list.
-- The [Adjustments](adjustments.md) tab can drive a tagged rule's weight
-  live from a transmitter switch or pot, and keeps working no matter
-  where the rule ends up if you reorder the list later.
-
-## Flaps and Flaperons
-
-Turn on **Flaps** in the Mixer Setup Wizard to drive flaps from channel 5
-(AUX1), and choose how they're fitted:
-
-- **1 servo (shared Y-cable channel)** or **2 independent servos** add
-  flap servos after the other surfaces.
-- **No flap servos -- the ailerons droop as flaps (flaperons)** adds no
-  servos. Both ailerons droop together on the flap channel, on top of
-  their normal roll travel. It's only offered with independent ailerons,
-  since each aileron needs its own servo.
-
-Flaperons use the same channel as flap servos: centre is neutral, and the
-ailerons droop as the channel moves one way and rise as it moves the
-other. The wizard starts the droop at half the aileron's travel, which
-leaves room for roll with the flaps fully down. Set the aileron directions
-in the Setup Wizard or on the [Servos](servos.md) tab first; the
-flaperon rules then droop both ailerons the same way without any
-reversing of their own.
-
-Full flap plus full roll moves the down-going aileron furthest, so check
-it doesn't hit its servo limit. The Setup Wizard's travel step counts the
-flaps when it checks this.
-
-!!! warning "ExpressLRS"
-    Flaps and flaperons need channel 5 as a full-resolution channel. With
-    ExpressLRS, set the switch mode to **Full Res 16ch Rate/2** (100Hz Full
-    or 333Hz Full packet rate). In the other switch modes channel 5 is only
-    a two-position arm switch. See
-    [Receiver → ExpressLRS switch mode](receiver.md#expresslrs-switch-mode).
-
-## Flap-to-Elevator Compensation
-
-Many airframes pitch when flaps go down -- often a nose-up "balloon,"
-sometimes the opposite. If you don't correct for it, the stabilizer will
-quietly paper over a small version of this for you, which can hide the
-problem during most of the flight. But that hidden correction has limits,
-and it tends to run out right on landing approach when you're slow and
-low -- the plane can suddenly pitch up (or down) on you during the flare,
-with no warning it was coming.
-
-The fix is to cancel the pitch change yourself, right in the mixer, so
-the elevator moves with the flaps automatically. If you enabled **Flaps**
-in the Mixer Setup Wizard (with flap servos or
-[flaperons](#flaps-and-flaperons)), this is already set up for you: the wizard
-adds a **Flap Compensation**-[tagged](#rule-roles) rule, at zero weight,
-onto every surface that carries pitch -- the elevator, or both sides of
-a V-tail or elevon layout. Find it in the **Compensation** table (or the
-rule list itself in Custom mode) and raise **Weight** until putting the
-flaps down no longer causes any pitch change with the stick centered. If
-the pitch change isn't even across flap travel (common with multi-stage
-flaps), assign a [Curve](curves.md#mixer-curves) to the rule instead of
-relying on Weight alone.
-
-Building the rule by hand works the same way if you're not using the
-wizard, or need a second one:
-
-1. Find the rule that drives your elevator servo from **Stabilized
-   Pitch** -- this should already exist as a **Set** rule.
-2. Add a new rule **below** it, on the *same* output, reading whatever
-   input drives your flaps (an RC channel, or the same input your flap
-   rule uses). Set its Operator to **Add**, and its Role to **Flap
-   Compensation** if you'd like it to appear in the Compensation table
-   or be adjustable in flight (see below).
-3. Adjust **Weight** (and **Reverse** if it moves the wrong way) until
-   putting the flaps down no longer causes any pitch change with the
-   stick centered.
-4. If the pitch change isn't even across flap travel, assign a
-   [Curve](curves.md#mixer-curves) to the rule instead.
-
-Do this after you've already trimmed the plane for normal cruise flight
-(via [Auto Trim](../../flight-modes/auto-trim.md) or the Servos tab's
-[Trim](servos.md#trim) column) -- this rule is just for the extra pitch change flaps cause, not a
-replacement for trimming the airframe itself.
-
-Once tagged, the rule's Weight can also be mapped to a transmitter switch
-or pot on the [Adjustments](adjustments.md) tab (**Flap Compensation
-Gain**) -- handy for dialing it in during a flight, or adjusting for a
-payload or CG change without reconnecting the Configurator.
-
-## Differential Thrust Yaw
-
-On a twin-motor airframe, the Mixer Setup Wizard's **Differential
-Thrust** option adds extra yaw authority by speeding up one motor and
-slowing the other, on top of normal throttle -- handy on a
-rudderless twin, or as extra authority alongside a rudder you already
-have. Both rules it generates share the **Differential Thrust
-Yaw** [role](#rule-roles) but move opposite directions by design, so
-raising **Differential Thrust Yaw Gain** on the
-[Adjustments](adjustments.md) tab (or the Weight field on either rule)
-scales both together rather than cancelling the differential out.
-
-## Axis Throw / Invert
-
-**Axis Throw** scales *every* rule reading a given stabilized axis (Roll,
-Pitch, Yaw) by one percentage (0-200%, 100% = the servo's normal travel) -- raise or lower
-the combined throw of every surface on that axis (e.g. both aileron
-servos) without re-balancing each rule's Weight individually. **Axis
-Invert** flips every rule reading that axis at once, instead of editing
-each rule's Reverse checkbox by hand.
-
-Pair Axis Throw with **Control Surface Override** below it to calibrate an
-exact throw: enable the override for an axis, command a known percentage
-(e.g. 100%), measure the actual surface deflection with a protractor, then
-adjust that axis's Throw until the measured angle matches your target.
-Override only takes effect while disarmed.
+A **Role** is a label on a rule; the mixer itself never reads it. Two roles
+exist, inherited from WingFlight: **Flap Compensation** and **Differential
+Thrust Yaw**. A tagged rule's weight can be driven live from the
+[Adjustments](adjustments.md) tab (**Flap Compensation Gain**,
+**Differential Thrust Yaw Gain**), which scales every rule with that role,
+and a negative value reverses them together. The car setup doesn't use
+roles.

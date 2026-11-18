@@ -1,6 +1,6 @@
 # LED Strip
 
-Rotorflight supports the use of addressable LED strips.  Addressable LED strips allow each LED in the strip to be programmed with a unique and independent color. This is far more advanced than the normal RGB strips which require that all the LEDs in the strip show the same color.
+Gripora supports the use of addressable LED strips.  Addressable LED strips allow each LED in the strip to be programmed with a unique and independent color. This is far more advanced than the normal RGB strips which require that all the LEDs in the strip show the same color.
 
 ## LED Strip Profiles
 
@@ -11,14 +11,14 @@ The LED strip feature supports 4 LED strip profiles: RACE, BEACON, STATUS and ST
 
 The STATUS profile is used to display all the information mentioned below, i.e. warning indications, Larson scanner etc, positional lights, ACL.
 
-Addressable LED strips can be used to show information from the flight controller system and supports:
+Addressable LED strips can be used to show information from the controller system and supports:
 
 * Up to 32 LEDs.
 * User definable blink patterns.
 * AUX operated switching between LED profiles.
-* Indicators showing pitch/roll stick positions.
+* Indicators showing roll/pitch stick positions (not used on a car).
 * Heading/Orientation lights.
-* Flight mode specific color schemes.
+* Orientation colour schemes.
 * Low battery warning.
 * GPS state.
 * RSSI level.
@@ -30,12 +30,12 @@ The STATUS_ALT profile works just like the STATUS_PROFILE, except for LEDs with 
 
 ### RACE Profile
 
-The RACE profile is used to set ALL strip LEDs to the selected color for racing, i.e. to identify aircraft by LED color.  The LED color is fixed and no other information is displayed.
+The RACE profile is used to set ALL strip LEDs to the selected color for racing, i.e. to identify cars by LED color.  The LED color is fixed and no other information is displayed.
 
 
 ### BEACON Profile
 
-The BEACON profile is used to find a lost heli, it flashes all LEDs white once per second.  Again in this profile no other information is displayed on the LEDs.
+The BEACON profile is used to find a lost car, it flashes all LEDs white once per second.  Again in this profile no other information is displayed on the LEDs.
 
 
 ### LED Profile Selection
@@ -153,7 +153,7 @@ The LED strip feature can be configured via the Configurator or the CLI.
 ### Configurator
 First enable the *LED_STRIP* feature in the *Configuration* tab. The *LED Strip* tab should now become visible.
 
-Now go to the *LED Strip* tab and configure the LEDs. First setup how the LEDs are laid out so that you can visualize it later as you configure and so the flight controller knows how many LEDs there are available.
+Now go to the *LED Strip* tab and configure the LEDs. First setup how the LEDs are laid out so that you can visualize it later as you configure and so the controller knows how many LEDs there are available.
 
 There is a step by step guide on how to use the Configurator to [configure the Led Strip feature](http://blog.oscarliang.net/setup-rgb-led-cleanflight/) which was published early 2015 by Oscar Liang.
 
@@ -193,9 +193,9 @@ Note: It is perfectly possible to configure an LED to have all directions `NESWU
 Each LED has one base function:
 
 * `C` - `C`olor.
-* `F` - `F`light mode & Orientation
+* `F` - Orientation (named `F`light mode in the code)
 * `A` - `A`rmed state.
-* `R` - `R`ing thrust state.
+* `R` - `R`ing throttle state.
 * `G` - `G`PS state.
 * `S` - R`S`SSI level.
 * `L` - Battery `L`evel.
@@ -204,10 +204,10 @@ And each LED can have one ore more overlays:
 
 * `W` - `W`warnings.
 * `I` - `I`ndicator.
-* `T` - `T`hrust state.
+* `T` - `T`hrottle state.
 * `B` - `B`link mode.
 * `O` - Lars`O`n Scanner (Cylon Effect).
-* `V` - `V`TX Frequency.
+* `V` - reserved (VTX removed; no effect).
 * `K` - Flic`K`er.
 * `D` - Fa`D`e.
 
@@ -247,7 +247,7 @@ This mode simply uses the LEDs to flash when warnings occur.
 
 | Warning | LED Pattern | Notes |
 |---------|-------------|-------|
-| Arm-lock enabled | flash between green and off | occurs during calibration or when unarmed and the aircraft is tilted too much |
+| Arming disabled | flash between green and off | while disarmed with any arming disable flag set, for example during calibration or with the throttle off neutral |
 | Low Battery | flash red and off | battery monitoring must be enabled.  May trigger temporarily under high-throttle due to voltage drop |
 | Failsafe | flash between light blue and yellow | Failsafe must be enabled |
 
@@ -304,18 +304,18 @@ This overlay makes the LED flicker, a bit like a candle. Set the flicker rate us
 
 #### Fade to alt color
 
-A LED with this overlay will fade to the alternate color in the profile STATUS_ALT. Specify Black as the alternate color to turn LEDs of (e.g. for switching off landing lights). You can set the fade rate with `ledstrip_fade_rate`.
+A LED with this overlay will fade to the alternate color in the profile STATUS_ALT. Specify Black as the alternate color to turn LEDs off (e.g. for switching off headlights). You can set the fade rate with `ledstrip_fade_rate`.
 
 #### Larson Scanner (Cylon Effect)
 
 The Larson Scanner replicates the scanning "eye" effect seen on the mechanical Cylons and on Kitt from Knight Rider.
 This overlay dims all of the LEDs it is assigned to and brightens certain ones at certain times in accordance with the animation. The animation is active regardless of arm state.
 
-#### Flight Mode & Orientation
+#### Orientation
 
-This mode shows the flight mode and orientation.
-
-When flight modes are active then the LEDs are updated to show different colors depending on the mode, placement on the grid and direction.
+This function (`F`, "flight mode" in the code) colours LEDs by the direction
+they face and where they sit on the grid. The flight-mode colour schemes of
+the flight controller are gone; Gripora always uses the orientation colours.
 
 LEDs are set in a specific order:
  * LEDs that marked as facing up or down.
@@ -324,70 +324,42 @@ LEDs are set in a specific order:
 
 That is, south facing LEDs have priority.
 
-The mapping between modes LED placement and colors is currently fixed and cannot be changed.
+| Direction | Default colour |
+|--------|---------------------|
+| North  | WHITE |
+| East   | DARK VIOLET |
+| South  | RED |
+| West   | DEEP PINK |
+| Up     | BLUE |
+| Down   | ORANGE |
 
 #### Indicator
 
-This mode flashes LEDs that correspond to roll and pitch stick positions.  i.e.  they indicate the direction the craft is going to turn.
-
-| Mode | Direction | LED Color |
-|------------|--------|---------------------|
-|Orientation | North  | WHITE			|
-|Orientation | East   | DARK VIOLET	|
-|Orientation | South  | RED			|
-|Orientation | West   | DEEP PINK		|
-|Orientation | Up     | BLUE			|
-|Orientation | Down   | ORANGE		|
-| | | |
-|Head Free   | North  | LIME GREEN 	|
-|Head Free   | East   | DARK VIOLET 	|
-|Head Free   | South  | ORANGE 		|
-|Head Free   | West   | DEEP PINK 	|
-|Head Free   | Up     | BLUE 			|
-|Head Free   | Down   | ORANGE 		|
-| | | |
-|Angle       | North  | CYAN			|
-|Angle       | East   | DARK VIOLET 	|
-|Angle       | South  | YELLOW 		|
-|Angle       | West   | DEEP PINK 	|
-|Angle       | Up     | BLUE 			|
-|Angle       | Down   | ORANGE 		|
-| | | |
-|Mag         | North  | MINT GREEN	|
-|Mag         | East   | DARK VIOLET 	|
-|Mag         | South  | ORANGE 		|
-|Mag         | West   | DEEP PINK 	|
-|Mag         | Up     | BLUE 			|
-|Mag         | Down   | ORANGE 		|
-| | | |
-|Baro        | North  | LIGHT BLUE 	|
-|Baro        | East   | DARK VIOLET 	|
-|Baro        | South  | RED 			|
-|Baro        | West   | DEEP PINK 	|
-|Baro        | Up     | BLUE 			|
-|Baro        | Down   | ORANGE 		|
+This overlay flashes LEDs that correspond to the roll and pitch stick
+positions. A car doesn't use roll and pitch (with the default channel map
+they are CH7 and CH8), so on a car this overlay normally does nothing.
 
 #### Armed state
 
 This mode toggles LEDs between green and blue when disarmed and armed, respectively. If arming is disabled the LED will be set to the background color, which usually is black.
 
-Note: Armed State cannot be used with Flight Mode.
+Note: Armed State cannot be used with Orientation.
 
-#### Thrust state
+#### Throttle state
 
-This mode fades the current LED color to the previous/next color in the HSB color space depending on throttle stick position.  When the throttle is in the middle position the color is unaffected, thus it can be mixed with orientation colors to indicate orientation and throttle at the same time.  Thrust should normally be combined with Color or Mode/Orientation.
+This overlay fades the current LED color to the previous/next color in the HSB color space depending on the throttle position.  At neutral the color is unaffected; forward throttle and brake/reverse shift it in opposite directions. It can be mixed with orientation colors to show orientation and throttle at the same time, and should normally be combined with Color or Orientation. The channel it follows can be changed with `mode_color` (see below).
 
-#### Thrust ring state
+#### Throttle ring state
 
-This mode is allows you to use one or multiple LED rings (e.g. NeoPixel ring) for an afterburner effect. LEDs with this mode will light up with their assigned color in a repeating sequence. Assigning the color black to an LED with the ring mode will prevent the LED from lighting up.
+This mode is allows you to use one or multiple LED rings (e.g. NeoPixel ring) for an animated effect. LEDs with this mode will light up with their assigned color in a repeating sequence. Assigning the color black to an LED with the ring mode will prevent the LED from lighting up.
 
-A better effect is achieved when LEDs configured for thrust ring have no other functions.
+A better effect is achieved when LEDs configured for the ring have no other functions.
 
-LED direction and X/Y positions are irrelevant for thrust ring LED state.  The order of the LEDs that have the state determines how the LED behaves, and the throttle value determines the animation rate. The animation is only active while armed.
+LED direction and X/Y positions are irrelevant for ring LEDs.  The order of the LEDs that have the state determines how the LED behaves, and the throttle value determines the animation rate. The animation is only active while armed.
 
 Each LED of the ring can be a different color. The color can be selected between the 16 colors available.
 
-For example, LED 0 is set as a `R`ing thrust state LED in color 13 as follow.
+For example, LED 0 is set as a `R`ing LED in color 13 as follow.
 
 ```
 led 0 2,2::R:13
@@ -466,19 +438,18 @@ Mode Colors can be configured using the cli `mode_color` command.
 - No arguments: lists all mode colors
 - arguments: mode, function, color
 
-First 8 groups of ModeIndexes are :
+The mode indexes are:
 
 | mode | name        |
 |------|-------------|
 | 0    | orientation |
-| 1    | headfree    |
-| 3    | angle       |
-| 4    | mag         |
-| 5    | baro        |
-| 6    | special     |
-| 7    | channel     |
+| 1    | reserved (was horizon) |
+| 2    | angle (no longer used) |
+| 3    | rescue (no longer used) |
+| 4    | special     |
+| 5    | channel     |
 
-Modes 0 to 5 functions:
+Modes 0 to 3 functions:
 
 | function | name  |
 |----------|-------|
@@ -489,7 +460,7 @@ Modes 0 to 5 functions:
 | 4        | up    |
 | 5        | down  |
 
-Mode 6 use these functions:
+Mode 4 (special) uses these functions:
 
 | function | name               |
 |----------|--------------------|
@@ -504,22 +475,23 @@ Mode 6 use these functions:
 
 The ColorIndex is picked from the colors array ("palette").
 
-Mode 7 is used along with Thrust state to make the LED color dependent on a channel different from the throttle.
+Mode 5 sets the channel the Throttle state overlay follows, instead of a
+colour: its last value is the channel in the firmware's order (0 roll,
+1 pitch, 2 yaw, 3 throttle, 4 AUX1 and so on). The default is the throttle.
 
 Examples (using the default colors):
 
-- set armed color to red: ```mode_color 6 1 2```
-- set disarmed color to yellow: ```mode_color 6 0 4```
-- set Headfree mode 'south' to Cyan: ```mode_color 1 2 8```
-- set color dependent on AUX 1 in Thrust state: ```mode_color 7 0 4```
+- set armed color to red: ```mode_color 4 1 2```
+- set disarmed color to yellow: ```mode_color 4 0 4```
+- set orientation 'south' to cyan: ```mode_color 0 2 8```
+- make the Throttle state overlay follow AUX 1: ```mode_color 5 0 4```
 
 ## Positioning
 
 You can place LEDs anywhere along the strip and give each one a position on a grid, functions and
 colours, with the Configurator's LED Strip tab or the `led` CLI command. Which function suits
-which position depends on your airframe: for example, an indicator LED on each wing tip, and a
-warning or status LED where you can see it. The layout examples that used to be here were for
-multirotor frames and have been removed. Run `led` in the CLI to see the syntax.
+which position depends on your car: for example, orientation LEDs as head- and tail lights, and a
+warning or status LED where you can see it. Run `led` in the CLI to see the syntax.
 
 ## Troubleshooting
 

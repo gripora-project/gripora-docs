@@ -3,14 +3,18 @@
 Firmware is flashed from the Configurator's **Firmware Flasher** tab, which
 walks you through the whole process as a step-by-step wizard.
 
-![Firmware Flasher wizard on its first (Connect) step](../assets/images/configurator-firmware-flasher.png)
-
 ## Picking a build
 
 Gripora firmware is currently published as numbered development
-snapshots (e.g. `0.0.23`) rather than stable releases, while the project is
+snapshots (e.g. `0.0.2`) rather than stable releases, while the project is
 in its early stages. The Firmware Flasher lists available builds per target
 board, pulled from the project's build history.
+
+Gripora builds one firmware per MCU family (a *unified target*, such as
+`STM32F405` or `STM32F7X2`). What makes it fit your board, the pin mapping
+and board defaults, is a board config from
+[gripora-targets](https://github.com/gripora-project/gripora-targets) that
+the flasher combines with the firmware when you pick your board.
 
 ## The flashing wizard
 
@@ -22,7 +26,7 @@ between them.
    app picks up newly plugged-in devices automatically; the browser build
    asks for permission through its device chooser.
 2. **Board** -- pick your target board. **Detect My Board** reads it from a
-   connected flight controller, or **Select board manually instead** if you
+   connected controller, or **Select board manually instead** if you
    would rather choose it yourself (or the board is in DFU mode, which
    can't be auto-detected). The selected board's default config is combined
    with the firmware at flash time.

@@ -1,6 +1,6 @@
 # Hardware Debugging with VSCode and JLink
 
-This doc will guide you to set up Rotorflight firmware debugging in VSCode.
+This page sets up Gripora firmware debugging in VS Code. It was written for Rotorflight (from which Gripora inherits its build), so the example board is a Rotorflight-era one.
 
 ## Assumptions and Prerequisites
 
@@ -11,7 +11,7 @@ This doc will guide you to set up Rotorflight firmware debugging in VSCode.
   * Linux build environment.
   * VSCode workspace connected to the build environment.
   * JLink, VSCode and build environment can be on 3 different hosts.
-  * Optionally, use rotorflight-configurator to download your built firmware once, to load board config.
+  * Optionally, use the Gripora Configurator to flash your built firmware once, to load board config.
 
 ## Setup
 
@@ -27,7 +27,7 @@ This doc will guide you to set up Rotorflight firmware debugging in VSCode.
   3. Run `make clean` once, in case you have some cached `.o` and `.elf` without debug info.
 
 ### VSCode
-  1. Open your rotorflight-firmware workspace.
+  1. Open your gripora-firmware workspace.
   2. Install extension [Cortex-Debug](https://marketplace.visualstudio.com/items/?itemName=marus25.cortex-debug).
   3. Add these settings to `.vscode/settings.json`:
 ```
@@ -63,7 +63,7 @@ This doc will guide you to set up Rotorflight firmware debugging in VSCode.
     {
       "name": "Launch STM32F7X2 JLink",
       "cwd": "${workspaceRoot}",
-      "executable": "${workspaceRoot}/obj/main/rotorflight_STM32F7X2.elf",
+      "executable": "${workspaceRoot}/obj/main/gripora_STM32F7X2.elf",
       "request": "launch",
       "type": "cortex-debug",
       "servertype": "jlink",
@@ -97,7 +97,7 @@ This doc will guide you to set up Rotorflight firmware debugging in VSCode.
   ![VSCode Launch](assets/vscode/VSCode-Launch.png)\
   VSCode will build, download and start a debug session.
   5. JLink by default only erases affected sections. Therefore, the configuration will preserve. In case you did
-  not pre-load board config in the prerequisite steps, you can still manually download it from [rotorflight-target (Flydragon V2)](https://github.com/rotorflight/rotorflight-targets/blob/master/configs/FDRC-FLYDRAGONF722_V2.config) and load it in cli.
+  not pre-load board config in the prerequisite steps, you can still load your board's configuration from [gripora-targets](https://github.com/gripora-project/gripora-targets) in the CLI.
 
 ## Advanced debugging topic
 
@@ -107,7 +107,7 @@ Use this Launch configuration:
     {
       "name": "Attach STM32F7X2 JLink",
       "cwd": "${workspaceRoot}",
-      "executable": "${workspaceRoot}/obj/main/rotorflight_STM32F7X2.elf",
+      "executable": "${workspaceRoot}/obj/main/gripora_STM32F7X2.elf",
       "request": "attach",
       "type": "cortex-debug",
       "servertype": "jlink",

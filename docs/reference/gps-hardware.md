@@ -1,23 +1,24 @@
 # GPS Hardware and Module Setup
 
-This page covers the GPS module: hardware, wiring, and configuring a u-blox or NMEA receiver. The [GPS tab](../configurator/tabs/gps.md) in the Configurator sets most of this up. GPS features in Gripora are experimental. Please share your findings with the developers.
+This page covers the GPS module: hardware, wiring, and configuring a u-blox or NMEA receiver. The [GPS tab](../configurator/tabs/gps.md) in the Configurator sets most of this up.
 
-GPS works best if the GPS receiver is mounted above and away from other sources of interference.
+A GPS is optional on a car. Gripora uses it for:
 
-The compass/mag sensor should be well away from sources of magnetic interference, e.g. keep it away from power wires, motors, ESCs.
+- the speed for the [speed attenuation](../configurator/tabs/profiles.md) (`fw_spa_*`) when the motor has no RPM source. With an RPM source the wheel speed from the motor RPM is used instead, and the GPS isn't needed for it;
+- position, speed and altitude in telemetry and the Blackbox log;
+- the `GPS BEEP SATELLITE COUNT` mode and the GPS beeper tones.
 
-Two GPS protocols are supported. NMEA text and UBLOX binary.
+GPS works best if the GPS receiver is mounted on top of the car, away from the ESC, motor and receiver antennas and other sources of interference.
 
-## RTH and Loiter
+A compass/mag sensor, if fitted, should be well away from sources of magnetic interference: power wires, motors, ESCs.
 
-GPS RTH and Loiter are described on their own page: [GPS RTH and Loiter](../flight-modes/gps-rth.md). They are
-experimental. The Failsafe tab's [GPS Rescue](../flight-modes/gps-rescue.md) procedure uses the same controller.
+The GPS protocols are NMEA (text), UBLOX (binary), and GPS data received over MSP, F.Bus or CRSF.
 
 ## Configuration
 
 Enable the GPS from the CLI as follows:
 
-1. [configure a serial port to use for GPS.](serial-ports.md) 
+1. [configure a serial port to use for GPS.](serial-ports.md)
 1. set your GPS baud rate
 1. set the `gps_provider` to `NMEA` or `UBLOX`
 1. connect your GPS to the serial port configured for GPS.
@@ -25,24 +26,25 @@ Enable the GPS from the CLI as follows:
 
 Note:  GPS packet loss has been observed at 115200.  Try using 57600 if you experience this.
 
-For the connections step check the Board documentation for pins and port numbers.
+For the connections step check the board documentation for pins and port numbers.
 
 ### GPS Provider
 
-Set the `gps_provider` appropriately, for example `set gps_provider=UBLOX`
+Set the `gps_provider` appropriately, for example `set gps_provider=UBLOX`. The default is `NMEA`.
 
-| Value    |
-| -------- |
-| NMEA     |
-| UBLOX    |
+| Value | Source |
+| ----- | ------ |
+| NMEA  | NMEA module on a serial port |
+| UBLOX | u-blox module on a serial port, binary protocol |
+| MSP   | GPS data sent to the controller over MSP |
+| FBUS  | An F.Bus GPS sensor, with the controller as F.Bus master |
+| CRSF  | GPS from a CRSF sensor input |
 
-GPS navigation ([GPS RTH and Loiter](../flight-modes/gps-rth.md), and the GPS Rescue failsafe) only runs with `UBLOX`. NMEA works for position and telemetry, but navigation won't engage on it.
-
-The GPS port speed matters as well. At 38400 baud or faster a u-blox module is set to 10 Hz; at 19200 it is set to 5 Hz; at 9600 navigation won't engage. With `gps_auto_config = OFF` the update rate is whatever the module is set to and is not checked, so set it to 5 Hz or faster yourself.
+With `UBLOX` and `gps_auto_config = ON` the module is set to 10 Hz at 38400 baud or faster, and to 5 Hz on a slower port (or if the module refuses 10 Hz). At 9600 baud a u-blox module can't carry 5 Hz.
 
 ### GPS Auto configuration
 
-When using UBLOX it is a good idea to use GPS auto configuration so your FC gets the GPS messages it needs.
+When using UBLOX it is a good idea to use GPS auto configuration (on by default) so the controller gets the GPS messages it needs.
 
 Enable GPS auto configuration as follows `set gps_auto_config=ON`.
 
@@ -52,11 +54,12 @@ If you are not using GPS auto configuration then ensure your GPS receiver sends 
 
 When using a UBLOX GPS the SBAS mode can be configured using `gps_sbas_mode`.
 
-The default is AUTO.
+The default is NONE.
 
 | Value    | Region        |
 | -------- | ------------- |
 | AUTO     | Global        |
+| NONE     | SBAS off      |
 | EGNOS    | Europe        |
 | WAAS     | North America |
 | MSAS     | Asia          |
@@ -75,7 +78,7 @@ from the CLI: `serialdebug` lists the ports and `serialdebug <port>` shows
 the GPS port in detail. Then:
 
 1. `serialdebug monitor <port>` shows the raw data from the module.
-   Nothing at all usually means wiring: the module's TX goes to the flight
+   Nothing at all usually means wiring: the module's TX goes to the
    controller's RX, and it needs power and ground.
 2. `serialdebug scan <port>` finds the baud rate the module is sending at.
 
@@ -157,7 +160,11 @@ Select `Save current configuration` and click `Send`.
 
 ### UBlox Navigation model
 
-Gripora will use `Pedestrian` when gps auto config is used.
+With GPS auto configuration, `gps_ublox_mode` picks the dynamic model sent to
+the module: `AIRBORNE` (the default, inherited from the flight-controller
+code) sends Airborne, `PEDESTRIAN` sends Pedestrian, and `DYNAMIC` starts with
+Pedestrian and switches to Airborne once the GPS has a fix. There is no
+automotive model setting.
 
 From the UBlox documentation:
 

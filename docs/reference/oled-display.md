@@ -1,8 +1,8 @@
 # Display
 
-Gripora supports displays to provide information to you about your aircraft and Gripora state.
+Gripora supports displays to provide information about your car and Gripora's state.
 
-When the aircraft is armed the display does not update so flight is not affected.  When disarmed the display cycles between various pages.
+When the car is armed the display does not update, so driving is not affected.  When disarmed the display cycles between various pages.
 
 There is currently no way to change the information on the pages, the list of pages or the time between pages - Code submissions via pull-requests are welcomed!
 
@@ -12,7 +12,7 @@ At this time no other displays are supported other than the SSD1306 / UG-2864HSW
 
 ## Configuration
 
-From the CLI enable the `DISPLAY` feature
+From the CLI enable the `DASHBOARD` feature
 
 ```
 feature DASHBOARD
@@ -22,7 +22,7 @@ feature DASHBOARD
 ### SSD1306 OLED displays
 
 The SSD1306 display is a 128x64 OLED display that is visible in full sunlight, small and consumes very little current.  
-This makes it ideal for aircraft use.
+This makes it ideal for use in a model.
 
 There are various models of SSD1306 boards out there, they are not all equal and some require addtional modifications
 before they work.  Choose wisely!
@@ -39,6 +39,6 @@ The banggood.com display is the cheapest at the time fo writing and will correct
 
 ## Connections
 
-Connect +5v, Ground, I2C SDA and I2C SCL from the flight controller to the display.
+Connect +5v, Ground, I2C SDA and I2C SCL from the controller to the display.
 
 

@@ -1,6 +1,6 @@
 # Telemetry
 
-Telemetry allows you to know what is happening on your aircraft while you are flying it.  Among other things you can receive battery voltages and GPS positions on your transmitter.
+Telemetry allows you to know what is happening on your car while you are driving it.  Among other things you can receive battery voltages and GPS positions on your transmitter.
 
 Telemetry can be either always on, or enabled when armed.  If a serial port for telemetry is shared with other functionality then telemetry will only be enabled when armed on that port.
 
@@ -14,7 +14,7 @@ feature TELEMETRY
 ## Telemetry sensors
 
 The sensors sent to the radio over S.Port, F.Port, FBUS and custom CRSF are
-chosen on the [Receiver tab](../configurator/tabs/receiver.md#telemetry-sensors),
+chosen on the [Receiver tab](../configurator/tabs/receiver.md),
 or with the `telemetry_sensors` CLI setting (a list of sensor IDs, up to 40).
 
 New and reset configurations select the sensors the Gripora Lua suites use:
@@ -28,7 +28,7 @@ set telemetry_sensors = 3,4,5,6,15,43,50,52,58,59,60,89,91,99,120,121,0,0,0,0,0,
 | 3 | Battery voltage | 58 | Altitude |
 | 4 | Battery current | 59 | Vario |
 | 5 | Consumption (mAh) | 60 | Motor speed |
-| 6 | Charge level (SmartFuel) | 89 | Flight mode |
+| 6 | Charge level (SmartFuel) | 89 | Mode |
 | 15 | Throttle | 91 | Arming disable flags |
 | 43 | BEC voltage | 99 | Adjustments |
 | 50 | ESC temperature | 120 | System status |
@@ -44,12 +44,12 @@ For CRSF (ELRS and Crossfire), `crsf_telemetry_mode` selects what is sent:
 
 - `CUSTOM` (the default): the sensors selected above, which the Gripora Lua
   suites decode.
-- `NATIVE`: the standard CRSF frames (battery, attitude, altitude, GPS, flight
+- `NATIVE`: the standard CRSF frames (battery, attitude, altitude, GPS,
   mode, RPM and temperature) that any radio understands without a script.
 
 ### Status sensors
 
-Two sensors carry the flight controller's status as bitfields, so a radio
+Two sensors carry the controller's status as bitfields, so a radio
 script can read many flags from one sensor. The Gripora Lua suites decode
 them for their [callouts and dashboard alerts](radio-alerts.md).
 
@@ -58,8 +58,8 @@ them for their [callouts and dashboard alerts](radio-alerts.md).
 | 120 | System Status | `0x5140` | `0x1230` | 100 ms |
 | 121 | System Config | `0x5141` | `0x1231` | 500 ms |
 
-They replace the older arming flags (90), PID, rate, battery, LED and thrust
-vector profile (95-98, 118) and GPS fix type (119) sensors, which are no
+They replace the older arming flags (90), PID, rate, battery, LED and
+thrust vector profile (95-98, 118) and GPS fix type (119) sensors, which are no
 longer sent. Bit 31 of both words is never set, because S.Port sends the value
 as a signed number.
 
@@ -68,22 +68,21 @@ as a signed number.
 | Bits | Meaning |
 |---|---|
 | 0 | Armed |
-| 1 | Airborne |
+| 1 | Running: armed and the throttle has left neutral; stays set until disarm |
 | 2 | Motors running |
 | 3 | Main receiver has signal |
 | 4 | Backup receiver has signal |
 | 5 | Backup receiver in control (main receiver down) |
-| 6-8 | Failsafe phase: 0 idle, 1 RX loss detected, 2 landing, 3 landed, 4 RX loss monitoring, 5 RX loss recovered, 6 GPS rescue |
+| 6-8 | Failsafe phase: 0 idle, 1 RX loss detected, 2 AUTO-LAND holding the failsafe throttle, 3 disarmed by failsafe, 4 RX loss monitoring, 5 RX loss recovered (6 was GPS rescue, no longer used) |
 | 9-10 | GPS fix: 0 none, 1 fix, 2 fix and home recorded |
 | 11 | GPS module communicating |
-| 12-13 | GPS mode blocked: 0 none, 1 Loiter switched on but can't fly, 2 RTH switched on but can't fly |
+| 12-13 | Reserved (were GPS navigation), read as 0 |
 | 14-16 | Battery state: 0 OK, 1 warning, 2 critical, 3 not present, 4 initialising |
-| 17 | Control surfaces at their limit (held for 500 ms) |
+| 17 | Stabilized output at its mixer limit, for example the steering at full lock (held for 500 ms) |
 | 18 | Gyro overflow |
 | 19 | Accelerometer not calibrated |
-| 20 | Setup state: a setup tool is holding the model (setup wizard, forced mode, servo probe, or servo, mixer or motor override) |
-| 21 | A flight aid is holding (Attitude Hold, thrust vector hold, or the Trainer limiting) |
-| 22-23 | Auto Trim: 0 idle, 1 capturing, 2 captured, saved on disarm |
+| 20 | Setup state: a setup tool is holding the car (setup wizard, forced mode, servo probe, or servo, mixer or motor override) |
+| 21-23 | Reserved (were the aircraft assists and Auto Trim), read as 0 |
 | 24 | Blackbox logging |
 | 25-28 | Logic conditions 1-4 |
 
@@ -94,7 +93,7 @@ as a signed number.
 | 0-2 | PID profile (1-6) |
 | 3-5 | Rate profile (1-6) |
 | 6-8 | Battery profile (1-6) |
-| 9-11 | Thrust vector profile (1-6) |
+| 9-11 | Reserved (was the thrust vector profile), read as 0 |
 | 12 | Unsaved settings |
 | 13 | Saving settings |
 | 14 | Reboot required |
@@ -105,10 +104,8 @@ as a signed number.
 | 19 | GPS present |
 | 20 | Backup receiver configured |
 | 21 | Blackbox full |
-| 22 | Motor RPM telemetry present |
-| 23-24 | Out of trim, roll: 0 in trim, 1 trim right, 2 trim left |
-| 25-26 | Out of trim, pitch: 0 in trim, 1 trim nose up, 2 trim nose down |
-| 27-28 | Out of trim, yaw: 0 in trim, 1 trim right, 2 trim left |
+| 22 | Motor RPM telemetry arriving |
+| 23-29 | Reserved (were the trim monitor and GPS navigation), read as 0 |
 
 **Manual decoding examples**
 
@@ -119,8 +116,8 @@ GPS fix field, not two separate GPS flags.
 | Sensor | Radio value | Bit string, bits 31-0 | Manual reading |
 |---|---|---|---|
 | System Status | `2568` (`0x00000A08`) | `00000000000000000000101000001000` | Bit 3 is set, so the main receiver has signal. Bits 9-10 read as `1`, so GPS has a fix. Bit 11 is set, so the GPS module is communicating. |
-| System Status | `18893839` (`0x01204C0F`) | `00000001001000000100110000001111` | Bits 0-3 are set, so the aircraft is armed, airborne, motors are running and the main receiver has signal. Bits 9-10 read as `2`, so GPS has a fix and home is recorded. Bits 14-16 read as `1`, so battery state is warning. Bits 21 and 24 show an assist is holding and Blackbox is logging. |
-| System Config | `1774154` (`0x001B124A`) | `00000000000110110001001001001010` | Bits 0-2 read as `2`, so PID profile 2 is active. Bits 3-5, 6-8 and 9-11 each read as `1`, so rate, battery and thrust-vector profile 1 are active. Bit 12 shows unsaved settings. Bits 16, 17, 19 and 20 show accelerometer, barometer and GPS present, with backup RX configured. |
+| System Status | `16796687` (`0x01004C0F`) | `00000001000000000100110000001111` | Bits 0-3 are set, so the car is armed, running, the motor is running and the main receiver has signal. Bits 9-10 read as `2`, so GPS has a fix and home is recorded, and bit 11 shows the GPS module is communicating. Bits 14-16 read as `1`, so battery state is warning. Bit 24 shows Blackbox is logging. |
+| System Config | `1773642` (`0x001B104A`) | `00000000000110110001000001001010` | Bits 0-2 read as `2`, so PID profile 2 is active. Bits 3-5 and 6-8 each read as `1`, so rate and battery profile 1 are active. Bit 12 shows unsaved settings. Bits 16, 17, 19 and 20 show accelerometer, barometer and GPS present, with backup RX configured. |
 
 Bit positions can change between firmware versions, together with the Lua
 suites that decode them. Use matching firmware and Lua suite versions.
@@ -134,7 +131,7 @@ supported in Gripora.
 
 All telemetry systems use serial ports, configure serial ports to use the telemetry system required.
 
-Some telemetry signals, such as FrSky SmartPort, are inverted. Use a flight controller with a built-in inverter or
+Some telemetry signals, such as FrSky SmartPort, are inverted. Use a controller with a built-in inverter or
 software-configurable inversion, and set:
 
 ```
@@ -185,48 +182,27 @@ More information about the implementation can be found here: https://github.com/
 
 ### Available sensors
 
-The following sensors are transmitted :
+S.Port sends the sensors selected in `telemetry_sensors` (see
+[Telemetry sensors](#telemetry-sensors) above), each under its own S.Port
+data ID: battery voltage, current, consumption and charge level, the control
+inputs, ESC and BEC readings, temperatures, altitude and vario, motor speed,
+attitude and accelerations, GPS, CPU load, the model id, mode, arming flags,
+the status sensors, adjustments and the debug values. The Receiver tab lists
+them by name.
 
-| Name| Description|
-| ----| -----------|
-| A4 | average cell value. Warning : unlike FLVSS sensors, you do not get actual lowest value of a cell, but an average : (total lipo voltage) / (number of cells) |
-| Alt | barometer based altitude, init level is zero. |
-| Vspd | vertical speed, unit is cm/s. |
-| Hdg | GPS course over ground (direction of travel, not where the nose points), North is 0°, South is 180°. Shown as "GPS Course" in the Configurator and the Ethos suite. |
-| AccX,Y,Z | accelerometers values. |
-| Tmp1 | actual flight mode, sent as 4 digits. Number is sent as (1)1234. Please ignore the leading 1, it is just there to ensure the number as always 5 digits (the 1 + 4 digits of actual data) the numbers are aditives (for example, if first digit after the leading 1 is 6, it means GPS Home and Headfree are both active) <ol><li>1 is GPS Hold, 2 is GPS Home, 4 is Headfree</li><li>1 is mag enabled, 2 is baro enabled, 4 is sonar enabled</li><li>3. 1 is angle, 4 is passthrough</li><li>4. 1 is ok to arm, 2 is arming is prevented,  4 is armed</li></ol> |
-| Tmp2 | GPS lock status, Number is sent as 1234, the numbers are aditives<ol><li>1 is GPS Fix, 2 is GPS Home fix</li><li>HDOP (0-9, 0 is HDOP >= 5.5m, 9 is HDOP <= 1.0m)</li><li>number of sats</li><li>number of sats</li></ol> |
-| VFAS | actual vbat value. |
-| GAlt | GPS altitude, sea level is zero. |
-| GSpd | current speed, calculated by GPS. |
-| GPS | GPS coordinates. |
-| 420 | GPS distance to home |
-| Cels | average cell value, vbat divided by cell number. |
-
-> Gripora will send Cels (FLVSS Individual Cell Voltages Telemetry), disable the setting to use actual FLVSS sensor with:
-> ```
-> set report_cell_voltage = OFF
-> ```
->
-> Note: cell voltage values are an assumed reputation of the cell voltage based on the packs voltage. Actual cell voltage may differ. It is recommeded that you chain the flight controllers telemetry with a real Frsky FLVSS s.port sensor.
->
-> To view individual cells or more importantly to get lowest cell (all cells are the sum of vbat, so each cell is the same in this case):
-> See [OpenTX 2.1 & FrSky FLVSS Individual Cell Voltages](http://openrcforums.com/forum/viewtopic.php?t=7266).
-> Add a new sensor, to display the lowest cell voltage set it up like this:
-> - Type: Calculated
-> - Formula: Cell
-> - Cell Sensor: Cels _(pack total voltage, sum of all cells)_
-> - Cell Index: Lowest
+`report_cell_voltage = ON` reports the average cell voltage (pack voltage
+divided by the cell count) instead of the pack voltage. It is an estimate,
+not a per-cell reading; chain a FrSky FLVSS sensor for real cell voltages.
 
 ### Integrate Gripora telemetry with FrSky Smartport sensors
 
-While Gripora telemetry brings a lot of valuable data to the radio, there are additional sensors, like Lipo cells sensor FLVSS, that can be a great addition for many aircrafts. Smartport sensors are designed to be daisy chained, and CF telemetry is no exception to that. To add an external sensor, just connect the "S" port of the FC and sensor(s) together, and ensure the sensor(s) are getting connected to GND and VCC either from the controler or the receiver
+While Gripora telemetry brings a lot of valuable data to the radio, there are additional sensors, like Lipo cells sensor FLVSS, that can be a great addition for many models. Smartport sensors are designed to be daisy chained, and CF telemetry is no exception to that. To add an external sensor, just connect the "S" port of the FC and sensor(s) together, and ensure the sensor(s) are getting connected to GND and VCC either from the controler or the receiver
 
 ![Smartport diagram](../assets/images/integrate_smartport.png)
 
 ## S.Port master sensor input
 
-Rotorflight can also poll external FrSky S.Port sensors directly on a dedicated bidirectional serial port. This is separate from `FUNCTION_TELEMETRY_SMARTPORT`, which sends flight controller telemetry out to the receiver or radio. `FUNCTION_SPORT_MASTER` makes the flight controller act as the S.Port bus master so external sensors can be read into the shared FBUS sensor cache.
+Gripora can also poll external FrSky S.Port sensors directly on a dedicated bidirectional serial port. This is separate from `FUNCTION_TELEMETRY_SMARTPORT`, which sends controller telemetry out to the receiver or radio. `FUNCTION_SPORT_MASTER` makes the controller act as the S.Port bus master so external sensors can be read into the shared FBUS sensor cache.
 
 ### Configuration
 
@@ -275,7 +251,7 @@ It runs at a fixed baud rate of 115200.
 
 It should be possible to daisy chain multiple sensors with ibus. This is implemented but not tested because i don't have one of the sensors to test with, the FC shall always be the last sensor in the chain.
 
-It is possible to combine serial rx and ibus telemetry on the same uart pin on the flight controller, see [Rx](receivers.md).
+It is possible to combine serial rx and ibus telemetry on the same uart pin on the controller, see [Rx](receivers.md).
 
 ### Configuration
 
@@ -313,7 +289,7 @@ These receivers are reported to work with i-bus telemetry:
 - FlySky/Turnigy FS-iA10B 10-Channel Receiver (http://www.flysky-cn.com/products_detail/productId=52.html)
 
 
-Note that the FlySky/Turnigy FS-iA4B 4-Channel Receiver (http://www.flysky-cn.com/products_detail/productId=46.html) seems to work but has a bug that might lose the binding, DO NOT FLY the FS-iA4B!
+Note that the FlySky/Turnigy FS-iA4B 4-Channel Receiver (http://www.flysky-cn.com/products_detail/productId=46.html) seems to work but has a bug that might lose the binding, DO NOT DRIVE the FS-iA4B!
 
 
 ## Jeti EX Bus telemetry
@@ -381,6 +357,6 @@ The following sensors should setup on your radio and Gear ratio for RPM Sensor a
 | --- | --- | --- |
 | 1 | Voltage | FC Voltage sensor. Pack and cell voltages |
 | 3 | Current | FC Current sensor. |
-| 6 | RPM sensor | Headspeed |
+| 6 | RPM sensor | Motor 1 speed: motor RPM through `motor1_gear_ratio`, so wheel RPM |
 | 7 | Temperature | MCU Core temp |
 | 8 | Kontronic ESC | ESC telemetry data |
