@@ -1756,6 +1756,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -3813,12 +3841,15 @@ conversion is in progress. Keep these in mind when changing anything:</p>
   auto trim, the tune advisor and the MANUAL and TRADITIONAL modes are gone,
   but their mode (BOX), adjustment, parameter group, debug and MSP ids are kept
   as reserved so later ids do not move. Never reuse or renumber them.</li>
-<li><strong>Remaining aircraft concepts</strong> (for example the <code>WINGFLIGHT_AIRPLANE</code> build
-  marker) are due to be replaced by car equivalents. Don't extend them, and ask
-  before deleting them.</li>
+<li><strong>The aircraft mixer concepts are gone.</strong> The control-surface presets, the
+  aircraft model types and the <code>WINGFLIGHT_AIRPLANE</code> build marker have been
+  removed; the model types are <code>CAR</code> and <code>CUSTOM</code>, and there is no build-time
+  fork marker. Inherited comments and receiver-protocol channel names may
+  still say aileron or elevator. Don't add new aircraft concepts.</li>
 <li><strong>Car features go under <code>src/main/flight/</code></strong> (the directory name is
   inherited) until a reorganisation is agreed: <code>drive.c</code> (drive state),
-  <code>drive_aids.c</code> (ABS and traction control), <code>speed_atten.c</code>.</li>
+  <code>drive_aids.c</code> (ABS, traction control and launch control),
+  <code>speed_atten.c</code>; DRIFT is <code>pidApplyDrift()</code> in <code>pid.c</code>.</li>
 <li><strong>WingFlight fixes</strong> can be pulled in from the <code>upstream</code> remote
   (<code>WingFlight/wingflight-firmware</code>). Keep diffs to inherited code small so
   that stays easy.</li>
@@ -3829,8 +3860,8 @@ working first, and <a href="../code-guidelines/">Code Guidelines and Testing</a>
 changing steering, mixer or arming code.</p>
 <h3 id="keep-stable-interfaces-stable">Keep stable interfaces stable<a class="headerlink" href="#keep-stable-interfaces-stable" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Do not renumber permanent mode (BOX) ids. <code>GYRO OFF</code> is 12 and <code>DRIVE AIDS
-  OFF</code> is 66.</li>
+<li>Do not renumber permanent mode (BOX) ids. <code>GYRO OFF</code> is 12, <code>DRIVE AIDS
+  OFF</code> 66, <code>LAUNCH</code> 67 and <code>DRIFT</code> 68.</li>
 <li>Keep MSP and CLI backward compatible where you can. If a setting is renamed,
   keep an alias where practical and record it in the firmware's <code>Changes.md</code>.</li>
 </ul>

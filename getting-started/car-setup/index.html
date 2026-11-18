@@ -1874,6 +1874,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -3710,7 +3738,12 @@ the car as you go.</p>
   the wizard reopens on the same step when the controller is back.</li>
 <li><strong>The car can't be armed while the wizard is open.</strong> The Status tab shows
   the SETUP flag while a setup tool holds the outputs.</li>
+<li><strong>Only steering servos.</strong> The servo steps (center, direction, binding
+  limits) work on the servos that the mixer drives from the stabilised
+  steering. The wizard names them <strong>STEER</strong>, or <strong>F STEER</strong> and <strong>R STEER</strong>
+  with rear steering. A servo driven by anything else is left alone.</li>
 </ul>
+<p><img alt="The Setup Wizard's Steering direction step: the wizard holds the steering and asks whether the front wheels steer right" src="../../assets/images/configurator-wizard-steering-direction.png" /></p>
 <p>The same wizard is in the <a href="../../ethos-suite/tools-and-logs/">Ethos Lua Suite</a>
 under <strong>Tools → Setup Wizard</strong>, so setup can also be done from a FrSky radio.
 Receiver port and protocol setup is only in the Configurator, because the
@@ -3773,11 +3806,11 @@ radio talks to the controller through the receiver.</p>
 </tr>
 <tr>
 <td>13. Mode switches</td>
-<td>Put ARM, and any other modes you want, on switches. Only ARM is required. <strong>GYRO OFF</strong> turns the gyro off; <strong>DRIVE AIDS OFF</strong> turns the drive aids off; <strong>LAUNCH</strong> stages a launch for launch control.</td>
+<td>Put ARM, and any other modes you want, on switches. Only ARM is required. <strong>GYRO OFF</strong> turns the gyro off; <strong>DRIVE AIDS OFF</strong> turns the drive aids off; <strong>LAUNCH</strong> stages a launch for launch control; <strong>DRIFT</strong> turns on <a href="../../driving/drift/">drift mode</a>.</td>
 </tr>
 <tr>
 <td>14. Driving style</td>
-<td><strong>Beginner</strong> (steering 90 °/s, 20 % expo), <strong>Sport</strong> (150 °/s, 30 %) or <strong>Drift</strong> (300 °/s, 60 %): how fast the car turns at full steering and how the I-term behaves while you steer. Starting points to tune from.</td>
+<td><strong>Beginner</strong> (steering 90 °/s, 20 % expo), <strong>Sport</strong> (150 °/s, 30 %) or <strong>Drift</strong> (300 °/s, 60 %): how fast the car turns at full steering and how the I-term behaves while you steer. Starting points to tune from. The Drift style sets rates only; it doesn't turn on the DRIFT mode.</td>
 </tr>
 <tr>
 <td>15. Finish</td>

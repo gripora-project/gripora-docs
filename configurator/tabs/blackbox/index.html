@@ -1874,6 +1874,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -3695,7 +3723,8 @@ gaps if the chip is slow to erase mid-run.</p>
 tool that only reads <code>flightModeFlags</code> misses the modes past the 32nd. The
 separate mode change <em>event</em> carries only the first word.</p>
 <p>The log header records the drive aids settings of the profile in use
-(<code>drive_abs</code>, <code>drive_tc</code>).</p>
+(<code>drive_abs</code>, <code>drive_tc</code>, <code>drive_lc</code>) and its <a href="../../../driving/drift/">DRIFT</a>
+settings (<code>drift</code>: gain, allowed turn rate, limit).</p>
 <h2 id="log-files-over-usb">Log files over USB<a class="headerlink" href="#log-files-over-usb" title="Permanent link">&para;</a></h2>
 <p>When the controller is plugged in as a USB drive (mass storage), log
 files are named after the car name (Configuration tab), followed by
@@ -3704,6 +3733,9 @@ a sequence number and timestamp. With no car name set, the prefix is
 <code>grpa_002_20251012_141213.bbl</code>.</p>
 <h2 id="reviewing-logs">Reviewing logs<a class="headerlink" href="#reviewing-logs" title="Permanent link">&para;</a></h2>
 <p>Open a <code>.bbl</code> file in the Gripora Blackbox viewer to play the run back.
+The <strong>Car</strong> button shows a 3D car that follows the logged attitude
+(heading, pitch and roll); its position and size on the screen are set
+under <strong>Car Settings</strong>.
 Each graph stacks related fields, such as the steering setpoint against the
 turn rate from the gyro, then the servo and motor outputs, with the legend showing every
 field's value at the cursor. The strip along the bottom shows the whole log

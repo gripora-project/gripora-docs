@@ -1756,6 +1756,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -2537,6 +2565,17 @@
     <span class="md-ellipsis">
       
         Drive aids (per PID profile)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drift-per-pid-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drift (per PID profile)
       
     </span>
   </a>
@@ -3988,6 +4027,17 @@
     <span class="md-ellipsis">
       
         Drive aids (per PID profile)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drift-per-pid-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drift (per PID profile)
       
     </span>
   </a>
@@ -5832,6 +5882,42 @@ but they hold zero and have no effect on a car.</p>
 <td><code>100..5000</code></td>
 <td><code>1000</code></td>
 <td>From the start throttle to full, ms</td>
+</tr>
+</tbody>
+</table>
+<h3 id="drift-per-pid-profile">Drift (per PID profile)<a class="headerlink" href="#drift-per-pid-profile" title="Permanent link">&para;</a></h3>
+<p>The DRIFT mode's settings, one set per PID profile (select it with <code>profile &lt;n&gt;</code> first). They act only while the DRIFT mode is on, outside failsafe and with GYRO OFF off. See <a href="../../driving/drift/">DRIFT</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Scope</th>
+<th>Values</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>drift_gain</code></td>
+<td>PID profile</td>
+<td><code>0..200</code></td>
+<td><code>100</code></td>
+<td>Counter-steer gain, %: 100 gives full lock 360 °/s past <code>drift_allow</code>; 0 = no counter-steer</td>
+</tr>
+<tr>
+<td><code>drift_allow</code></td>
+<td>PID profile</td>
+<td><code>0..720</code></td>
+<td><code>30</code></td>
+<td>Turn rate the gyro leaves alone, °/s</td>
+</tr>
+<tr>
+<td><code>drift_limit</code></td>
+<td>PID profile</td>
+<td><code>10..100</code></td>
+<td><code>100</code></td>
+<td>Most counter-steer the gyro adds, % of full lock</td>
 </tr>
 </tbody>
 </table>
@@ -8485,8 +8571,8 @@ order on the receiver. With the default car map <code>RT1234AE</code>, CH1 is st
 CH2 throttle, CH3-CH6 AUX1-AUX4 and CH7/CH8 roll and pitch.</p>
 <p>The optional last argument, <code>&lt;role&gt;</code>, is a label for the Configurator: <code>0</code>
 none (the default when omitted), <code>1</code> Flap Compensation, <code>2</code> Differential
-Thrust Yaw. Both named roles are inherited from WingFlight; the mixer never
-reads the role. See <a href="../../configurator/tabs/mixer/">Mixer</a>.</p>
+Thrust Yaw. Both named roles are inherited from WingFlight aircraft mixes;
+the mixer never reads the role, and the Configurator only offers none. See <a href="../../configurator/tabs/mixer/">Mixer</a>.</p>
 
 
 

@@ -1756,6 +1756,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -3676,8 +3704,8 @@ which blocks arming.</p>
 </div>
 <p>The steps are: Sensors and level, Receiver, Servo bus, Model, Servo type,
 ESC, ESC telemetry, Center, Steering direction, Binding limits, Gyro
-direction, Trim and gain, Mode switches (ARM, GYRO OFF, DRIVE AIDS OFF),
-Driving style and Finish. A checklist button in the header lists them all
+direction, Trim and gain, Mode switches (ARM, GYRO OFF, DRIVE AIDS OFF,
+LAUNCH, DRIFT), Driving style and Finish. A checklist button in the header lists them all
 and jumps to any one.</p>
 <p>What differs from the Configurator:</p>
 <ul>
@@ -3685,6 +3713,10 @@ and jumps to any one.</p>
   channel order (CH1 steering, CH2 throttle). The receiver's port and
   protocol can only be set in the Configurator, because the radio talks to
   the controller through the receiver.</li>
+<li>Like the Configurator's, it works only on steering servos (the servos the
+  mixer drives from the stabilised steering) and names them <strong>STEER</strong>, <strong>F
+  STEER</strong> / <strong>R STEER</strong> for a pair, or <strong>STEER n</strong> for more. The Steering
+  direction step reverses any servo that moves the wrong way.</li>
 <li>Changes reach the car as you make them and are kept only once saved.
   Leaving the wizard with unsaved changes asks whether to <strong>Save</strong> or
   <strong>Discard</strong> them; closing the tool can't ask, so it leaves them on the

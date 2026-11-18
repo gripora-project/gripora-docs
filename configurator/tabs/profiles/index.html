@@ -1269,6 +1269,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#drift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drift
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1938,6 +1949,34 @@
     
   
     GYRO OFF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
   
 
     
@@ -3791,6 +3830,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#drift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drift
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3818,8 +3868,8 @@
 
 <h1 id="profiles">Profiles<a class="headerlink" href="#profiles" title="Permanent link">&para;</a></h1>
 <p>The Profiles tab holds the PID profiles: the steering stabilizer's tune,
-how it changes with throttle and speed, and the drive aids. Each profile is
-a complete set, so a profile can be a tune for one track or surface.</p>
+how it changes with throttle and speed, the drive aids and the drift
+settings. Each profile is a complete set, so a profile can be a tune for one track or surface.</p>
 <p>Up to six profiles can be stored (fewer on boards with little memory). Pick
 the one to edit from the profile selector at the top; the loaded profile is
 shown there. <strong>Copy profile</strong> copies the current one to another, and
@@ -4043,6 +4093,48 @@ Stabilized Throttle, as the car mixer preset does; a rule fed straight from
 the RC throttle bypasses them.</p>
 <p>What each setting does, and which ESC setups ABS can't run on:
 <a href="../../../driving/drive-aids/">Drive Aids</a>.</p>
+<h2 id="drift">Drift<a class="headerlink" href="#drift" title="Permanent link">&para;</a></h2>
+<p>The <strong>Drift</strong> panel sets up the <strong>DRIFT</strong> mode. While DRIFT is on (put it on
+a switch on the <a href="../auxiliary/">Modes</a> tab), the steering wheel steers the
+wheels directly, as with GYRO OFF, and the gyro only counter-steers when the
+car rotates faster than the allowed rate. There is no heading hold.</p>
+<p><img alt="The Drift panel on the Profiles tab, with the preview line under the three settings" src="../../../assets/images/configurator-profiles-drift.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Range</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Counter-steer gain</strong></td>
+<td>100 %</td>
+<td>0-200 %</td>
+<td>How hard the gyro counter-steers past the allowed rate. 100 % gives full lock 360 °/s past it; 0 % turns the counter-steer off.</td>
+</tr>
+<tr>
+<td><strong>Allowed turn rate</strong></td>
+<td>30 °/s</td>
+<td>0-720 °/s</td>
+<td>Turn rate the gyro leaves alone, so the car can hold a slip angle. Raise it to hold more angle.</td>
+</tr>
+<tr>
+<td><strong>Counter-steer limit</strong></td>
+<td>100 %</td>
+<td>10-100 %</td>
+<td>The most lock the gyro adds, as a share of full lock. Lower it if the counter-steer snaps the car straight.</td>
+</tr>
+</tbody>
+</table>
+<p>The line under the settings shows where the counter-steer starts and the
+turn rate at which it reaches full lock, or its limit. The settings belong
+to the profile selected at the top and are saved and reverted with it. The
+panel is hidden on firmware without drift mode.</p>
+<p>How DRIFT works with GYRO OFF, failsafe and the drive state, and how to tune
+it: <a href="../../../driving/drift/">DRIFT</a>.</p>
 
 
 

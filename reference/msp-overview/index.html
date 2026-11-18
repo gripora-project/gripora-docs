@@ -1756,6 +1756,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -3642,9 +3670,14 @@ Use the Configurator and Lua scripts from the same release as the firmware.</p>
 <td><code>0x5F41</code></td>
 <td>Flags (aids on, ABS armed, ABS releasing, traction control armed, traction control holding back, launch staged, launching), throttle in and throttle out</td>
 </tr>
+<tr>
+<td><code>MSP2_GRIPORA_DRIFT_CONFIG</code> / <code>MSP2_GRIPORA_SET_DRIFT_CONFIG</code></td>
+<td><code>0x5F42</code> / <code>0x5F43</code></td>
+<td>The <a href="../../driving/drift/">DRIFT</a> settings of the current PID profile: <code>U8</code> counter-steer gain %, <code>U16</code> allowed turn rate °/s, <code>U8</code> counter-steer limit %</td>
+</tr>
 </tbody>
 </table>
-<p>A <code>SET</code> request for the drive or drive aids settings is refused as a whole
+<p>A <code>SET</code> request for the drive, drive aids or drift settings is refused as a whole
 if any value is out of range. <code>MSP_SET_MIXER_CONFIG</code> accepts only the car
 model types (<code>CAR</code>, <code>CUSTOM</code>).</p>
 <h2 id="removed-messages">Removed messages<a class="headerlink" href="#removed-messages" title="Permanent link">&para;</a></h2>
@@ -3665,7 +3698,8 @@ message that stays, such as the angle, trainer, attitude hold and relax
 fields of <code>MSP_PID_PROFILE</code>, are zero placeholders. Commands for features
 removed earlier (VTX, camera control, the rangefinder) are gone too.</p>
 <p>The mode list sent over MSP keeps the permanent ids of removed modes
-reserved, so <code>GYRO OFF</code> is still id 12; <code>DRIVE AIDS OFF</code> is id 66 and <code>LAUNCH</code> id 67.</p>
+reserved, so <code>GYRO OFF</code> is still id 12; <code>DRIVE AIDS OFF</code> is id 66, <code>LAUNCH</code>
+id 67 and <code>DRIFT</code> id 68.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>A full MSP command reference is planned as the project stabilises --

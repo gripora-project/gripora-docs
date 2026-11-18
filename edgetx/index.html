@@ -1756,6 +1756,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -2340,10 +2368,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pages-and-settings-left-over-from-wingflight" class="md-nav__link">
+  <a href="#drift" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pages and settings left over from WingFlight
+        Drift
       
     </span>
   </a>
@@ -3648,10 +3676,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pages-and-settings-left-over-from-wingflight" class="md-nav__link">
+  <a href="#drift" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pages and settings left over from WingFlight
+        Drift
       
     </span>
   </a>
@@ -3706,12 +3734,11 @@ adjustment did, and see telemetry and run statistics in widgets, without a
 computer. For FrSky Ethos radios, use the
 <a href="../ethos-suite/">Ethos Lua Suite</a> instead.</p>
 <div class="admonition note">
-<p class="admonition-title">Being converted to cars</p>
+<p class="admonition-title">Roll and pitch</p>
 <p>The scripts came from WingFlight's along with the firmware. The tuning
-pages label the steering rows <em>Steer</em> or <em>Steering</em> and mark roll and
-pitch <em>(unused)</em>, but some aircraft pages and settings that Gripora no
-longer uses are still there (see
-<a href="#pages-and-settings-left-over-from-wingflight">Pages and settings left over from WingFlight</a>).</p>
+pages label the steering rows <em>Steer</em> or <em>Steering</em>, and keep the roll
+and pitch rows and columns, marked <em>(unused)</em> where there is room:
+Gripora stabilises only the steering.</p>
 </div>
 <h2 id="what-they-install">What they install<a class="headerlink" href="#what-they-install" title="Permanent link">&para;</a></h2>
 <ul>
@@ -3795,7 +3822,7 @@ white radios it is in the menu you get by long-pressing the wheel.</p>
 </tr>
 <tr>
 <td>Profile - Various</td>
-<td>Throttle and GPS speed gain attenuation, <em>Driving Feel</em> (master gain, I-term decay and I-term relax), gain curves and the speed range. It still lists aircraft settings too (see below).</td>
+<td>Throttle and <em>Speed</em> gain attenuation (wheel speed from motor RPM, or GPS speed), <em>Driving Feel</em> (master gain, I-term decay and I-term relax), gain curves and the speed range.</td>
 </tr>
 <tr>
 <td>Battery, Smart Fuel</td>
@@ -3807,7 +3834,7 @@ white radios it is in the menu you get by long-pressing the wheel.</p>
 </tr>
 <tr>
 <td>Mixer</td>
-<td>Gain and direction of the stabilised axes.</td>
+<td>The <em>Model type</em>: <em>Car</em> (the car mixer preset) or <em>Custom</em> (a mix edited on the <em>Mixer Inputs</em> and <em>Mixer Rules</em> pages).</td>
 </tr>
 <tr>
 <td>Gyro Filters</td>
@@ -3824,6 +3851,10 @@ white radios it is in the menu you get by long-pressing the wheel.</p>
 <tr>
 <td>Drive Aids</td>
 <td>ABS, traction control and launch control for the current PID profile (see below).</td>
+</tr>
+<tr>
+<td>Drift</td>
+<td>The DRIFT mode settings for the current PID profile (see below).</td>
 </tr>
 <tr>
 <td>Model</td>
@@ -3850,19 +3881,14 @@ the firmware keeps the drive aids per PID profile.</p>
 <li><strong>Launch</strong>: <em>Mode</em> (Off, Switch), <em>Start throttle</em> and <em>Ramp time</em>.</li>
 </ul>
 <p>See <a href="../driving/drive-aids/">Drive Aids</a> for what each setting does.</p>
-<h3 id="pages-and-settings-left-over-from-wingflight">Pages and settings left over from WingFlight<a class="headerlink" href="#pages-and-settings-left-over-from-wingflight" title="Permanent link">&para;</a></h3>
-<p>These are still in the scripts but do nothing on Gripora, or are refused by
-the firmware. Leave them alone; they are due to be removed:</p>
-<ul>
-<li><strong>Tune Advisor</strong>: the firmware no longer has the tune advisor. The page
-  is shown by default; turn it off under <em>Settings</em>.</li>
-<li>On <strong>Profile - Various</strong>: <em>Trainer</em>, <em>Angle Mode</em>, <em>Cross-Axis Relax</em>,
-  and <em>Snap Relax</em> and <em>Prop Hang</em> where shown. The firmware keeps these
-  fields only as placeholders.</li>
-<li>On <strong>PID Controller</strong>: <em>Attitude Hold</em>.</li>
-<li>The <strong>roll</strong> and <strong>pitch</strong> rows and columns, marked <em>(unused)</em> where there
-  is room: Gripora stabilises only the steering.</li>
-</ul>
+<h3 id="drift">Drift<a class="headerlink" href="#drift" title="Permanent link">&para;</a></h3>
+<p>The settings of the <a href="../driving/drift/">DRIFT</a> mode, with the PID profile
+switcher, because the firmware keeps them per PID profile: <em>Counter gain</em>
+(0-200 %), <em>Allowed rate</em> (0-720 °/s) and <em>Counter limit</em> (10-100 % of full
+lock). The mode itself is turned on by the DRIFT switch, set up on the
+Configurator's <a href="../configurator/tabs/auxiliary/">Modes</a> tab. The page is
+shown by default and can be turned off under <em>Settings</em>. On firmware without
+drift mode its fields are read-only and it can't be saved.</p>
 <h2 id="adjustment-teller">Adjustment Teller<a class="headerlink" href="#adjustment-teller" title="Permanent link">&para;</a></h2>
 <p>Turn it on under <em>Settings → Grbg Options → Adjustment Teller</em>. It reads the
 adjustment function and value from telemetry:</p>

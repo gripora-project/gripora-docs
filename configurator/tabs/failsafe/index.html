@@ -1874,6 +1874,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -3716,8 +3744,9 @@ still down:</p>
   fallback value, and the <a href="../../../driving/drive-aids/">drive aids</a> don't
   shape it. Leave it at 1500 (neutral) unless you have a reason not to; a
   value below neutral brakes (and on some ESCs reverses).</li>
-<li><a href="../../../driving/gyro-off/">GYRO OFF</a> is ignored, so the gyro keeps
-  steering even if the GYRO OFF switch was on when the link went.</li>
+<li><a href="../../../driving/gyro-off/">GYRO OFF</a> and <a href="../../../driving/drift/">DRIFT</a>
+  are ignored, so the normal gyro loop steers even if one of those switches
+  was on when the link went.</li>
 <li>Once the link returns, the controller needs <strong>Failsafe Recovery Delay</strong>
   (<code>failsafe_recovery_delay</code>) of good signal before you can arm again.</li>
 </ul>

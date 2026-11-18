@@ -1756,6 +1756,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -2129,6 +2157,17 @@
     <span class="md-ellipsis">
       
         Driving Feel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#drift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drift
       
     </span>
   </a>
@@ -3646,6 +3685,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#drift" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drift
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#abs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3760,11 +3810,11 @@
 
 <h1 id="tuning">Tuning<a class="headerlink" href="#tuning" title="Permanent link">&para;</a></h1>
 <p><strong>Tuning</strong> holds the settings you change most at the track: the steering
-gyro's PIDs, the rates, how the car feels, and the drive aids. The pages are
+gyro's PIDs, the rates, how the car feels, drift mode and the drive aids. The pages are
 the same settings as the Configurator's, so each section below links to the
 Configurator page that explains them.</p>
 <p><img alt="The Tuning menu" src="../../assets/images/ethos-suite/flight-tuning-menu.png" /></p>
-<p>The menu has three groups: <strong>Steering</strong> (PIDs, Rates, Driving Feel),
+<p>The menu has three groups: <strong>Steering</strong> (PIDs, Rates, Driving Feel, Drift),
 <strong>Drive Aids</strong> (ABS, Traction, Launch) and <strong>Advanced</strong> (Filters, PID Controller,
 PID Bandwidth, Gain Curves, Rate Response).</p>
 <p>Gripora stabilises only the steering, so the tuning pages show only the
@@ -3790,6 +3840,15 @@ Gain</strong> and <strong>Speed Gain</strong>, one per line. The Speed gain foll
 speed from the motor RPM, or from GPS without an RPM source.</p>
 <p><img alt="Driving Feel page" src="../../assets/images/ethos-suite/master_gains.png" /></p>
 <p>See <a href="../../configurator/tabs/profiles/#driving-feel">Profiles</a>.</p>
+<h2 id="drift">Drift<a class="headerlink" href="#drift" title="Permanent link">&para;</a></h2>
+<p>Under the <strong>Steering</strong> group, after Driving Feel. The settings of the
+<a href="../../driving/drift/">DRIFT</a> mode for the current PID profile (the title shows
+it, such as <em>Drift #1</em>): <strong>Counter Gain</strong> (0-200 %, default 100), <strong>Allowed
+Rate</strong> (0-720 °/s, default 30) and <strong>Counter Limit</strong> (10-100 % of full lock,
+default 100). A note on the page reminds you that the <strong>DRIFT</strong> switch, set up
+on the Modes page, turns the mode on. On firmware without drift mode the
+fields are greyed out and nothing is saved.</p>
+<p>See <a href="../../configurator/tabs/profiles/#drift">Profiles</a>.</p>
 <h2 id="abs">ABS<a class="headerlink" href="#abs" title="Permanent link">&para;</a></h2>
 <p>Under the <strong>Drive Aids</strong> group. The timed ABS for the current PID profile
 (the title shows it, such as <em>ABS #1</em>): <strong>Mode</strong> (Off, Static or Dynamic),

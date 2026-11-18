@@ -1886,6 +1886,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../driving/drift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DRIFT
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../driving/ready-to-arm-wiggle/" class="md-nav__link">
         
   
@@ -3791,13 +3819,12 @@ Throttle runs from -1000 (full brake/reverse) to 1000 (full forward),
 with 0 at neutral.</p>
 </div>
 <h3 id="rule-roles">Rule roles<a class="headerlink" href="#rule-roles" title="Permanent link">&para;</a></h3>
-<p>A <strong>Role</strong> is a label on a rule; the mixer itself never reads it. Two roles
-exist, inherited from WingFlight: <strong>Flap Compensation</strong> and <strong>Differential
-Thrust Yaw</strong>. A tagged rule's weight can be driven live from the
-<a href="../adjustments/">Adjustments</a> tab (<strong>Flap Compensation Gain</strong>,
-<strong>Differential Thrust Yaw Gain</strong>), which scales every rule with that role,
-and a negative value reverses them together. The car setup doesn't use
-roles.</p>
+<p>A <strong>Role</strong> is a label on a rule; the mixer itself never reads it. The
+firmware keeps two roles inherited from WingFlight, <strong>Flap Compensation</strong> and
+<strong>Differential Thrust Yaw</strong>, but both are aircraft mixes and a car doesn't
+use them. The role picker only offers <strong>None</strong>. A rule loaded with one of
+the old roles still shows it by name, so you can set it back to None. Their
+adjustment functions are hidden on the <a href="../adjustments/">Adjustments</a> tab.</p>
 
 
 
