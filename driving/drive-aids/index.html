@@ -1859,6 +1859,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#launch-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Launch control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#checking-it" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3691,6 +3702,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#launch-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Launch control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#checking-it" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3728,19 +3750,22 @@
 
 <h1 id="drive-aids">Drive Aids<a class="headerlink" href="#drive-aids" title="Permanent link">&para;</a></h1>
 <p>The drive aids shape the throttle and brake you give before they reach the
-ESC. There are two:</p>
+ESC. There are three:</p>
 <ul>
 <li><strong>ABS</strong> pulses the brake when you brake hard, so the wheels keep turning
   and the car keeps steering instead of locking up and sliding.</li>
 <li><strong>Traction control</strong> limits how fast the forward throttle may rise, so
   the wheels don't spin up when you pull the trigger hard.</li>
+<li><strong>Launch control</strong> caps the throttle for a standing start from a switch,
+  then ramps it up to full, so the car leaves the line without wheelspin.</li>
 </ul>
-<p>Both are <strong>off by default</strong>. Both work from the throttle, steering and time only: no wheel
+<p>All are <strong>off by default</strong>. They work from the throttle, steering and time only: no wheel
 speed, slip or acceleration sensor is read. Speed-based steering and
 sensor-based aids are planned as separate modes.</p>
 <p>They are set on the <a href="../../configurator/tabs/profiles/">Profiles</a> tab, in the
-<strong>Drive aids</strong> panel, from the Ethos Lua suite's ABS page, or in the CLI
-(<code>drive_abs_*</code>, <code>drive_tc_*</code>).</p>
+<strong>Drive aids</strong> panel, from the Ethos Lua suite's ABS, Traction and Launch
+pages, the EdgeTX Drive Aids page, or in the CLI (<code>drive_abs_*</code>, <code>drive_tc_*</code>,
+<code>drive_lc_*</code>).</p>
 <div class="admonition warning">
 <p class="admonition-title">Racing rules</p>
 <p>Sensor-based driving aids are banned in sanctioned racing, and class
@@ -3755,7 +3780,7 @@ into the opposite direction. They pass the command through unchanged:</p>
 <li>in <strong>failsafe</strong> (the failsafe throttle replaces their output, so it is
   never shaped);</li>
 <li>while the <strong>DRIVE AIDS OFF</strong> mode is on. Put it on a switch on the
-  <a href="../../configurator/tabs/auxiliary/">Modes</a> tab to turn both aids off from
+  <a href="../../configurator/tabs/auxiliary/">Modes</a> tab to turn all the aids off from
   the transmitter. The steering gyro keeps working.</li>
 </ul>
 <p><a href="../gyro-off/">GYRO OFF</a> does <strong>not</strong> turn the drive aids off: it bypasses
@@ -3974,11 +3999,88 @@ aids are off, its limit follows the throttle.</p>
 </table>
 <p>A longer ramp time is gentler: try longer on a slippery surface, shorter on
 high grip.</p>
+<h2 id="launch-control">Launch control<a class="headerlink" href="#launch-control" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Panel</th>
+<th>CLI <code>drive_lc_mode</code></th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Off</strong></td>
+<td><code>OFF</code> (default)</td>
+<td>No launch control</td>
+</tr>
+<tr>
+<td><strong>LAUNCH switch</strong></td>
+<td><code>SWITCH</code></td>
+<td>The <strong>LAUNCH</strong> mode stages a launch; the first forward throttle starts it</td>
+</tr>
+</tbody>
+</table>
+<p>Put <strong>LAUNCH</strong> on a switch on the <a href="../../configurator/tabs/auxiliary/">Modes</a>
+tab. Then, for each launch:</p>
+<ol>
+<li>At the line, with the throttle at neutral or on the brake, turn
+   <strong>LAUNCH</strong> on. The launch is <strong>staged</strong>. The brake, and ABS, work as
+   usual while you wait.</li>
+<li>Pull the trigger. The throttle sent to the ESC is at most the <strong>start
+   throttle</strong> at once, and the limit rises to full over the <strong>ramp time</strong>.
+   A throttle below the limit goes through as you give it.</li>
+<li>The launch ends at the end of the ramp, when you let off to neutral or
+   brake, or when you turn <strong>LAUNCH</strong> off.</li>
+</ol>
+<p>A launch runs <strong>once per LAUNCH activation</strong>: lifting in the middle of the
+run never caps the throttle again. Turn LAUNCH off and on for the next one.
+Turning LAUNCH on with the throttle already forward stages nothing, so
+flicking the switch while driving can't cut the throttle. Arming with
+LAUNCH already on stages a launch.</p>
+<p>A command above neutral that the ESC uses to brake a car still rolling
+backwards never starts a launch. Traction control stands aside while a
+launch runs and carries on from the throttle the launch reached, so the
+handover never cuts the throttle.</p>
+<table>
+<thead>
+<tr>
+<th>Panel</th>
+<th>CLI</th>
+<th>Range</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td><code>drive_lc_mode</code></td>
+<td><code>OFF</code>, <code>SWITCH</code></td>
+<td><code>OFF</code></td>
+</tr>
+<tr>
+<td>Start throttle</td>
+<td><code>drive_lc_throttle</code></td>
+<td>10-100 %</td>
+<td>50</td>
+</tr>
+<tr>
+<td>Ramp time</td>
+<td><code>drive_lc_ramp_time</code></td>
+<td>100-5000 ms, start throttle to full</td>
+<td>1000</td>
+</tr>
+</tbody>
+</table>
+<p>Launch control uses the throttle and time only. Start with the defaults,
+lower the start throttle if the car still spins up off the line, and
+lengthen the ramp if it spins up partway through.</p>
 <h2 id="checking-it">Checking it<a class="headerlink" href="#checking-it" title="Permanent link">&para;</a></h2>
 <p>The Drive aids panel's <strong>Live</strong> box shows whether the aids are on, what ABS
 is doing (Idle, Braking past the trigger, Releasing the brake), what
 traction control is doing (Idle, On while driving forward, Holding the
-throttle back), and the throttle from the transmitter next to the throttle
+throttle back), what launch control is doing (Idle, Staged, Launching), and
+the throttle from the transmitter next to the throttle
 sent to the ESC.</p>
 <p>For logs, set <code>debug_mode = DRIVE_AIDS</code>. The debug fields are:</p>
 <table>
@@ -3999,11 +4101,11 @@ sent to the ESC.</p>
 </tr>
 <tr>
 <td>2</td>
-<td>Flags: bit 0 aids on, bit 1 ABS braking past the trigger, bit 2 ABS releasing, bit 3 traction control on while driving forward, bit 4 traction control holding the throttle back</td>
+<td>Flags: bit 0 aids on, bit 1 ABS braking past the trigger, bit 2 ABS releasing, bit 3 traction control on while driving forward, bit 4 traction control holding the throttle back, bit 5 launch staged, bit 6 launching</td>
 </tr>
 <tr>
 <td>3</td>
-<td>While braking with ABS: pulse rate x10. While driving forward with traction control: the throttle it allows, x1000</td>
+<td>While braking with ABS: pulse rate x10. While driving forward with traction control or launching: the throttle allowed, x1000</td>
 </tr>
 <tr>
 <td>4</td>
@@ -4024,7 +4126,7 @@ sent to the ESC.</p>
 </tbody>
 </table>
 <p>Blackbox logs also carry the settings of the profile in use in the
-<code>drive_abs</code> and <code>drive_tc</code> header lines.</p>
+<code>drive_abs</code>, <code>drive_tc</code> and <code>drive_lc</code> header lines.</p>
 <p>Source: <code>src/main/flight/drive_aids.c</code> in the firmware.</p>
 
 

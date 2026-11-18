@@ -3607,7 +3607,7 @@ how a client tells. Appending fields to the end of a reply is additive too,
 and a client tells from the reply length. For example,
 <code>MSP_MIXER_CONFIG</code> carries <code>yaw_gyro_reverse</code> as an optional trailing byte,
 and <code>MSP2_GRIPORA_DRIVE_AIDS_CONFIG</code> grew from 9 to 12 bytes when traction
-control was added.</p>
+control was added, and to 16 with launch control.</p>
 <p>Changes to an existing message's layout bump the API version, because an
 old client would misparse the reply or write shifted bytes into a profile.
 Use the Configurator and Lua scripts from the same release as the firmware.</p>
@@ -3635,12 +3635,12 @@ Use the Configurator and Lua scripts from the same release as the firmware.</p>
 <tr>
 <td><code>MSP2_GRIPORA_DRIVE_AIDS_CONFIG</code> / <code>MSP2_GRIPORA_SET_DRIVE_AIDS_CONFIG</code></td>
 <td><code>0x5F3F</code> / <code>0x5F40</code></td>
-<td>The <a href="../../driving/drive-aids/">drive aids</a> of the current PID profile: the nine ABS settings, then the traction control mode and ramp time</td>
+<td>The <a href="../../driving/drive-aids/">drive aids</a> of the current PID profile: the nine ABS settings, the traction control mode and ramp time, then the launch control mode, start throttle and ramp time</td>
 </tr>
 <tr>
 <td><code>MSP2_GRIPORA_DRIVE_AIDS_STATUS</code></td>
 <td><code>0x5F41</code></td>
-<td>Flags (aids on, ABS armed, ABS releasing, traction control armed, traction control holding back), throttle in and throttle out</td>
+<td>Flags (aids on, ABS armed, ABS releasing, traction control armed, traction control holding back, launch staged, launching), throttle in and throttle out</td>
 </tr>
 </tbody>
 </table>
@@ -3665,7 +3665,7 @@ message that stays, such as the angle, trainer, attitude hold and relax
 fields of <code>MSP_PID_PROFILE</code>, are zero placeholders. Commands for features
 removed earlier (VTX, camera control, the rangefinder) are gone too.</p>
 <p>The mode list sent over MSP keeps the permanent ids of removed modes
-reserved, so <code>GYRO OFF</code> is still id 12; <code>DRIVE AIDS OFF</code> is id 66.</p>
+reserved, so <code>GYRO OFF</code> is still id 12; <code>DRIVE AIDS OFF</code> is id 66 and <code>LAUNCH</code> id 67.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>A full MSP command reference is planned as the project stabilises --

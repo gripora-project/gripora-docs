@@ -4019,7 +4019,7 @@ also holds the speed curve range in km/h. The shapes themselves are edited
 on the <a href="../curves/">Curves</a> tab. "-" means no curve. Whenever a curve shapes
 Master Gain, its cell in Driving Feel shows a <strong>CURVE</strong> badge.</p>
 <h2 id="drive-aids">Drive aids<a class="headerlink" href="#drive-aids" title="Permanent link">&para;</a></h2>
-<p>The <strong>Drive aids</strong> panel holds <strong>ABS</strong> and <strong>traction control</strong>. They shape
+<p>The <strong>Drive aids</strong> panel holds <strong>ABS</strong>, <strong>traction control</strong> and <strong>launch control</strong>. They shape
 the throttle and brake you give before they reach the ESC:</p>
 <ul>
 <li><strong>ABS</strong> pulses the brake when you brake hard, so the wheels keep turning
@@ -4029,11 +4029,13 @@ the throttle and brake you give before they reach the ESC:</p>
 <li><strong>Traction control</strong> limits how fast the forward throttle may rise, so
   the wheels don't spin up when you pull the trigger hard. Letting off is
   instant, and the brake and reverse are never touched.</li>
+<li><strong>Launch control</strong> caps the throttle for a standing start, staged with the
+  <strong>LAUNCH</strong> mode, and ramps it to full: <strong>Start throttle</strong> and <strong>Ramp time</strong>.</li>
 </ul>
-<p>Both are <strong>Off</strong> by default. They belong to the profile selected at the
+<p>All are <strong>Off</strong> by default. They belong to the profile selected at the
 top: each profile has its own, and switching profile switches them. A
-<strong>Live</strong> box shows whether the aids are on, what ABS and traction control
-are doing, and the throttle from the transmitter next to the throttle to
+<strong>Live</strong> box shows whether the aids are on, what ABS, traction control and
+launch control are doing, and the throttle from the transmitter next to the throttle to
 the ESC.</p>
 <p>The aids are off while disarmed, in failsafe, and while the <strong>DRIVE AIDS
 OFF</strong> mode is on (<a href="../auxiliary/">Modes</a> tab). The ESC's mixer rule must take
