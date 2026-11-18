@@ -26,7 +26,8 @@ car drives:
 | **ARM** | Arms the ESC output. Arming needs the throttle at neutral. |
 | **PREARM** | Optional safety switch that must be on before ARM works. |
 | **GYRO OFF** | Steering without the gyro. See [GYRO OFF](gyro-off.md). |
-| **DRIVE AIDS OFF** | ABS and traction control off; the gyro still steers. See [Drive Aids](drive-aids.md). |
+| **DRIVE AIDS OFF** | ABS, traction control and launch control off; the gyro still steers. See [Drive Aids](drive-aids.md). |
+| **LAUNCH** | Stages a launch for launch control. See [Launch control](drive-aids.md#launch-control). |
 | **FAILSAFE** | Tests or triggers failsafe from a switch. See [Failsafe](../configurator/tabs/failsafe.md). |
 
 The other modes (beeper, LED, Blackbox, telemetry, camera control, user

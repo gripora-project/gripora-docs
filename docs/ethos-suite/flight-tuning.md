@@ -8,7 +8,7 @@ Configurator page that explains them.
 ![The Tuning menu](../assets/images/ethos-suite/flight-tuning-menu.png)
 
 The menu has three groups: **Steering** (PIDs, Rates, Driving Feel),
-**Drive Aids** (ABS, Traction) and **Advanced** (Filters, PID Controller,
+**Drive Aids** (ABS, Traction, Launch) and **Advanced** (Filters, PID Controller,
 PID Bandwidth, Gain Curves, Rate Response).
 
 Gripora stabilises only the steering, so the tuning pages show only the
@@ -72,6 +72,16 @@ Control*): **Mode** (Off or Ramp) and **Ramp Time** (50-2000 ms, default
 500 ms), which is greyed out unless Mode is Ramp.
 
 See [Drive Aids](../driving/drive-aids.md).
+
+## Launch
+
+Launch control for the current PID profile (the title reads *Launch
+Control*): **Mode** (Off or Switch), **Start Throttle** (10-100 %, default
+50) and **Ramp Time** (100-5000 ms, default 1000), greyed out unless Mode is
+Switch. Put the **LAUNCH** mode on a switch on the Modes page to stage a
+launch.
+
+See [Launch control](../driving/drive-aids.md#launch-control).
 
 ## Filters
 

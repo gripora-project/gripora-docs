@@ -15,7 +15,8 @@ find out. **Add mode** opens a searchable list of the modes, in groups.
 | | **PREARM** | A safety switch that must be on before you can arm. |
 | | **FAILSAFE** | Triggers failsafe from a switch, for bench tests or as a panic switch; see [Failsafe](failsafe.md#failsafe-test-switch). |
 | Gyro | **GYRO OFF** | Turns the gyro off: the steering wheel goes straight to the steering servo, with no gyro correction. See [GYRO OFF](../../driving/gyro-off.md). |
-| | **DRIVE AIDS OFF** | Turns ABS and traction control off: the throttle and brake go to the ESC as you give them. The gyro still steers. See [Drive Aids](../../driving/drive-aids.md). |
+| | **DRIVE AIDS OFF** | Turns ABS, traction control and launch control off: the throttle and brake go to the ESC as you give them. The gyro still steers. See [Drive Aids](../../driving/drive-aids.md). |
+| | **LAUNCH** | Stages a launch for launch control: turn it on at the line, and the first forward throttle launches. See [Launch control](../../driving/drive-aids.md#launch-control). |
 | GPS | **GPS BEEP SATELLITE COUNT** | Beeps the number of GPS satellites in view. Only with a GPS running. |
 | Beeper & Lights | **BEEPER** | Sounds the buzzer, to find the car. |
 | | **BEEPER MUTE** | Silences the beeper. |
