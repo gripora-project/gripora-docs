@@ -54,7 +54,7 @@ level on a sloping bench.
 
 ## Personalization
 
-**Craft name** names the car. It shows in the Configurator, in telemetry,
+**Car name** names the car. It shows in the Configurator, in telemetry,
 and as the prefix of Blackbox log files.
 
 ## Features

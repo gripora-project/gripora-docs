@@ -314,8 +314,8 @@ This overlay dims all of the LEDs it is assigned to and brightens certain ones a
 #### Orientation
 
 This function (`F`, "flight mode" in the code) colours LEDs by the direction
-they face and where they sit on the grid. The flight-mode colour schemes of
-the flight controller are gone; Gripora always uses the orientation colours.
+they face and where they sit on the grid. The mode colour schemes inherited
+from WingFlight are gone; Gripora always uses the orientation colours.
 
 LEDs are set in a specific order:
  * LEDs that marked as facing up or down.
@@ -477,7 +477,7 @@ The ColorIndex is picked from the colors array ("palette").
 
 Mode 5 sets the channel the Throttle state overlay follows, instead of a
 colour: its last value is the channel in the firmware's order (0 roll,
-1 pitch, 2 yaw, 3 throttle, 4 AUX1 and so on). The default is the throttle.
+1 pitch, 2 steering, 3 throttle, 4 AUX1 and so on). The default is the throttle.
 
 Examples (using the default colors):
 

@@ -7,7 +7,7 @@ car that follows the controller's attitude; and the receiver channels.
 Use it as the first check after connecting: a sensor that isn't detected or
 a flag that blocks arming shows up here before you go any further.
 
-The **Info** box shows the craft name, firmware, board and whether the
+The **Info** box shows the car name, firmware, board and whether the
 configuration has been changed from the defaults, with the run count and
 run time. The **Instruments** box shows heading, pitch and roll; **Reset Z
 axis** zeroes the heading shown on the 3D car.

@@ -57,7 +57,7 @@ flag numbers don't move; they are never set.
 
 ## Stick commands
 
-Stick arming and stick commands are inherited from the flight-controller
+Stick arming and stick commands are inherited from the WingFlight
 code and are **off by default** (`enable_stick_arming` and
 `enable_stick_commands`).
 
@@ -68,8 +68,8 @@ code and are **off by default** (`enable_stick_arming` and
     position is refused with the `THROTTLE` flag. Use an `ARM` switch.
 
 The stick commands read the four control channels in the firmware's order
-(roll, pitch, yaw, throttle), after the channel `map`. With the default car
-map `RT1234AE`, yaw is CH1 (steering) and throttle CH2, and roll and pitch
+(roll, pitch, steering, throttle), after the channel `map`. With the default car
+map `RT1234AE`, steering is CH1 and throttle CH2, and roll and pitch
 are on CH7 and CH8, which a car radio often doesn't have as sticks. A
 position counts as LOW or HIGH at 90% of full travel:
 
@@ -81,7 +81,7 @@ position counts as LOW or HIGH at 90% of full travel:
 
 With `enable_stick_commands` on, these work while disarmed:
 
-| Function | Throttle | Yaw | Pitch | Roll |
+| Function | Throttle | Steering | Pitch | Roll |
 |---|---|---|---|---|
 | DISARM (stick arming only) | LOW | LOW | CENTER | CENTER |
 | Select PID profile 1 | LOW | LOW | CENTER | LOW |

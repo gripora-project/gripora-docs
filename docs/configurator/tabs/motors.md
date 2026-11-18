@@ -130,7 +130,7 @@ way in reverse, and to fade the gyro out when the car is nearly stopped.
   and restart.
 - **Steering gyro**: **Gyro starts at** and **Gyro fully on at** (default
   2.0 and 6.0 km/h). Below the start speed the gyro doesn't correct the
-  steering, so at a standstill the steering follows the stick alone; the
+  steering, so at a standstill the steering follows the wheel alone; the
   correction rises to full at the second speed. Both need motor RPM: without
   it the gyro is always fully on. **Gyro in reverse** (on by default) and
   **Reverse gyro gain** (default 50%) set the correction while reversing.

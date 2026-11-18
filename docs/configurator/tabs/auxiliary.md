@@ -14,7 +14,7 @@ find out. **Add mode** opens a searchable list of the modes, in groups.
 | Arming & Safety | **ARM** | Arms the motor and servos. Required. The car only arms with the throttle at neutral, and arming can be blocked by other conditions; see [Status](status.md#arming-disable-flags). |
 | | **PREARM** | A safety switch that must be on before you can arm. |
 | | **FAILSAFE** | Triggers failsafe from a switch, for bench tests or as a panic switch; see [Failsafe](failsafe.md#failsafe-test-switch). |
-| Gyro | **GYRO OFF** | Turns the gyro off: the steering stick goes straight to the steering servo, with no gyro correction. See [GYRO OFF](../../driving/gyro-off.md). |
+| Gyro | **GYRO OFF** | Turns the gyro off: the steering wheel goes straight to the steering servo, with no gyro correction. See [GYRO OFF](../../driving/gyro-off.md). |
 | | **DRIVE AIDS OFF** | Turns ABS and traction control off: the throttle and brake go to the ESC as you give them. The gyro still steers. See [Drive Aids](../../driving/drive-aids.md). |
 | GPS | **GPS BEEP SATELLITE COUNT** | Beeps the number of GPS satellites in view. Only with a GPS running. |
 | Beeper & Lights | **BEEPER** | Sounds the buzzer, to find the car. |

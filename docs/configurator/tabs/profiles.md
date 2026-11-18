@@ -10,9 +10,9 @@ shown there. **Copy profile** copies the current one to another, and
 **Reset to defaults** resets it. Switch profiles while driving with the
 **Profile Selection** function on the [Adjustments](adjustments.md) tab.
 
-Gripora stabilizes the steering only, so the tab shows the yaw (steering)
-values. The controller measures the car's yaw rate with the gyro and steers
-so that it follows the rate the steering stick asks for (set on the
+Gripora stabilizes the steering only, so the tab shows the steering
+values. The controller measures the car's turn rate (yaw rate) with the gyro and steers
+so that it follows the rate the steering wheel asks for (set on the
 [Rates](rates.md) tab).
 
 ## Driving Feel
@@ -22,9 +22,9 @@ beside the table saying what each one does:
 
 | Column | What it changes | Raise it if... | Lower it if... |
 |---|---|---|---|
-| **Master Gain** [%] | How hard the car fights unwanted yaw | The car wanders or feels soft, or twitches out of line on bumps or under power | The steering wobbles, buzzes or oscillates at speed |
+| **Master Gain** [%] | How hard the car fights unwanted turning | The car wanders or feels soft, or twitches out of line on bumps or under power | The steering wobbles, buzzes or oscillates at speed |
 | **I-Term Decay** [s] | How long it holds its line after a bump | You want it more locked in | It feels too locked in; shorter is freer and suits drifting |
-| **I-Term Relax** (1-10) | How firmly it stops at the end of a fast turn or slide | The car kicks back the other way when you centre the stick | Long, sustained turns lose rate |
+| **I-Term Relax** (1-10) | How firmly it stops at the end of a fast turn or slide | The car kicks back the other way when you centre the wheel | Long, sustained turns lose rate |
 
 The **Throttle** and **Speed** rows change the gain with throttle and speed,
 see [Gain attenuation](#gain-attenuation).
@@ -86,13 +86,13 @@ the kick-back.
 The PID gains table holds the steering loop's P, I, D, F (feedforward) and B
 (boost): the stored tune, which Master Gain scales.
 
-- **P** is how tightly the car tracks the steering stick and corrects a
+- **P** is how tightly the car tracks the steering wheel and corrects a
   bump or grip change right now. Too little and it feels loose and wanders;
   too much and the steering overshoots or oscillates, quickly.
-- **I** holds the yaw rate over time against steady influences: a camber,
+- **I** holds the turn rate over time against steady influences: a camber,
   uneven grip, a car that pulls to one side, a long sweeping corner. Too
   much and the car keeps rotating after a quick steering input is released.
-- **D** damps any yaw acceleration, from your input or from a bump. It
+- **D** damps any change in turn rate, from your input or from a bump. It
   reduces overshoot from a high P, but is by far the most sensitive term to
   gyro noise; check [Gyro](gyro.md) filtering before adding it.
 - **F** steers from the stick alone, without waiting for an error: a
@@ -124,10 +124,10 @@ Gain and the gain attenuation, so you can see the effect on the bench.
 
 Expert settings, best left at their defaults until you need them:
 
-- **Yaw Bandwidth** (PID loop bandwidth, Hz), **Yaw D-term Cutoff** and
-  **Yaw B-term Cutoff**.
+- **Steering Bandwidth** (PID loop bandwidth, Hz), **Steering D-term Cutoff** and
+  **Steering B-term Cutoff**.
 - **I-Term Decay Max Rate** and **I-Term Relax Level**, above.
-- **Error Limit for Yaw Axis**: a hard limit on the angle error in the loop,
+- **Error Limit for Steering Axis**: a hard limit on the angle error in the loop,
   so the I-term can never grow past it.
 
 ## Gain attenuation
@@ -176,7 +176,7 @@ it. To see it while driving, log `debug_mode = GAIN_ATTEN` with
 ### Gain Curves
 
 Gain curves are assigned in the **Gain Curves** panel (advanced): one slot
-each for Yaw (by steering deflection), Throttle and Speed. The Speed line
+each for Steering (by steering deflection), Throttle and Speed. The Speed line
 also holds the speed curve range in km/h. The shapes themselves are edited
 on the [Curves](curves.md) tab. "-" means no curve. Whenever a curve shapes
 Master Gain, its cell in Driving Feel shows a **CURVE** badge.

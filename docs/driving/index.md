@@ -1,6 +1,6 @@
 # Driving Modes & Features
 
-Gripora stabilises one thing: the **steering**. A yaw-rate gyro loop turns
+Gripora stabilises one thing: the **steering**. A turn-rate (yaw-rate) gyro loop turns
 the steering servo so the car rotates at the rate the steering wheel asks
 for, and pushes back when the car starts to slide or is knocked off line.
 The throttle goes to the ESC as you give it, shaped only by the optional
@@ -11,7 +11,7 @@ drive aids.
 | [Car Mixer and Channels](car-mixer.md) | The default car setup: steering on S1, a reversible ESC on M1, optional rear steering and second ESC, the car channel order (CH1 steering, CH2 throttle) and the gyro direction setting |
 | [Drive State](drive-state.md) | How the controller works out which way the car is travelling and how fast, so the gyro corrects the right way in reverse and fades out near a standstill |
 | [Drive Aids](drive-aids.md) | ABS and traction control: timed shaping of the brake and throttle you give, per PID profile |
-| [GYRO OFF](gyro-off.md) | Turns the steering gyro off from a switch: the steering stick goes straight to the steering servo |
+| [GYRO OFF](gyro-off.md) | Turns the steering gyro off from a switch: the steering wheel goes straight to the steering servo |
 | [Ready-to-Arm Wiggle](ready-to-arm-wiggle.md) | The steering twitches to show the car is ready to arm, armed, or can't arm |
 | [Backup RX Input](backup-rx-input.md) | A second or third receiver takes over if the main link is lost |
 

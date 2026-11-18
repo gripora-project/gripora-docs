@@ -1,11 +1,11 @@
 # Rates
 
 The Rates tab sets the steering response: how fast the car is asked to turn
-(its yaw rate) at full steering, and how much expo softens the steering
+(its turn rate, or yaw rate) at full steering, and how much expo softens the steering
 around center.
 
 Rates are separate from the PID tune on the [Profiles](profiles.md) tab:
-rates turn the steering stick into a commanded yaw rate, and the profile
+rates turn the steering wheel into a commanded turn rate, and the profile
 decides how closely the car follows it. The Setup Wizard's **Driving
 style** step sets a starting point (Beginner, Sport or Drift); see
 [Set Up Your Car](../../getting-started/car-setup.md).
@@ -19,9 +19,9 @@ the **Rate Profile Selection** function on the
 
 ## Rate, Shape and Expo
 
-The steering (YAW) row has three values:
+The steering row has three values:
 
-- **Rate** sets the top speed: the yaw rate, in °/s, the car is asked for
+- **Rate** sets the top speed: the turn rate, in °/s, the car is asked for
   at full steering. It's shown in the **Max Vel** column, and it's the
   *only* one of the three that changes it.
 - **Expo** softens the response around center, for finer small corrections,
@@ -31,12 +31,12 @@ The steering (YAW) row has three values:
   how much of the rate increase is saved for the last part of the steering
   travel. **Shape only does anything if Expo is above 0%.**
 
-A car can only turn as fast as its speed and grip allow. When the stick
+A car can only turn as fast as its speed and grip allow. When the steering
 asks for more rate than the car can give, for example armed on a stand, the
 stabilizer keeps adding steering, so held steering creeps towards full
 lock. That is normal. With an RPM source, the
 [Drive panel](motors.md#drive) fades the gyro out at low speed and at a
-standstill, so the steering then follows the stick alone.
+standstill, so the steering then follows the wheel alone.
 
 ### Quick troubleshooting
 

@@ -161,7 +161,7 @@ Select `Save current configuration` and click `Send`.
 ### UBlox Navigation model
 
 With GPS auto configuration, `gps_ublox_mode` picks the dynamic model sent to
-the module: `AIRBORNE` (the default, inherited from the flight-controller
+the module: `AIRBORNE` (the default, inherited from the WingFlight
 code) sends Airborne, `PEDESTRIAN` sends Pedestrian, and `DYNAMIC` starts with
 Pedestrian and switches to Airborne once the GPS has a fix. There is no
 automotive model setting.

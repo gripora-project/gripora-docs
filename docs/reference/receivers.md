@@ -59,7 +59,7 @@ without the fix you are limited to 8 channels regardless of the CH1-16/D16 setti
 ### SRXL (formerly XBUS) 
 
 (Serial Receiver Link Protocol)
-SRXL is an open data transfer protocol which allows to transport control data from a rc receiver to another device like a flybarless system 
+SRXL is an open data transfer protocol which allows to transport control data from a rc receiver to another device like a stability controller 
 by only using one single line. This protocol has been established by SRXL.org based on the idea to create a freely available and unified protocol 
 that manufacturers can easily implement to their receivers and devices that process receiver data. The protocol does not describe an exact definition of 
 how the data must be processed. It only describes a framework in which receiver data can be packed. Each manufacturer can have his own ID, which must be 
@@ -207,7 +207,7 @@ Signal loss can be detected when:
 
 The `rxfail` cli command is used to configure per-channel rx-loss behaviour.
 You can use the `rxfail` command to change this behaviour.
-A control channel (roll, pitch, yaw, throttle) can be AUTOMATIC, HOLD or SET. An AUX channel can be HOLD or SET.  
+A control channel (roll, pitch, steering, throttle) can be AUTOMATIC, HOLD or SET. An AUX channel can be HOLD or SET.  
 
 * AUTOMATIC - Control channels are set to safe values: centre for steering, roll and pitch, and neutral for the throttle.
 * HOLD - Channel holds the last value.
@@ -223,11 +223,11 @@ The `rxfail` command takes 2 or 3 arguments.
 * A value to use when in SET mode.
 
 Channels are always specified in the firmware's order, regardless of your channel mapping
-(with the default car map, CH1 steering is yaw and CH2 is throttle).
+(with the default car map, CH1 is steering and CH2 is throttle).
 
 * Roll is 0
 * Pitch is 1
-* Yaw is 2
+* Steering (yaw) is 2
 * Throttle is 3.
 * Aux channels are 4 onwards.
 
@@ -309,7 +309,7 @@ The channels defined in Gripora are as follows:
 | ----- | --------- | --------- |
 | 0     | Roll (unused on a car) | CH7 |
 | 1     | Pitch (unused on a car) | CH8 |
-| 2     | Yaw (steering) | CH1 |
+| 2     | Steering (yaw) | CH1 |
 | 3     | Throttle | CH2 |
 
 If you have a transmitter/receiver, that output a non-standard pulse range (i.e. 1070-1930 as some Spektrum receivers)

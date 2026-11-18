@@ -61,8 +61,8 @@ The log header records the drive aids settings of the profile in use
 ## Log files over USB
 
 When the controller is plugged in as a USB drive (mass storage), log
-files are named after the craft name (Configuration tab), followed by
-a sequence number and timestamp. With no craft name set, the prefix is
+files are named after the car name (Configuration tab), followed by
+a sequence number and timestamp. With no car name set, the prefix is
 `grpa` (it was `wflt` in WingFlight and `rtfl` in Rotorflight), for example
 `grpa_002_20251012_141213.bbl`.
 
@@ -70,7 +70,7 @@ a sequence number and timestamp. With no craft name set, the prefix is
 
 Open a `.bbl` file in the Gripora Blackbox viewer to play the run back.
 Each graph stacks related fields, such as the steering setpoint against the
-yaw gyro, then the servo and motor outputs, with the legend showing every
+turn rate from the gyro, then the servo and motor outputs, with the legend showing every
 field's value at the cursor. The strip along the bottom shows the whole log
 so you can jump to any part of the run. **Graph setup** chooses which fields
 each graph shows.

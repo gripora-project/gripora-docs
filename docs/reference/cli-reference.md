@@ -158,7 +158,7 @@ The tables below list every setting in the firmware, grouped by topic.
   strip, SD card, a built-in SPI receiver, the F.Bus mux FPGA, a particular
   MCU), so `get` on a given board may not list all of them.
 
-Gripora stabilises only the steering (yaw). Roll and pitch keep their
+Gripora stabilises only the steering (the yaw axis). Roll and pitch keep their
 settings in the PID and rate profiles so backups and MSP keep their layout,
 but they hold zero and have no effect on a car.
 
@@ -286,10 +286,10 @@ Board orientation, gyro and accelerometer filtering. The three-axis attitude est
 | `rc_min_throttle` | global | `0..2250` | `0` | Stored; car throttle uses rc_center and rc_deflection |
 | `rc_max_throttle` | global | `0..2250` | `0` | Stored; car throttle uses rc_center and rc_deflection |
 | `rc_smoothness` | global | `0..250` | `50` | RC smoothing level |
-| `rc_threshold` | global | array of 3 | `25,25,25` | Stick activity threshold, roll, pitch, yaw |
+| `rc_threshold` | global | array of 3 | `25,25,25` | Stick activity threshold, roll, pitch, steering |
 | `roll_deadband` | global | `0..100` | `5` | Roll stick deadband, µs |
 | `pitch_deadband` | global | `0..100` | `5` | Pitch stick deadband, µs |
-| `yaw_deadband` | global | `0..100` | `5` | Steering stick deadband, µs |
+| `yaw_deadband` | global | `0..100` | `5` | Steering deadband, µs |
 | `frsky_spi_autobind` | global | `OFF`, `ON` | `OFF` | Built-in FrSky receiver: bind at every start |
 | `frsky_spi_tx_id` | global | array of 3 | `0,0,0` | Built-in FrSky receiver: bound transmitter id |
 | `frsky_spi_offset` | global | `-127..127` | `0` | Built-in FrSky receiver: frequency offset |
@@ -331,14 +331,14 @@ How the controller tells the travel direction and speed, and how the steering gy
 
 ### PID profile
 
-Select the PID profile with `profile <n>` first. Only the yaw (steering) gains act; the roll and pitch rows are kept for compatibility. The speed attenuation (`fw_spa_*`) uses the motor RPM wheel speed when there is an RPM source, GPS speed otherwise.
+Select the PID profile with `profile <n>` first. Only the steering gains act; the roll and pitch rows are kept for compatibility. The speed attenuation (`fw_spa_*`) uses the motor RPM wheel speed when there is an RPM source, GPS speed otherwise.
 
 | Setting | Scope | Values | Default | Description |
 |---|---|---|---|---|
-| `gain_curve` | PID profile | array of 3 | `0,0,0` | Gain curve (1-8) applied to each axis's master gain by stick deflection, roll, pitch, yaw; 0 = none |
+| `gain_curve` | PID profile | array of 3 | `0,0,0` | Gain curve (1-8) applied to each axis's master gain by stick deflection, roll, pitch, steering; 0 = none |
 | `profile_name` | PID profile | text | (empty) | PID profile name |
 | `pid_mode` | PID profile | `0..9` | `1` | 0 = feedforward only (no gyro), any other value = stabilised rate PID |
-| `master_gain` | PID profile | array of 3 | `100,100,100` | P, I and D scale per axis (roll, pitch, yaw), % |
+| `master_gain` | PID profile | array of 3 | `100,100,100` | P, I and D scale per axis (roll, pitch, steering), % |
 | `fw_tpa_gain` | PID profile | `25..200` | `100` | Throttle attenuation of P, D, F and B: baseline, % |
 | `fw_tpa_curve` | PID profile | `0..8` | `0` | Gain curve (1-8) evaluated on throttle magnitude; 0 = off |
 | `fw_spa_gain` | PID profile | `25..200` | `100` | Speed attenuation of P, D, F and B: baseline, % |
@@ -368,7 +368,7 @@ Select the PID profile with `profile <n>` first. Only the yaw (steering) gains a
 | `yaw_d_cutoff` | PID profile | `0..250` | `20` | Steering D-term filter cutoff, Hz |
 | `yaw_b_cutoff` | PID profile | `0..250` | `20` | Steering B-term filter cutoff, Hz |
 | `yaw_gyro_cutoff` | PID profile | `0..250` | `100` | Steering gyro filter cutoff, Hz |
-| `error_limit` | PID profile | array of 3 | `45,45,60` | Error limit per axis (roll, pitch, yaw), degrees |
+| `error_limit` | PID profile | array of 3 | `45,45,60` | Error limit per axis (roll, pitch, steering), degrees |
 | `iterm_decay_time` | PID profile | array of 3 | `60,60,60` | I-term decay time per axis, 0.01 s |
 | `iterm_decay_limit` | PID profile | `0..250` | `35` | — |
 | `iterm_relax_level` | PID profile | array of 3 | `22,22,22` | I-term relax level per axis |
@@ -394,7 +394,7 @@ ABS and traction control, one set per PID profile (select it with `profile <n>` 
 
 ### Rate profile
 
-Select the rate profile with `rateprofile <n>` first. Only the yaw (steering) rows act on a car.
+Select the rate profile with `rateprofile <n>` first. Only the steering rows act on a car.
 
 | Setting | Scope | Values | Default | Description |
 |---|---|---|---|---|
@@ -416,8 +416,8 @@ Select the rate profile with `rateprofile <n>` first. Only the yaw (steering) ro
 | `roll_response` | rate profile | `0..250` | `0` | Roll response time (unused on a car) |
 | `pitch_response` | rate profile | `0..250` | `0` | Pitch response time (unused on a car) |
 | `yaw_response` | rate profile | `0..250` | `0` | Steering setpoint response time; 0 = off |
-| `setpoint_boost_gain` | rate profile | array of 3 | `0,0,0` | Setpoint boost gain, roll, pitch, yaw |
-| `setpoint_boost_cutoff` | rate profile | array of 3 | `15,15,90` | Setpoint boost cutoff, roll, pitch, yaw |
+| `setpoint_boost_gain` | rate profile | array of 3 | `0,0,0` | Setpoint boost gain, roll, pitch, steering |
+| `setpoint_boost_cutoff` | rate profile | array of 3 | `15,15,90` | Setpoint boost cutoff, roll, pitch, steering |
 | `yaw_dynamic_ceiling_gain` | rate profile | `0..250` | `0` | — |
 | `yaw_dynamic_deadband_gain` | rate profile | `0..250` | `10` | — |
 | `yaw_dynamic_deadband_filter` | rate profile | `0..250` | `60` | — |
@@ -932,17 +932,17 @@ bypasses them.
 | Input | Name | Meaning |
 |---|---|---|
 | 0 | | None |
-| 1-4 | `SR`, `SP`, `SY`, `ST` | Stabilized roll, pitch, yaw (steering), throttle. Roll and pitch are always zero |
-| 5-8 | `CR`, `CP`, `CY`, `CT` | RC command (stick deflection after the deadband) roll, pitch, yaw, throttle |
-| 9-12 | `RR`, `RP`, `RY`, `RT` | RC channel roll, pitch, yaw, throttle |
+| 1-4 | `SR`, `SP`, `SY`, `ST` | Stabilized roll, pitch, steering, throttle. Roll and pitch are always zero |
+| 5-8 | `CR`, `CP`, `CY`, `CT` | RC command (stick deflection after the deadband) roll, pitch, steering, throttle |
+| 9-12 | `RR`, `RP`, `RY`, `RT` | RC channel roll, pitch, steering, throttle |
 | 13-26 | `AUX1`-`AUX3`, `CH8`-`CH18` | RC channels 5-18 |
 | 27-29 | `TR`, `TP`, `TY` | Reserved (thrust vectoring removed), always zero |
 | 30-35 | `CH19`-`CH24` | RC channels 19-24 |
 
-RC channels here are in the firmware's own order (roll, pitch, yaw,
+RC channels here are in the firmware's own order (roll, pitch, steering,
 throttle, then AUX), after the `map` command has been applied, not the
-order on the receiver. With the default car map `RT1234AE`, CH1 is steering
-(yaw), CH2 throttle, CH3-CH6 AUX1-AUX4 and CH7/CH8 roll and pitch.
+order on the receiver. With the default car map `RT1234AE`, CH1 is steering,
+CH2 throttle, CH3-CH6 AUX1-AUX4 and CH7/CH8 roll and pitch.
 
 The optional last argument, `<role>`, is a label for the Configurator: `0`
 none (the default when omitted), `1` Flap Compensation, `2` Differential

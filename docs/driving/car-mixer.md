@@ -22,7 +22,7 @@ Configurator builds them.
 
 | Output | From | What it drives |
 |---|---|---|
-| **S1** | Stabilized Yaw (steering stick through the gyro) | Steering servo, front wheels |
+| **S1** | Stabilized Steering (steering wheel through the gyro) | Steering servo, front wheels |
 | **M1** | Stabilized Throttle (signed: forward, brake and reverse) | Reversible ESC |
 
 These are the firmware's default mixer rules:
@@ -36,7 +36,7 @@ Two options can be added on the Mixer tab (**Edit Configuration**) or in the
 wizard's Model step:
 
 - **Rear steering (4-wheel steering)**: a second steering servo on **S2**,
-  also from Stabilized Yaw. **Opposite to the front wheels** gives tighter
+  also from Stabilized Steering. **Opposite to the front wheels** gives tighter
   turns, **Same direction as the front wheels** gives crab steering.
   **Amount** (0-100 %, default 50 %) is how far the rear wheels turn compared
   with the front ones.
@@ -91,7 +91,7 @@ after the steering channel was reversed with a servo reverse.
 
 Turn on **Reverse gyro (steering)** on the Mixer tab (CLI:
 `yaw_gyro_reverse = ON`, default `OFF`). It reverses only the gyro feedback
-of the steering loop, not the stick. Board orientation and the attitude
+of the steering loop, not the wheel. Board orientation and the attitude
 estimate don't change.
 
 Don't use servo reverse to fix the gyro direction: that reverses your

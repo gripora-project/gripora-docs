@@ -111,8 +111,8 @@ hold reverse again, choose **Brake, then reverse**.
 **Check neutral.** The controller sends neutral to the ESC as the middle of
 the throttle range: 1500 µs with the default range of 1000-2000 µs. With
 PWM, calibrate the ESC with its neutral at that value, following the throttle
-calibration in the ESC's manual with the throttle stick centred, or the car
-creeps or brakes with the stick at centre. With the throttle stick at centre
+calibration in the ESC's manual with the throttle trigger centred, or the car
+creeps or brakes with the trigger at centre. With the throttle trigger at centre
 the wheels must not turn. The car only arms with the throttle at neutral.
 
 **Check the direction.** Tick **The car's wheels are off the ground**, then

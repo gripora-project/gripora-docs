@@ -8,7 +8,7 @@ ESC. There are two:
 - **Traction control** limits how fast the forward throttle may rise, so
   the wheels don't spin up when you pull the trigger hard.
 
-Both are **off by default**. Both work from the stick and time only: no wheel
+Both are **off by default**. Both work from the throttle, steering and time only: no wheel
 speed, slip or acceleration sensor is read. Speed-based steering and
 sensor-based aids are planned as separate modes.
 
@@ -91,7 +91,7 @@ second. The Drive aids panel shows this preview for your settings.
 ### Steering
 
 Two settings change the pulses with steering lock, measured from the
-steering stick (not the servo): none with the wheel centred, full at full
+steering wheel (not the servo): none with the wheel centred, full at full
 lock.
 
 - **Extra pulse rate** adds pulses per second at full lock, less with less
@@ -177,7 +177,7 @@ For logs, set `debug_mode = DRIVE_AIDS`. The debug fields are:
 | 4 | ABS release brake share, x1000 |
 | 5 | ABS hold, ms |
 | 6 | ABS position in the pulse cycle, ms |
-| 7 | Steering stick, x1000 |
+| 7 | Steering wheel, x1000 |
 
 Blackbox logs also carry the settings of the profile in use in the
 `drive_abs` and `drive_tc` header lines.

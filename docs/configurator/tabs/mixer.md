@@ -23,8 +23,8 @@ between them.
 With **Car**, **Edit Configuration** opens the car options. These are always
 set:
 
-- **Steering servo** (front wheels) on **S1**, from the steering stick
-  through the gyro (Stabilized Yaw).
+- **Steering servo** (front wheels) on **S1**, from the steering wheel
+  through the gyro (Stabilized Steering).
 - **ESC** on **M1**, reversible: forward, brake and reverse (Stabilized
   Throttle).
 
@@ -59,18 +59,18 @@ More on the defaults, the channel order and the gyro direction:
 ## Steering Throw, Gyro Direction and Steering Invert
 
 - **Steering Throw** scales every rule that reads the steering (Stabilized
-  Yaw) by one percentage, 0-200% (100% is the servo's normal travel). It
+  Steering) by one percentage, 0-200% (100% is the servo's normal travel). It
   raises or lowers the throw of all steering servos together, without
   changing each rule's weight. Pair it with **Steering Override** below to
   set a target throw: enable the override, command a known percentage,
   measure the wheel angle, and adjust the throw until it matches.
 - **Gyro Direction** → **Reverse gyro (steering)** reverses only the gyro's
-  correction of the steering, not the stick. Turn it on if, with the wheels
+  correction of the steering, not the wheel. Turn it on if, with the wheels
   off the ground, turning the car by hand makes the steering turn *with*
   the movement instead of against it. Don't use servo reverse for this: that
   reverses your steering too. The CLI setting is `yaw_gyro_reverse`. Board
   orientation and the attitude display are not affected.
-- **Steering Invert** flips every rule that reads the steering, the stick
+- **Steering Invert** flips every rule that reads the steering, the wheel
   and the gyro correction together.
 
 The gyro correction is turned round for reverse by the controller itself,
@@ -101,7 +101,7 @@ cases on the rule.
 
 Other fields of a rule:
 
-- **Input source**: a stabilized input (**Stabilized Yaw** for the
+- **Input source**: a stabilized input (**Stabilized Steering** for the
   steering, **Stabilized Throttle** for the ESC), a commanded input (the
   stick after rates, without the gyro), an RC input that bypasses
   everything (**RC Steering (bypass)**, **RC Throttle (bypass)**), or any

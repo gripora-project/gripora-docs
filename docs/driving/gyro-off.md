@@ -1,7 +1,7 @@
 # GYRO OFF
 
 **GYRO OFF** turns the steering gyro off from a switch. While it is on, the
-steering stick goes straight to the steering servo: no gyro correction, and
+steering wheel goes straight to the steering servo: no gyro correction, and
 no rates or expo either. Full steering is full servo travel.
 
 Put it on a switch you can reach while driving, on the

@@ -101,7 +101,7 @@ through the primary receiver's channel map.
   backup counts as down after about 50ms without a valid frame, and Backup 2
   takes over the moment Backup 1 is down while it is still receiving.
 - **Full channel takeover.** All channels are taken from the backup in
-  control during fallback, not just roll/pitch/yaw/throttle -- aux switches
+  control during fallback, not just steering and throttle -- aux switches
   (modes, arming, etc.) are driven from the backup stick exactly
   as they would be from the main receiver. Channels a backup doesn't
   carry go to stick center (1500 by default): for example CH19-24 when the

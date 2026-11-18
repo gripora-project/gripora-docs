@@ -10,17 +10,16 @@ pitch versions are hidden):
 | Group | Functions |
 |---|---|
 | Profile Selection | Battery Profile, LED Profile, Profile Selection (PID profile), Rate Profile Selection |
-| Rates, RC Rates, RC Expo | Yaw Rate, Yaw RC Rate, Yaw RC Expo |
-| PID Gains | Yaw P, I, D, F and B gain |
-| Filters | Yaw Gyro Cutoff, Yaw D-term Cutoff |
-| Yaw Dynamics | Yaw Dynamic Ceiling Gain, Dynamic Deadband Gain, Dynamic Deadband Filter |
-| Driving Feel | Master Gain Yaw, I-Term Decay Yaw, I-Term Relax Yaw (see [Profiles](profiles.md#driving-feel)) |
-| Servo Trims | Servo Trim Yaw (the steering, see [Servos](servos.md#trimming-from-the-transmitter)) |
-| Setpoint Boost | Yaw Setpoint Boost Gain |
+| Rates, RC Rates, RC Expo | Steering Rate, Steering RC Rate, Steering RC Expo |
+| PID Gains | Steering P, I, D, F and B gain |
+| Filters | Steering Gyro Cutoff, Steering D-term Cutoff |
+| Steering Dynamics | Steering Dynamic Ceiling Gain, Dynamic Deadband Gain, Dynamic Deadband Filter |
+| Driving Feel | Master Gain Steering, I-Term Decay Steering, I-Term Relax Steering (see [Profiles](profiles.md#driving-feel)) |
+| Servo Trims | Servo Trim Steering (see [Servos](servos.md#trimming-from-the-transmitter)) |
+| Setpoint Boost | Steering Setpoint Boost Gain |
 | Mixer | Flap Compensation Gain, Differential Thrust Yaw Gain (scale mixer rules with that [role](mixer.md#rule-roles); not used by the car setup) |
 
-"Yaw" is the steering. A function under live adjustment shows its value on
-the tab that owns it while the switch or knob is in control.
+A function under live adjustment shows its value on the tab that owns it while the switch or knob is in control.
 
 PID and rate profile switching is a special case: each is its own function,
 mapped to a channel like any other, but a profile switch applies, and is
@@ -33,7 +32,7 @@ example [Profiles](profiles.md)) and save it there. Stepped servo trims are
 the exception; see below.
 
 The Setup Wizard's **Trim and gain** step sets up a steering trim and a gain
-knob for you (Master Gain Yaw on a knob, 0% fully down, 75% at center, 150%
+knob for you (Master Gain Steering on a knob, 0% fully down, 75% at center, 150%
 fully up). See [Set Up Your Car](../../getting-started/car-setup.md).
 
 ## Channel names

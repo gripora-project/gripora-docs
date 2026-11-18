@@ -26,7 +26,7 @@ The hardware bind plug will be enabled via defining HARDWARE_BIND_PLUG during bu
 
 The spektrum_sat_bind CLI parameter is defining the number of bind impulses (1-10) send to the satellite receiver. Setting spektrum_sat_bind to zero will disable the bind mode in any case. The bind mode will only be activated after an power on or hard reset. Please refer to the table below for the different possible values.
 
-If the hardware bind plug is configured the bind mode will only be activated if the plug is set during the firmware start-up. The value of the spektrum_sat_bind parameter will be permanently preserved. The bind plug should be always removed for normal flying.
+If the hardware bind plug is configured the bind mode will only be activated if the plug is set during the firmware start-up. The value of the spektrum_sat_bind parameter will be permanently preserved. The bind plug should be always removed for normal driving.
 
 If no hardware bind plug is used the spektrum_sat_bind parameter will trigger the bind process during the next hardware reset and will be automatically reset to "0" after this.
 

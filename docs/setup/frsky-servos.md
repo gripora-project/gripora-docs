@@ -172,7 +172,7 @@ voltage and temperature.
 
 ## 5. Bus servos and the mixer
 
-The default mixer is the car setup: the steering on **S1** (Stabilized Yaw)
+The default mixer is the car setup: the steering on **S1** (Stabilized Steering)
 and the ESC on **M1** (Stabilized Throttle). With rear steering on, the rear
 servo is on **S2**. See [Mixer](../configurator/tabs/mixer.md) and
 [Car Mixer and Channels](../driving/car-mixer.md).

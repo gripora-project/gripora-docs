@@ -138,7 +138,7 @@ Both count as unsaved changes until you press **Save**.
 
 ### Trimming from the transmitter
 
-Map **Servo Trim Yaw** (the steering) on the [Adjustments](adjustments.md)
+Map **Servo Trim Steering** on the [Adjustments](adjustments.md)
 tab to trim from the transmitter. The Setup Wizard's **Trim and gain** step
 sets this up for you:
 
@@ -150,7 +150,7 @@ sets this up for you:
   the adjustment's range. It is never saved, so the radio keeps the trim.
 
 Trimming the steering moves every servo whose [Mixer](mixer.md) rule takes
-its input from the steering (Stabilized Yaw), front and rear. Each servo's
+its input from the steering (Stabilized Steering), front and rear. Each servo's
 Reverse, its rule's weight sign and the Steering Invert are taken into
 account. Servos fed by a raw RC channel, an override or a logic condition
 aren't touched. When any servo on the steering reaches its trim limit, the
@@ -191,10 +191,10 @@ buttons on one channel**), with Ethos as the example; on other radios
 
     | Trim button | Weight | Channel | Adjustment |
     |---|---|---|---|
-    | T1 CW | 40% | about 1680-1730 µs | Servo Trim Yaw, up |
-    | T1 CCW | 30% | about 1630-1680 µs | Servo Trim Yaw, down |
+    | T1 CW | 40% | about 1680-1730 µs | Servo Trim Steering, up |
+    | T1 CCW | 30% | about 1630-1680 µs | Servo Trim Steering, down |
 
-4. On the [Adjustments](adjustments.md) tab, add Servo Trim Yaw as
+4. On the [Adjustments](adjustments.md) tab, add Servo Trim Steering as
    **Stepped**, always on, on that channel, with those two windows and a
    Step of 2 µs.
 

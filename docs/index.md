@@ -12,7 +12,7 @@ Gripora Configurator used to set it up.
 
 What it does today:
 
-- **Steering stabilization.** A yaw-rate gyro loop on the steering servo
+- **Steering stabilization.** A turn-rate (yaw-rate) gyro loop on the steering servo
   holds the car on the line you steer and catches slides. It corrects the
   right way in reverse and fades out near a standstill
   ([Drive State](driving/drive-state.md)), and can be switched off from the

@@ -1,6 +1,6 @@
 # Drive State
 
-A car's yaw response to a steering angle depends on its speed and its
+A car's turn response to a steering angle depends on its speed and its
 direction of travel. Driving backwards the response changes sign, so a gyro
 correction tuned going forward would steer the wrong way and become positive
 feedback. Near a standstill the car doesn't rotate at all, however far the
@@ -10,11 +10,11 @@ steering to full lock.
 The drive state is how the controller handles this. It works out which way
 the car is travelling and how fast, and the steering loop uses that to:
 
-- **turn the gyro correction round in reverse.** The steering stick keeps
+- **turn the gyro correction round in reverse.** The steering wheel keeps
   meaning "wheel angle" in both directions; only the gyro feedback is
   reversed;
 - **fade the gyro correction out at low speed**, so at a standstill the
-  steering follows the stick alone;
+  steering follows the wheel alone;
 - **reduce, or switch off, the correction in reverse**;
 - **clear the steering I-term** whenever the travel direction changes.
 
