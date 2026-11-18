@@ -5,7 +5,7 @@
 The app opens on its main menu. Every menu is a grid of tiles, sorted under
 headings. A tile either opens another menu or a settings page.
 
-![The main menu: Flight Tuning and Setup under Configuration; Tools, Logs and Settings under System](../assets/images/ethos-suite/root-menu.png)
+![The main menu: Tuning and Setup under Configuration; Tools, Logs and Settings under System](../assets/images/ethos-suite/root-menu.png)
 
 You can use the touchscreen, or the rotary encoder: turn it to move between
 tiles and press it to open one. When you go back to a menu, the tile you last
@@ -78,16 +78,3 @@ These pages have an extra action behind **Tool**:
 | Blackbox Status | Erases the onboard log memory. |
 
 Each one asks before it does anything.
-
-## Pages that don't work with Gripora
-
-The suite came from WingFlight with pages for aircraft features that the
-Gripora firmware no longer has, and they are being taken out of it. If your
-version of the suite still shows any of these tiles, leave them alone: they
-don't apply to a car, and the firmware refuses most of their requests.
-
-- **Flight Tuning → Tune Advisor**
-- **Flight Tuning → Flight Modes** (Acro Trainer, Angle Mode, Att Hold)
-- **Flight Tuning → Thrust Vector** and its pages
-- **Setup → GPS Navigation**
-- **Setup → Governor**

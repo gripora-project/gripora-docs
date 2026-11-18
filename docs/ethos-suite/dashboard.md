@@ -16,8 +16,7 @@ you want, and choose **Gripora Dashboard** as its widget.
 
 A theme decides what the dashboard shows and how. Each theme has three
 layouts: one before you arm, one while you drive, and one after you
-disarm, and the dashboard switches between them by itself. The suite still
-calls them *preflight*, *inflight* and *postflight*.
+disarm, and the dashboard switches between them by itself.
 
 Choose the theme under [Settings → Dashboard](settings.md#dashboard): a
 default for all models, and optionally a different one for a particular

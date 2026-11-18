@@ -1,8 +1,8 @@
 # Dashboard Themes
 
 The dashboard widget comes with several themes. A theme decides what the
-dashboard shows and how it looks. Each theme has three layouts: preflight
-before you arm, inflight while you drive, and postflight after you disarm.
+dashboard shows and how it looks. Each theme has three layouts: before you arm
+(Before Run), while you drive (During Run) and after you disarm (After Run).
 The dashboard switches between them by itself.
 
 Choose the theme under [Settings → Dashboard](settings.md#dashboard): one
@@ -32,119 +32,119 @@ a tile under Settings → Dashboard → Settings.
 A large voltage arc beside the run time and link quality. Before the run
 it also shows the model image, profiles, run count and Blackbox use.
 
-=== "Preflight"
+=== "Before run"
 
-    ![Default preflight](../assets/images/ethos-suite/themes/default-preflight.png)
+    ![Default before run](../assets/images/ethos-suite/themes/default-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![Default inflight](../assets/images/ethos-suite/themes/default-inflight.png)
+    ![Default during run](../assets/images/ethos-suite/themes/default-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![Default postflight](../assets/images/ethos-suite/themes/default-postflight.png)
+    ![Default after run](../assets/images/ethos-suite/themes/default-postflight.png)
 
 ## AERC
 
 Arcs for throttle, RPM and ESC temperature, each with its maximum, under the
 run time and a fuel bar with pack voltage and mAh used.
 
-=== "Preflight"
+=== "Before run"
 
-    ![AERC preflight](../assets/images/ethos-suite/themes/aerc-preflight.png)
+    ![AERC before run](../assets/images/ethos-suite/themes/aerc-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![AERC inflight](../assets/images/ethos-suite/themes/aerc-inflight.png)
+    ![AERC during run](../assets/images/ethos-suite/themes/aerc-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![AERC postflight](../assets/images/ethos-suite/themes/aerc-postflight.png)
+    ![AERC after run](../assets/images/ethos-suite/themes/aerc-postflight.png)
 
 ## AERC Nitro
 
 For nitro cars: RPM and throttle arcs either side of a segmented BEC
 voltage bar, with the run time on top.
 
-=== "Preflight"
+=== "Before run"
 
-    ![AERC Nitro preflight](../assets/images/ethos-suite/themes/aerc-nitro-preflight.png)
+    ![AERC Nitro before run](../assets/images/ethos-suite/themes/aerc-nitro-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![AERC Nitro inflight](../assets/images/ethos-suite/themes/aerc-nitro-inflight.png)
+    ![AERC Nitro during run](../assets/images/ethos-suite/themes/aerc-nitro-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![AERC Nitro postflight](../assets/images/ethos-suite/themes/aerc-nitro-postflight.png)
+    ![AERC Nitro after run](../assets/images/ethos-suite/themes/aerc-nitro-postflight.png)
 
 ## Basic Timer
 
 A large run timer, with the profiles, run count and link quality below
 it.
 
-=== "Preflight"
+=== "Before run"
 
-    ![Basic Timer preflight](../assets/images/ethos-suite/themes/basic-timer-preflight.png)
+    ![Basic Timer before run](../assets/images/ethos-suite/themes/basic-timer-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![Basic Timer inflight](../assets/images/ethos-suite/themes/basic-timer-inflight.png)
+    ![Basic Timer during run](../assets/images/ethos-suite/themes/basic-timer-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![Basic Timer postflight](../assets/images/ethos-suite/themes/basic-timer-postflight.png)
+    ![Basic Timer after run](../assets/images/ethos-suite/themes/basic-timer-postflight.png)
 
 ## Claude
 
 A voltage arc, a large fuel ring and an RPM dial, with the timer and
 arming state.
 
-=== "Preflight"
+=== "Before run"
 
-    ![Claude preflight](../assets/images/ethos-suite/themes/claude-preflight.png)
+    ![Claude before run](../assets/images/ethos-suite/themes/claude-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![Claude inflight](../assets/images/ethos-suite/themes/claude-inflight.png)
+    ![Claude during run](../assets/images/ethos-suite/themes/claude-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![Claude postflight](../assets/images/ethos-suite/themes/claude-postflight.png)
+    ![Claude after run](../assets/images/ethos-suite/themes/claude-postflight.png)
 
 ## DanielRC
 
 A text panel in three groups (power, RPM and status, or the second motor on
 twin-motor cars) with the PID profile and run time.
 
-=== "Preflight"
+=== "Before run"
 
-    ![DanielRC preflight](../assets/images/ethos-suite/themes/danielrc-preflight.png)
+    ![DanielRC before run](../assets/images/ethos-suite/themes/danielrc-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![DanielRC inflight](../assets/images/ethos-suite/themes/danielrc-inflight.png)
+    ![DanielRC during run](../assets/images/ethos-suite/themes/danielrc-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![DanielRC postflight](../assets/images/ethos-suite/themes/danielrc-postflight.png)
+    ![DanielRC after run](../assets/images/ethos-suite/themes/danielrc-postflight.png)
 
 ## Gismo
 
 A large battery graphic between RPM and timer on one side, and cell and pack
 voltage on the other.
 
-=== "Preflight"
+=== "Before run"
 
-    ![Gismo preflight](../assets/images/ethos-suite/themes/gismo-preflight.png)
+    ![Gismo before run](../assets/images/ethos-suite/themes/gismo-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![Gismo inflight](../assets/images/ethos-suite/themes/gismo-inflight.png)
+    ![Gismo during run](../assets/images/ethos-suite/themes/gismo-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![Gismo postflight](../assets/images/ethos-suite/themes/gismo-postflight.png)
+    ![Gismo after run](../assets/images/ethos-suite/themes/gismo-postflight.png)
 
 ## Kevd
 
@@ -154,17 +154,17 @@ column with the run time, fuel and arming state.
 Needs a dashboard area of at least 784 × 294 pixels, so it is hidden on
 smaller radios such as the X18.
 
-=== "Preflight"
+=== "Before run"
 
-    ![Kevd preflight](../assets/images/ethos-suite/themes/kevd-preflight.png)
+    ![Kevd before run](../assets/images/ethos-suite/themes/kevd-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![Kevd inflight](../assets/images/ethos-suite/themes/kevd-inflight.png)
+    ![Kevd during run](../assets/images/ethos-suite/themes/kevd-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![Kevd postflight](../assets/images/ethos-suite/themes/kevd-postflight.png)
+    ![Kevd after run](../assets/images/ethos-suite/themes/kevd-postflight.png)
 
 ## KSE4
 
@@ -172,17 +172,17 @@ A tile dashboard after Kyle Stacy's KSE4: a large RPM tile beside the timer,
 a strip of current, voltage, ESC temperature and throttle, and a full-width
 fuel bar. It takes its colours from the radio's Ethos theme.
 
-=== "Preflight"
+=== "Before run"
 
-    ![KSE4 preflight](../assets/images/ethos-suite/themes/kse4-preflight.png)
+    ![KSE4 before run](../assets/images/ethos-suite/themes/kse4-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![KSE4 inflight](../assets/images/ethos-suite/themes/kse4-inflight.png)
+    ![KSE4 during run](../assets/images/ethos-suite/themes/kse4-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![KSE4 postflight](../assets/images/ethos-suite/themes/kse4-postflight.png)
+    ![KSE4 after run](../assets/images/ethos-suite/themes/kse4-postflight.png)
 
 ## KSE5
 
@@ -191,33 +191,33 @@ ESC temperature, with the arming state, voltages and mAh used in tiles below.
 Its settings set the full scale of each ring. It takes its colours from the
 radio's Ethos theme.
 
-=== "Preflight"
+=== "Before run"
 
-    ![KSE5 preflight](../assets/images/ethos-suite/themes/kse5-preflight.png)
+    ![KSE5 before run](../assets/images/ethos-suite/themes/kse5-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![KSE5 inflight](../assets/images/ethos-suite/themes/kse5-inflight.png)
+    ![KSE5 during run](../assets/images/ethos-suite/themes/kse5-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![KSE5 postflight](../assets/images/ethos-suite/themes/kse5-postflight.png)
+    ![KSE5 after run](../assets/images/ethos-suite/themes/kse5-postflight.png)
 
 ## RF Status
 
 Voltage and fuel arcs above the arming state, link quality, RPM and timer.
 
-=== "Preflight"
+=== "Before run"
 
-    ![RF Status preflight](../assets/images/ethos-suite/themes/rf-status-preflight.png)
+    ![RF Status before run](../assets/images/ethos-suite/themes/rf-status-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![RF Status inflight](../assets/images/ethos-suite/themes/rf-status-inflight.png)
+    ![RF Status during run](../assets/images/ethos-suite/themes/rf-status-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![RF Status postflight](../assets/images/ethos-suite/themes/rf-status-postflight.png)
+    ![RF Status after run](../assets/images/ethos-suite/themes/rf-status-postflight.png)
 
 ## RT-RC
 
@@ -225,59 +225,58 @@ Pack voltage and fuel arcs above the arming state, link quality, RPM and
 timer. Before the run it adds the model image, profiles, run count and
 Blackbox use.
 
-=== "Preflight"
+=== "Before run"
 
-    ![RT-RC preflight](../assets/images/ethos-suite/themes/rt-rc-preflight.png)
+    ![RT-RC before run](../assets/images/ethos-suite/themes/rt-rc-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![RT-RC inflight](../assets/images/ethos-suite/themes/rt-rc-inflight.png)
+    ![RT-RC during run](../assets/images/ethos-suite/themes/rt-rc-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![RT-RC postflight](../assets/images/ethos-suite/themes/rt-rc-postflight.png)
+    ![RT-RC after run](../assets/images/ethos-suite/themes/rt-rc-postflight.png)
 
 ## RT-RC Nitro
 
 RT-RC for nitro cars: BEC voltage and throttle arcs in place of pack
 voltage and fuel.
 
-=== "Preflight"
+=== "Before run"
 
-    ![RT-RC Nitro preflight](../assets/images/ethos-suite/themes/rt-rc-nitro-preflight.png)
+    ![RT-RC Nitro before run](../assets/images/ethos-suite/themes/rt-rc-nitro-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![RT-RC Nitro inflight](../assets/images/ethos-suite/themes/rt-rc-nitro-inflight.png)
+    ![RT-RC Nitro during run](../assets/images/ethos-suite/themes/rt-rc-nitro-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![RT-RC Nitro postflight](../assets/images/ethos-suite/themes/rt-rc-nitro-postflight.png)
+    ![RT-RC Nitro after run](../assets/images/ethos-suite/themes/rt-rc-nitro-postflight.png)
 
 ## SRB-RC
 
 A grid of tiles: arming state, BEC voltage, link, RPM, profiles, ESC
 temperature, current and timer above a full-width drive battery bar.
 
-=== "Preflight"
+=== "Before run"
 
-    ![SRB-RC preflight](../assets/images/ethos-suite/themes/srb-rc-preflight.png)
+    ![SRB-RC before run](../assets/images/ethos-suite/themes/srb-rc-preflight.png)
 
-=== "Inflight"
+=== "During run"
 
-    ![SRB-RC inflight](../assets/images/ethos-suite/themes/srb-rc-inflight.png)
+    ![SRB-RC during run](../assets/images/ethos-suite/themes/srb-rc-inflight.png)
 
-=== "Postflight"
+=== "After run"
 
-    ![SRB-RC postflight](../assets/images/ethos-suite/themes/srb-rc-postflight.png)
+    ![SRB-RC after run](../assets/images/ethos-suite/themes/srb-rc-postflight.png)
 
 The screenshots come from the Ethos simulator, so the values are examples.
-The postflight screens use sample figures.
+The after-run screens use sample figures.
 
 !!! note "Screenshots from before the car conversion"
     These screenshots were taken with the WingFlight suite. Since then the
     themes have been changed for cars: the governor state is replaced by the
     arming state (or the PID profile on DanielRC), and some *flight* labels
     now read *run* (FLIGHT TIME is RUN TIME, for example). The layouts are
-    otherwise as shown. The car conversion of the themes is still in
-    progress.
+    otherwise as shown.

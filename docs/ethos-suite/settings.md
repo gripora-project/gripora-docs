@@ -35,13 +35,12 @@ Choose and set up the [dashboard](dashboard.md) theme.
 ## ActiveLook
 
 For ActiveLook glasses: what the glasses show before, during and after a
-run (the pages are still labelled *Preflight*, *Inflight* and
-*Postflight*). **Settings** turns the glasses display on and sets its position; the
+run (**Before Run**, **During Run** and **After Run**). **Settings** turns the glasses display on and sets its position; the
 other three pages each pick a layout and what goes in each slot.
 
 ![Settings, ActiveLook menu](../assets/images/ethos-suite/settings_activelook_menu.png)
 
-![Settings, ActiveLook, Preflight page](../assets/images/ethos-suite/settings_activelook_preflight.png)
+![Settings, ActiveLook, Before Run page](../assets/images/ethos-suite/settings_activelook_preflight.png)
 
 ## Audio
 
@@ -60,7 +59,7 @@ Callouts and alerts, one page per kind:
 | Voltage | Low battery voltage, and BEC and receiver voltage alerts, with their thresholds. |
 | ESC temp | An alert when the ESC gets hotter than a threshold. |
 | Fuel | Fuel (charge left) callouts, and the low-fuel warning. |
-| State callouts | Arming flags, the mode (labelled *flight mode*), GPS fix, PID, rate and battery profile changes, and adjustments. |
+| State callouts | Arming flags, the mode, GPS fix, PID, rate and battery profile changes, and adjustments. |
 | FC status | Alerts from the controller, such as the backup receiver taking over or the GPS not responding. |
 | Link | An alert, and optionally a vibration, when telemetry is lost. |
 | Model callout | Plays the car's name when it connects, if you have recorded it. |

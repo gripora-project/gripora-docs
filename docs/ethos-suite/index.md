@@ -7,15 +7,10 @@ computer.
 
 ![The Gripora app's main menu on an X20](../assets/images/ethos-suite/root-menu.png)
 
-!!! note "The suite is being converted to cars"
-    The suite was forked from WingFlight's along with the firmware, and is
-    being aligned with Gripora on a car. Some menus and labels still use
-    aircraft words (*Flight Tuning*, *Flight Feel*, *Craft name*, *Flight
-    Count*), and a few tiles left over from WingFlight open pages for
-    features the Gripora firmware no longer has (see
-    [Pages that don't work with Gripora](using-the-app.md#pages-that-dont-work-with-gripora)).
-    This section describes the suite as it is now, and will be updated as
-    it settles.
+!!! note "Screenshots predate the car names"
+    The screenshots in this section were taken before the suite was renamed
+    for cars, so they still show WingFlight, *Flight Tuning*, *Flight Feel*
+    and roll, pitch and yaw rows. The text describes the suite as it is now.
 
 The suite installs three things on the radio:
 
@@ -49,7 +44,7 @@ On an EdgeTX or OpenTX radio, use the
    for your model.
 2. [Using the app](using-the-app.md): getting around, and how saving works.
 3. A tour of each part of the app:
-    - [Flight Tuning](flight-tuning.md): PIDs, rates, the drive aids
+    - [Tuning](flight-tuning.md): PIDs, rates, the drive aids
     - [Setup](setup.md): board, radio, mixer, servos, power and ESC
     - [Tools and Logs](tools-and-logs.md): the setup wizard, profiles,
       diagnostics and logs

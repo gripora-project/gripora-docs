@@ -1,22 +1,19 @@
-# Flight Tuning
+# Tuning
 
-**Flight Tuning** (the suite still uses this aircraft name for it) holds the
-settings you change most at the track: the steering gyro's PIDs, the rates,
-how the car feels, and the drive aids. The pages are the same settings as
-the Configurator's, so each section below links to the Configurator page
-that explains them.
+**Tuning** holds the settings you change most at the track: the steering
+gyro's PIDs, the rates, how the car feels, and the drive aids. The pages are
+the same settings as the Configurator's, so each section below links to the
+Configurator page that explains them.
 
-![The Flight Tuning menu](../assets/images/ethos-suite/flight-tuning-menu.png)
+![The Tuning menu](../assets/images/ethos-suite/flight-tuning-menu.png)
 
-The menu has three groups: **Flight Tuning** (PIDs, Rates, Flight Feel),
-**Drive Aids** (ABS) and **Advanced** (Filters, PID Controller, PID
-Bandwidth, Gain Curves, Rate Response).
+The menu has three groups: **Steering** (PIDs, Rates, Driving Feel),
+**Drive Aids** (ABS, Traction) and **Advanced** (Filters, PID Controller,
+PID Bandwidth, Gain Curves, Rate Response).
 
-!!! note "Only steering is stabilised"
-    Gripora only stabilises yaw, which is the steering. The suite's tuning
-    pages still show a roll, pitch and yaw column, as they did on WingFlight;
-    on a car only the **yaw** values do anything. Roll and pitch are held at
-    zero by the firmware, whatever the pages show.
+Gripora stabilises only the steering, so the tuning pages show only the
+steering values. The roll and pitch values the controller still stores are
+written back unchanged.
 
 Most of these pages belong to a PID profile, shown in the title as
 *PIDs #1* and so on. To work on another profile, switch to it (from the radio,
@@ -25,8 +22,7 @@ follows.
 
 ## PIDs
 
-P, I, D, F and B per axis. On a car, use the yaw row: it is the steering
-gyro's gains.
+P, I, D, F and B for the steering gyro.
 
 ![PIDs page](../assets/images/ethos-suite/pids.png)
 
@@ -34,43 +30,48 @@ See [Profiles](../configurator/tabs/profiles.md).
 
 ## Rates
 
-RC Rate, Rate and RC Expo per axis, for the active rate profile (the title
-shows its number). The yaw rates set how fast the car is asked to turn at
-full steering.
+RC Rate, Rate and RC Expo for the steering, for the active rate profile (the
+title shows its number). They set how fast the car is asked to turn at full
+steering.
 
 ![Rates page](../assets/images/ethos-suite/rates.png)
 
 See [Rates](../configurator/tabs/rates.md).
 
-## Flight Feel
+## Driving Feel
 
-Gain, Decay and Relax per axis, plus the overall Throttle and Speed gains.
-The Configurator calls this **Driving Feel**. The Speed gain follows the
-car's speed from the motor RPM, or from GPS without an RPM source.
+**Steering Gain**, **Decay** and **Relax**, plus the overall **Throttle
+Gain** and **Speed Gain**, one per line. The Speed gain follows the car's
+speed from the motor RPM, or from GPS without an RPM source.
 
-![Flight Feel page](../assets/images/ethos-suite/master_gains.png)
+![Driving Feel page](../assets/images/ethos-suite/master_gains.png)
 
-See [Profiles](../configurator/tabs/profiles.md).
+See [Profiles](../configurator/tabs/profiles.md#driving-feel).
 
 ## ABS
 
 Under the **Drive Aids** group. The timed ABS for the current PID profile
 (the title shows it, such as *ABS #1*): **Mode** (Off, Static or Dynamic),
-**Trigger**, **Pulse Rate**, **Release Floor** and **Hold**, the **Full
-Brake Rate** and **Full Brake Hold** that Dynamic moves towards, and the
-**Rate Added at Lock** and **Hold at Lock** that follow the steering. Each
-PID profile has its own settings, so a profile switch changes them with the
-tune.
+**Trigger** and **Release Floor**, then a **Rate** and **Hold** for each of
+**Pulse**, **Full Brake** (the values Dynamic moves towards; greyed out
+unless Mode is Dynamic) and **At Full Lock** (how the pulses change with
+steering lock). Each PID profile has its own settings, so a profile switch
+changes them with the tune.
 
 A switch for the **DRIVE AIDS OFF** mode (on the Modes page) turns the drive
 aids off from the transmitter. ABS is also off while disarmed and in
 failsafe.
 
-The suite has no traction control page yet: set traction control in the
-Configurator or with the EdgeTX scripts.
-
 See [Drive Aids](../driving/drive-aids.md) for what each setting does and
 which ESC setups ABS can run on.
+
+## Traction
+
+Traction control for the current PID profile (the title reads *Traction
+Control*): **Mode** (Off or Ramp) and **Ramp Time** (50-2000 ms, default
+500 ms), which is greyed out unless Mode is Ramp.
+
+See [Drive Aids](../driving/drive-aids.md).
 
 ## Filters
 
@@ -83,9 +84,8 @@ See [Gyro](../configurator/tabs/gyro.md).
 
 ## PID Controller
 
-How the PID loop handles error: error decay, error limits and I-term relax.
-The page scrolls. It still has a **Cross-Axis Relax** group from WingFlight;
-the firmware no longer has that feature, so leave it alone.
+**I-Term Decay Max Rate**, **I-Term Relax Level** and the steering **Error
+Limit**. The I-term decay time itself is on Driving Feel.
 
 ![PID Controller page](../assets/images/ethos-suite/pid_controller.png)
 
@@ -93,16 +93,14 @@ See [Profiles](../configurator/tabs/profiles.md).
 
 ## PID Bandwidth
 
-Cutoff frequencies for the gyro, D-term and B-term, per axis.
+The steering's gyro, D-term and B-term cutoff frequencies.
 
 ![PID Bandwidth page](../assets/images/ethos-suite/pid_bandwidth.png)
 
 ## Gain Curves
 
-A gain curve per axis, for throttle and for speed, and the speed range the
-speed curve covers. The firmware takes 10 to 300 km/h here (default 60);
-the current suite still offers up to 600 km/h, and the firmware limits a
-value above 300 to 300.
+A gain curve for Steering, Throttle and Speed, and the **Speed Range** the
+speed curve covers (10-300 km/h, default 60).
 
 ![Gain Curves page](../assets/images/ethos-suite/gain_curves.png)
 
@@ -111,8 +109,9 @@ See [Profiles](../configurator/tabs/profiles.md) and
 
 ## Rate Response
 
-How quickly the car follows the steering: response time, acceleration limit,
-setpoint boost and its cutoff per axis, and the dynamic ceiling gain.
+How quickly the car follows the steering: **Response Time**, **Accel
+Limit**, **Setpoint Boost Gain** and **Cutoff**, and the **Dynamic Ceiling
+Gain**, **Dynamic Deadband Gain** and **Dynamic Deadband Filter**.
 
 ![Rate Response page](../assets/images/ethos-suite/rates_advanced.png)
 

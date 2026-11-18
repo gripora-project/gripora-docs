@@ -16,7 +16,7 @@ here are for changing one thing later.
 
 ### Configuration
 
-The car's name (the page still labels it *Craft name*), PID loop speed, and
+**Car name**, PID loop speed, and
 the features the board runs: LED strip and the ready-to-arm wiggle. There is
 no GPS switch: GPS runs when the GPS source matches a port (see
 [GPS](../configurator/tabs/gps.md)).
@@ -36,8 +36,8 @@ See [Serial Ports](../reference/serial-ports.md).
 
 ### Radio Config
 
-Stick deflection and centre, the throttle range, and the deadbands. On a car
-the throttle is signed around the centre: forward above it, brake and
+Channel centre and travel, the throttle range, and the steering deadband.
+The throttle is signed around the centre: forward above it, brake and
 reverse below.
 
 ![Radio Config page](../assets/images/ethos-suite/radio_config.png)
@@ -67,13 +67,13 @@ A menu of its own:
 | Failsafe | **Ch. Fallback**: what each channel does when the signal is lost. **Stage 2**: the failsafe procedure and its delays. | [Failsafe](../configurator/tabs/failsafe.md) |
 | Beepers | Which events sound the beeper, and the ESC beacon. | [Beepers](../configurator/tabs/beepers.md) |
 | Blackbox | The logging device, rate and fields, and the log memory's status. **Tool** on *Status* erases it. | [Blackbox](../configurator/tabs/blackbox.md) |
-| Stats | Run count, and last and total run time (labelled *Flight Count* and *Flight Time* in the suite). | |
+| Stats | **Run Count**, **Last Run Time** and **Total Run Time**. | |
 
 ![Modes page](../assets/images/ethos-suite/modes.png)
 
 ![Failsafe, Stage 2 page](../assets/images/ethos-suite/failsafe_procedure.png)
 
-## Sensors & GPS
+## Sensors
 
 ### Accelerometer
 
@@ -96,8 +96,8 @@ See [Configuration](../configurator/tabs/configuration.md).
 
 ### Mixer
 
-Gain and direction for each stabilised axis. On a car only yaw (the
-steering) is used. The car mix itself (steering on S1, the ESC on M1,
+The steering **Throw**, **Invert** and **Gyro Direction** (Normal or
+Inverted). The car mix itself (steering on S1, the ESC on M1,
 optional rear steering and a second ESC) is set by the Setup Wizard's Model
 step, or in Mixer Rules.
 
@@ -140,7 +140,7 @@ See [Servos](../configurator/tabs/servos.md).
 | Page | What it is for |
 | --- | --- |
 | Battery | Battery profiles: capacity and cell voltages. |
-| Alerts | Run time alarm (labelled *Flight Time Alarm*) and the BEC and receiver voltage alerts. |
+| Alerts | **Run Time Alarm** and the BEC and receiver voltage alerts. |
 | Sources | Where voltage and current are measured. |
 | SmartFuel | How fuel (charge left) is worked out. |
 | Preferences | The ESC current limit. |
@@ -157,20 +157,14 @@ See [Power](../configurator/tabs/power.md).
 | --- | --- | --- |
 | Motor Override | Run the motor from the radio, for testing. Put the car on a stand with the wheels off the ground first. | |
 | Throttle | Throttle protocol, update rate and PWM endpoints. | [Motors](../configurator/tabs/motors.md) |
+| Drive | **ESC behaviour** below neutral, **Tyre diameter**, **Gyro starts at** and **Gyro fully on at**, **Gyro in reverse** and **Reverse gyro gain**. | [Motors](../configurator/tabs/motors.md#drive), [Drive State](../driving/drive-state.md) |
 | Telemetry | ESC telemetry protocol and corrections. | [Motors](../configurator/tabs/motors.md) |
 | SRXL2 ESC | Shown only while the ESC telemetry protocol is SRXL2. | [Motors](../configurator/tabs/motors.md) |
-| RPM | Where RPM comes from, the gear ratios and the motor pole count. | [Motors](../configurator/tabs/motors.md) |
+| RPM | Where RPM comes from, **Motor 1 Gear Ratio** and **Motor 2 Gear Ratio** (motor turns per wheel turn), and the motor pole count. | [Motors](../configurator/tabs/motors.md) |
 | ESC Prog. | Change your ESC's own settings from the radio, through the controller. Pick the ESC's make. | [ESC Programming](../configurator/tabs/esc-programming.md) |
 
-The RPM page still labels its two ratios *main motor* and *tail motor*. On a
-car they are the gear ratios (motor turns per wheel turn) of motor 1 and
-motor 2, which the controller uses to work out the car's speed.
-
-The suite has no page for the drive settings (ESC behaviour below neutral,
-tyre diameter, the gyro start speeds and the reverse gyro). Set those on the
-Configurator's [Motors](../configurator/tabs/motors.md) tab; the Setup
-Wizard's ESC step sets the ESC behaviour. See
-[Drive State](../driving/drive-state.md).
+The controller works out the car's speed from the RPM, the gear ratios and
+the tyre diameter.
 
 ![Motor Override page](../assets/images/ethos-suite/motor_override.png)
 

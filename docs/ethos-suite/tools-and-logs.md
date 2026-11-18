@@ -49,7 +49,7 @@ copies its drive aids settings.
 ### Select Profile
 
 Switches the controller to another PID or rate profile. The tuning pages,
-including ABS, follow the profile you pick.
+including ABS and Traction, follow the profile you pick.
 
 ![Select Profile page](../assets/images/ethos-suite/profile_select.png)
 
@@ -63,7 +63,7 @@ Read-only pages for checking the link and the controller:
 | --- | --- |
 | Status | Whether the radio side is working: free memory, the RF module, the MSP sensor, the connection to the controller and the API version. |
 | ELRS Telemetry | Probes the ExpressLRS module and its link. It needs CRSF telemetry. |
-| FBL Status | The controller's arming flags, blackbox space, load, and active profiles. |
+| FC Status | The controller's arming flags, blackbox space, load, and active profiles. |
 | Rx Backup | The [backup receiver](../driving/backup-rx-input.md) inputs: each backup's protocol and link, which source is active, and their channels side by side. |
 | Info | Version numbers: the suite, Ethos, the firmware, and the MSP protocol. |
 
