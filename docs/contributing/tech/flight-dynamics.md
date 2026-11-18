@@ -2,7 +2,7 @@
 
 This document describes how Gripora turns the driver's steering and throttle into steering-servo and ESC
 commands. It records why each stage is built the way it is, and lists the known defects and limitations. Read
-it before changing flight-control code: `src/main/flight/{setpoint,pid,drive,drive_aids,speed_atten,mixer,servos,motors}.c`,
+it before changing steering-control code: `src/main/flight/{setpoint,pid,drive,drive_aids,speed_atten,mixer,servos,motors}.c`,
 `src/main/fc/rc.c`, `src/main/fc/core.c` and `src/main/flight/failsafe.c`.
 
 The page keeps its old address (`contributing/tech/flight-dynamics/`) because source comments and the firmware's

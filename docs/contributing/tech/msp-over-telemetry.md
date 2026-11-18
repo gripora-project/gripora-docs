@@ -1,6 +1,6 @@
 # MSP over Telemetry
 
-The Ethos suite and the EdgeTX scripts configure the flight controller through MSP carried on the
+The Ethos suite and the EdgeTX scripts configure the controller through MSP carried on the
 telemetry link: FrSky S.Port, F.Port, FBUS (F.Port2), or CRSF. This page follows one request from the
 radio to the firmware and back, names the code that handles each hop, and shows what bounds the speed.
 It is written for people working on the firmware side or on the Lua transports.

@@ -32,7 +32,7 @@ conversion is in progress. Keep these in mind when changing anything:
   always hold zero.
 - **Throttle is signed**, -1..1 around `rc_center`: forward above neutral,
   brake or reverse below it. "Throttle off" (arming, auto-disarm, failsafe)
-  means the stick at neutral.
+  means the throttle trigger at neutral.
 - **Removed aircraft features keep their ids.** Attitude hold, angle/leveling,
   acro trainer, GPS rescue and navigation, thrust vectoring, the governor,
   auto trim, the tune advisor and the MANUAL and TRADITIONAL modes are gone,
