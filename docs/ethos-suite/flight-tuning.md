@@ -1,13 +1,13 @@
 # Tuning
 
 **Tuning** holds the settings you change most at the track: the steering
-gyro's PIDs, the rates, how the car feels, and the drive aids. The pages are
+gyro's PIDs, the rates, how the car feels, drift mode and the drive aids. The pages are
 the same settings as the Configurator's, so each section below links to the
 Configurator page that explains them.
 
 ![The Tuning menu](../assets/images/ethos-suite/flight-tuning-menu.png)
 
-The menu has three groups: **Steering** (PIDs, Rates, Driving Feel),
+The menu has three groups: **Steering** (PIDs, Rates, Driving Feel, Drift),
 **Drive Aids** (ABS, Traction, Launch) and **Advanced** (Filters, PID Controller,
 PID Bandwidth, Gain Curves, Rate Response).
 
@@ -47,6 +47,18 @@ speed from the motor RPM, or from GPS without an RPM source.
 ![Driving Feel page](../assets/images/ethos-suite/master_gains.png)
 
 See [Profiles](../configurator/tabs/profiles.md#driving-feel).
+
+## Drift
+
+Under the **Steering** group, after Driving Feel. The settings of the
+[DRIFT](../driving/drift.md) mode for the current PID profile (the title shows
+it, such as *Drift #1*): **Counter Gain** (0-200 %, default 100), **Allowed
+Rate** (0-720 °/s, default 30) and **Counter Limit** (10-100 % of full lock,
+default 100). A note on the page reminds you that the **DRIFT** switch, set up
+on the Modes page, turns the mode on. On firmware without drift mode the
+fields are greyed out and nothing is saved.
+
+See [Profiles](../configurator/tabs/profiles.md#drift).
 
 ## ABS
 
