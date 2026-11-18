@@ -2,398 +2,362 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://doc.gripora.org/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/adjustments/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/auxiliary/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/beepers/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/blackbox/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/cli/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/configuration/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/crsf-sensors/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/curves/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/esc-programming/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/failsafe/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/fbus-sensors/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/configurator/tabs/gps-navigation/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/gps/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/gyro/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/led-strip/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/logic/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/mixer/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/motors/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/power/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/profiles/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/rates/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/receiver/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/configurator/tabs/remap-fc/</loc>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/sensors/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/servos/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/setup/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/configurator/tabs/status/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
-         <loc>https://doc.gripora.org/configurator/tabs/thrust-vector/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <loc>https://doc.gripora.org/configurator/tabs/xact-servo/</loc>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/building-the-firmware/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/code-guidelines/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/coding-style/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/developers/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/atomic-barrier/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/blackbox-format/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/configuration-format/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/custom-boards/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/customizing-the-build/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/esc-signaling-autodetect/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/flight-dynamics/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/hardware-debugging-vscode-jlink/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/hardware-debugging/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/msp-over-telemetry/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/parameter-groups/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/rx-wiring-autodetect/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/contributing/tech/smartfuel/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
-         <loc>https://doc.gripora.org/contributing/tech/tune-advisor/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <loc>https://doc.gripora.org/driving/</loc>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/driving/backup-rx-input/</loc>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/driving/car-mixer/</loc>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/driving/drive-aids/</loc>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/driving/drive-state/</loc>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/driving/gyro-off/</loc>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/driving/ready-to-arm-wiggle/</loc>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/edgetx/</loc>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/dashboard-themes/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/dashboard/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/flight-tuning/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/installing/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/settings/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/setup/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/tools-and-logs/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/ethos-suite/tune-advisor/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/ethos-suite/using-the-app/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/atthold/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/auto-trim/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/backup-rx-input/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/cross-axis-relax/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/governor/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/gps-rescue/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/gps-rth/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/prop-hang-relax/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/ready-to-arm-wiggle/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/setup-gyro-off/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/snap-relax/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/traditional/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/trainer/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/flight-modes/tv-hold/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/getting-started/</loc>
-         <lastmod>2026-11-17</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.gripora.org/getting-started/aircraft-setup/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/getting-started/backup-and-restore/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.gripora.org/getting-started/car-setup/</loc>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/getting-started/first-connection/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/getting-started/flashing-the-firmware/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/getting-started/installing-the-configurator/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/getting-started/safety/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/buzzer/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/castle-esc-telemetry/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/cli-reference/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/fbus-sensor-ids/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/frsky-spi-rx/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/gps-hardware/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/led-strip/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/msp-overview/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/oled-display/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/radio-alerts/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/receivers/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/rssi/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/serial-ports/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/spektrum-bind/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/stick-commands/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/reference/telemetry/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
     <url>
          <loc>https://doc.gripora.org/setup/frsky-servos/</loc>
-         <lastmod>2026-11-17</lastmod>
+         <lastmod>2026-11-18</lastmod>
     </url>
 </urlset>
