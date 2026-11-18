@@ -27,7 +27,7 @@
     
     
       
-        <title>Flight Tuning - Gripora Documentation</title>
+        <title>Tuning - Gripora Documentation</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#flight-tuning" class="md-skip">
+        <a href="#tuning" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Flight Tuning
+              Tuning
             
           </span>
         </div>
@@ -2059,7 +2059,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -2077,7 +2077,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -2125,10 +2125,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flight-feel" class="md-nav__link">
+  <a href="#driving-feel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flight Feel
+        Driving Feel
       
     </span>
   </a>
@@ -2140,6 +2140,17 @@
     <span class="md-ellipsis">
       
         ABS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traction
       
     </span>
   </a>
@@ -3613,10 +3624,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flight-feel" class="md-nav__link">
+  <a href="#driving-feel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flight Feel
+        Driving Feel
       
     </span>
   </a>
@@ -3628,6 +3639,17 @@
     <span class="md-ellipsis">
       
         ABS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traction
       
     </span>
   </a>
@@ -3714,84 +3736,79 @@
   
 
 
-<h1 id="flight-tuning">Flight Tuning<a class="headerlink" href="#flight-tuning" title="Permanent link">&para;</a></h1>
-<p><strong>Flight Tuning</strong> (the suite still uses this aircraft name for it) holds the
-settings you change most at the track: the steering gyro's PIDs, the rates,
-how the car feels, and the drive aids. The pages are the same settings as
-the Configurator's, so each section below links to the Configurator page
-that explains them.</p>
-<p><img alt="The Flight Tuning menu" src="../../assets/images/ethos-suite/flight-tuning-menu.png" /></p>
-<p>The menu has three groups: <strong>Flight Tuning</strong> (PIDs, Rates, Flight Feel),
-<strong>Drive Aids</strong> (ABS) and <strong>Advanced</strong> (Filters, PID Controller, PID
-Bandwidth, Gain Curves, Rate Response).</p>
-<div class="admonition note">
-<p class="admonition-title">Only steering is stabilised</p>
-<p>Gripora only stabilises yaw, which is the steering. The suite's tuning
-pages still show a roll, pitch and yaw column, as they did on WingFlight;
-on a car only the <strong>yaw</strong> values do anything. Roll and pitch are held at
-zero by the firmware, whatever the pages show.</p>
-</div>
+<h1 id="tuning">Tuning<a class="headerlink" href="#tuning" title="Permanent link">&para;</a></h1>
+<p><strong>Tuning</strong> holds the settings you change most at the track: the steering
+gyro's PIDs, the rates, how the car feels, and the drive aids. The pages are
+the same settings as the Configurator's, so each section below links to the
+Configurator page that explains them.</p>
+<p><img alt="The Tuning menu" src="../../assets/images/ethos-suite/flight-tuning-menu.png" /></p>
+<p>The menu has three groups: <strong>Steering</strong> (PIDs, Rates, Driving Feel),
+<strong>Drive Aids</strong> (ABS, Traction) and <strong>Advanced</strong> (Filters, PID Controller,
+PID Bandwidth, Gain Curves, Rate Response).</p>
+<p>Gripora stabilises only the steering, so the tuning pages show only the
+steering values. The roll and pitch values the controller still stores are
+written back unchanged.</p>
 <p>Most of these pages belong to a PID profile, shown in the title as
 <em>PIDs #1</em> and so on. To work on another profile, switch to it (from the radio,
 or with <a href="../tools-and-logs/#select-profile">Select Profile</a>) and the page
 follows.</p>
 <h2 id="pids">PIDs<a class="headerlink" href="#pids" title="Permanent link">&para;</a></h2>
-<p>P, I, D, F and B per axis. On a car, use the yaw row: it is the steering
-gyro's gains.</p>
+<p>P, I, D, F and B for the steering gyro.</p>
 <p><img alt="PIDs page" src="../../assets/images/ethos-suite/pids.png" /></p>
 <p>See <a href="../../configurator/tabs/profiles/">Profiles</a>.</p>
 <h2 id="rates">Rates<a class="headerlink" href="#rates" title="Permanent link">&para;</a></h2>
-<p>RC Rate, Rate and RC Expo per axis, for the active rate profile (the title
-shows its number). The yaw rates set how fast the car is asked to turn at
-full steering.</p>
+<p>RC Rate, Rate and RC Expo for the steering, for the active rate profile (the
+title shows its number). They set how fast the car is asked to turn at full
+steering.</p>
 <p><img alt="Rates page" src="../../assets/images/ethos-suite/rates.png" /></p>
 <p>See <a href="../../configurator/tabs/rates/">Rates</a>.</p>
-<h2 id="flight-feel">Flight Feel<a class="headerlink" href="#flight-feel" title="Permanent link">&para;</a></h2>
-<p>Gain, Decay and Relax per axis, plus the overall Throttle and Speed gains.
-The Configurator calls this <strong>Driving Feel</strong>. The Speed gain follows the
-car's speed from the motor RPM, or from GPS without an RPM source.</p>
-<p><img alt="Flight Feel page" src="../../assets/images/ethos-suite/master_gains.png" /></p>
-<p>See <a href="../../configurator/tabs/profiles/">Profiles</a>.</p>
+<h2 id="driving-feel">Driving Feel<a class="headerlink" href="#driving-feel" title="Permanent link">&para;</a></h2>
+<p><strong>Steering Gain</strong>, <strong>Decay</strong> and <strong>Relax</strong>, plus the overall <strong>Throttle
+Gain</strong> and <strong>Speed Gain</strong>, one per line. The Speed gain follows the car's
+speed from the motor RPM, or from GPS without an RPM source.</p>
+<p><img alt="Driving Feel page" src="../../assets/images/ethos-suite/master_gains.png" /></p>
+<p>See <a href="../../configurator/tabs/profiles/#driving-feel">Profiles</a>.</p>
 <h2 id="abs">ABS<a class="headerlink" href="#abs" title="Permanent link">&para;</a></h2>
 <p>Under the <strong>Drive Aids</strong> group. The timed ABS for the current PID profile
 (the title shows it, such as <em>ABS #1</em>): <strong>Mode</strong> (Off, Static or Dynamic),
-<strong>Trigger</strong>, <strong>Pulse Rate</strong>, <strong>Release Floor</strong> and <strong>Hold</strong>, the <strong>Full
-Brake Rate</strong> and <strong>Full Brake Hold</strong> that Dynamic moves towards, and the
-<strong>Rate Added at Lock</strong> and <strong>Hold at Lock</strong> that follow the steering. Each
-PID profile has its own settings, so a profile switch changes them with the
-tune.</p>
+<strong>Trigger</strong> and <strong>Release Floor</strong>, then a <strong>Rate</strong> and <strong>Hold</strong> for each of
+<strong>Pulse</strong>, <strong>Full Brake</strong> (the values Dynamic moves towards; greyed out
+unless Mode is Dynamic) and <strong>At Full Lock</strong> (how the pulses change with
+steering lock). Each PID profile has its own settings, so a profile switch
+changes them with the tune.</p>
 <p>A switch for the <strong>DRIVE AIDS OFF</strong> mode (on the Modes page) turns the drive
 aids off from the transmitter. ABS is also off while disarmed and in
 failsafe.</p>
-<p>The suite has no traction control page yet: set traction control in the
-Configurator or with the EdgeTX scripts.</p>
 <p>See <a href="../../driving/drive-aids/">Drive Aids</a> for what each setting does and
 which ESC setups ABS can run on.</p>
+<h2 id="traction">Traction<a class="headerlink" href="#traction" title="Permanent link">&para;</a></h2>
+<p>Traction control for the current PID profile (the title reads <em>Traction
+Control</em>): <strong>Mode</strong> (Off or Ramp) and <strong>Ramp Time</strong> (50-2000 ms, default
+500 ms), which is greyed out unless Mode is Ramp.</p>
+<p>See <a href="../../driving/drive-aids/">Drive Aids</a>.</p>
 <h2 id="filters">Filters<a class="headerlink" href="#filters" title="Permanent link">&para;</a></h2>
 <p>The gyro lowpass filters (type, cutoff, and dynamic range) and the notch
 filters. The page scrolls.</p>
 <p><img alt="Filters page" src="../../assets/images/ethos-suite/filters.png" /></p>
 <p>See <a href="../../configurator/tabs/gyro/">Gyro</a>.</p>
 <h2 id="pid-controller">PID Controller<a class="headerlink" href="#pid-controller" title="Permanent link">&para;</a></h2>
-<p>How the PID loop handles error: error decay, error limits and I-term relax.
-The page scrolls. It still has a <strong>Cross-Axis Relax</strong> group from WingFlight;
-the firmware no longer has that feature, so leave it alone.</p>
+<p><strong>I-Term Decay Max Rate</strong>, <strong>I-Term Relax Level</strong> and the steering <strong>Error
+Limit</strong>. The I-term decay time itself is on Driving Feel.</p>
 <p><img alt="PID Controller page" src="../../assets/images/ethos-suite/pid_controller.png" /></p>
 <p>See <a href="../../configurator/tabs/profiles/">Profiles</a>.</p>
 <h2 id="pid-bandwidth">PID Bandwidth<a class="headerlink" href="#pid-bandwidth" title="Permanent link">&para;</a></h2>
-<p>Cutoff frequencies for the gyro, D-term and B-term, per axis.</p>
+<p>The steering's gyro, D-term and B-term cutoff frequencies.</p>
 <p><img alt="PID Bandwidth page" src="../../assets/images/ethos-suite/pid_bandwidth.png" /></p>
 <h2 id="gain-curves">Gain Curves<a class="headerlink" href="#gain-curves" title="Permanent link">&para;</a></h2>
-<p>A gain curve per axis, for throttle and for speed, and the speed range the
-speed curve covers. The firmware takes 10 to 300 km/h here (default 60);
-the current suite still offers up to 600 km/h, and the firmware limits a
-value above 300 to 300.</p>
+<p>A gain curve for Steering, Throttle and Speed, and the <strong>Speed Range</strong> the
+speed curve covers (10-300 km/h, default 60).</p>
 <p><img alt="Gain Curves page" src="../../assets/images/ethos-suite/gain_curves.png" /></p>
 <p>See <a href="../../configurator/tabs/profiles/">Profiles</a> and
 <a href="../../configurator/tabs/curves/">Curves</a>.</p>
 <h2 id="rate-response">Rate Response<a class="headerlink" href="#rate-response" title="Permanent link">&para;</a></h2>
-<p>How quickly the car follows the steering: response time, acceleration limit,
-setpoint boost and its cutoff per axis, and the dynamic ceiling gain.</p>
+<p>How quickly the car follows the steering: <strong>Response Time</strong>, <strong>Accel
+Limit</strong>, <strong>Setpoint Boost Gain</strong> and <strong>Cutoff</strong>, and the <strong>Dynamic Ceiling
+Gain</strong>, <strong>Dynamic Deadband Gain</strong> and <strong>Dynamic Deadband Filter</strong>.</p>
 <p><img alt="Rate Response page" src="../../assets/images/ethos-suite/rates_advanced.png" /></p>
 <p>See <a href="../../configurator/tabs/rates/">Rates</a>.</p>
 

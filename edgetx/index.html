@@ -2045,7 +2045,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -3707,11 +3707,11 @@ computer. For FrSky Ethos radios, use the
 <a href="../ethos-suite/">Ethos Lua Suite</a> instead.</p>
 <div class="admonition note">
 <p class="admonition-title">Being converted to cars</p>
-<p>The scripts came from WingFlight's along with the firmware. The ABS and
-traction control page is new for cars, but most pages still show the
-roll, pitch and yaw columns and some aircraft settings that Gripora no
-longer uses (see <a href="#pages">Pages</a>). This page will be updated as the
-scripts are aligned with Gripora.</p>
+<p>The scripts came from WingFlight's along with the firmware. The tuning
+pages label the steering rows <em>Steer</em> or <em>Steering</em> and mark roll and
+pitch <em>(unused)</em>, but some aircraft pages and settings that Gripora no
+longer uses are still there (see
+<a href="#pages-and-settings-left-over-from-wingflight">Pages and settings left over from WingFlight</a>).</p>
 </div>
 <h2 id="what-they-install">What they install<a class="headerlink" href="#what-they-install" title="Permanent link">&para;</a></h2>
 <ul>
@@ -3779,23 +3779,23 @@ white radios it is in the menu you get by long-pressing the wheel.</p>
 </tr>
 <tr>
 <td>Rates</td>
-<td>The rates. On a car only yaw (steering) is used.</td>
+<td>The rates. On a car only the <em>Steer</em> row is used.</td>
 </tr>
 <tr>
 <td>Rate Dynamics</td>
-<td>Response time, acceleration limit and setpoint boost.</td>
+<td>Response time, acceleration limit and setpoint boost, and the <em>Steering Dynamics</em> ceiling and deadband. Only the steering values are used.</td>
 </tr>
 <tr>
 <td>PID Gains</td>
-<td>P, I, D, F and B per PID profile. On a car only yaw is used.</td>
+<td>P, I, D, F and B per PID profile. On a car only the <em>Steer</em> row is used.</td>
 </tr>
 <tr>
 <td>PID Controller</td>
-<td>Error decay, error limits and I-term relax.</td>
+<td>I-term relax level, I-term decay limit, error limits and the steering bandwidth and D- and B-term cutoffs.</td>
 </tr>
 <tr>
 <td>Profile - Various</td>
-<td>Throttle and speed gain attenuation, the gain (Driving Feel) settings, gain curves and the speed range. It still lists aircraft settings too (see below).</td>
+<td>Throttle and GPS speed gain attenuation, <em>Driving Feel</em> (master gain, I-term decay and I-term relax), gain curves and the speed range. It still lists aircraft settings too (see below).</td>
 </tr>
 <tr>
 <td>Battery, Smart Fuel</td>
@@ -3827,7 +3827,7 @@ white radios it is in the menu you get by long-pressing the wheel.</p>
 </tr>
 <tr>
 <td>Model</td>
-<td>The model ID, the statistics the controller keeps (still labelled <em>Total flights</em>, with total time and distance) and radio settings.</td>
+<td>The model ID, the statistics the controller keeps (total runs, time and distance) and radio settings.</td>
 </tr>
 <tr>
 <td>Settings</td>
@@ -3853,11 +3853,14 @@ the firmware keeps the drive aids per PID profile.</p>
 <p>These are still in the scripts but do nothing on Gripora, or are refused by
 the firmware. Leave them alone; they are due to be removed:</p>
 <ul>
-<li><strong>Tune Advisor</strong>: the firmware no longer has the tune advisor.</li>
-<li>On <strong>Profile - Various</strong>: <em>Trainer</em>, <em>Angle Mode</em> and <em>Cross-Axis Relax</em>.
-  The firmware keeps these fields only as placeholders.</li>
-<li>The <strong>roll</strong> and <strong>pitch</strong> columns on the tuning pages: Gripora stabilises
-  only yaw, the steering.</li>
+<li><strong>Tune Advisor</strong>: the firmware no longer has the tune advisor. The page
+  is shown by default; turn it off under <em>Settings</em>.</li>
+<li>On <strong>Profile - Various</strong>: <em>Trainer</em>, <em>Angle Mode</em>, <em>Cross-Axis Relax</em>,
+  and <em>Snap Relax</em> and <em>Prop Hang</em> where shown. The firmware keeps these
+  fields only as placeholders.</li>
+<li>On <strong>PID Controller</strong>: <em>Attitude Hold</em>.</li>
+<li>The <strong>roll</strong> and <strong>pitch</strong> rows and columns, marked <em>(unused)</em> where there
+  is room: Gripora stabilises only the steering.</li>
 </ul>
 <h2 id="adjustment-teller">Adjustment Teller<a class="headerlink" href="#adjustment-teller" title="Permanent link">&para;</a></h2>
 <p>Turn it on under <em>Settings → Grbg Options → Adjustment Teller</em>. It reads the

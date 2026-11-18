@@ -2045,7 +2045,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -4392,7 +4392,7 @@ and <code>save</code> stores the changes and reboots.</p>
   strip, SD card, a built-in SPI receiver, the F.Bus mux FPGA, a particular
   MCU), so <code>get</code> on a given board may not list all of them.</li>
 </ul>
-<p>Gripora stabilises only the steering (yaw). Roll and pitch keep their
+<p>Gripora stabilises only the steering (the yaw axis). Roll and pitch keep their
 settings in the PID and rate profiles so backups and MSP keep their layout,
 but they hold zero and have no effect on a car.</p>
 <h3 id="gyro-filters-and-accelerometer">Gyro, filters and accelerometer<a class="headerlink" href="#gyro-filters-and-accelerometer" title="Permanent link">&para;</a></h3>
@@ -5184,7 +5184,7 @@ but they hold zero and have no effect on a car.</p>
 <td>global</td>
 <td>array of 3</td>
 <td><code>25,25,25</code></td>
-<td>Stick activity threshold, roll, pitch, yaw</td>
+<td>Stick activity threshold, roll, pitch, steering</td>
 </tr>
 <tr>
 <td><code>roll_deadband</code></td>
@@ -5205,7 +5205,7 @@ but they hold zero and have no effect on a car.</p>
 <td>global</td>
 <td><code>0..100</code></td>
 <td><code>5</code></td>
-<td>Steering stick deadband, µs</td>
+<td>Steering deadband, µs</td>
 </tr>
 <tr>
 <td><code>frsky_spi_autobind</code></td>
@@ -5442,7 +5442,7 @@ but they hold zero and have no effect on a car.</p>
 </tbody>
 </table>
 <h3 id="pid-profile">PID profile<a class="headerlink" href="#pid-profile" title="Permanent link">&para;</a></h3>
-<p>Select the PID profile with <code>profile &lt;n&gt;</code> first. Only the yaw (steering) gains act; the roll and pitch rows are kept for compatibility. The speed attenuation (<code>fw_spa_*</code>) uses the motor RPM wheel speed when there is an RPM source, GPS speed otherwise.</p>
+<p>Select the PID profile with <code>profile &lt;n&gt;</code> first. Only the steering gains act; the roll and pitch rows are kept for compatibility. The speed attenuation (<code>fw_spa_*</code>) uses the motor RPM wheel speed when there is an RPM source, GPS speed otherwise.</p>
 <table>
 <thead>
 <tr>
@@ -5459,7 +5459,7 @@ but they hold zero and have no effect on a car.</p>
 <td>PID profile</td>
 <td>array of 3</td>
 <td><code>0,0,0</code></td>
-<td>Gain curve (1-8) applied to each axis's master gain by stick deflection, roll, pitch, yaw; 0 = none</td>
+<td>Gain curve (1-8) applied to each axis's master gain by stick deflection, roll, pitch, steering; 0 = none</td>
 </tr>
 <tr>
 <td><code>profile_name</code></td>
@@ -5480,7 +5480,7 @@ but they hold zero and have no effect on a car.</p>
 <td>PID profile</td>
 <td>array of 3</td>
 <td><code>100,100,100</code></td>
-<td>P, I and D scale per axis (roll, pitch, yaw), %</td>
+<td>P, I and D scale per axis (roll, pitch, steering), %</td>
 </tr>
 <tr>
 <td><code>fw_tpa_gain</code></td>
@@ -5690,7 +5690,7 @@ but they hold zero and have no effect on a car.</p>
 <td>PID profile</td>
 <td>array of 3</td>
 <td><code>45,45,60</code></td>
-<td>Error limit per axis (roll, pitch, yaw), degrees</td>
+<td>Error limit per axis (roll, pitch, steering), degrees</td>
 </tr>
 <tr>
 <td><code>iterm_decay_time</code></td>
@@ -5815,7 +5815,7 @@ but they hold zero and have no effect on a car.</p>
 </tbody>
 </table>
 <h3 id="rate-profile">Rate profile<a class="headerlink" href="#rate-profile" title="Permanent link">&para;</a></h3>
-<p>Select the rate profile with <code>rateprofile &lt;n&gt;</code> first. Only the yaw (steering) rows act on a car.</p>
+<p>Select the rate profile with <code>rateprofile &lt;n&gt;</code> first. Only the steering rows act on a car.</p>
 <table>
 <thead>
 <tr>
@@ -5958,14 +5958,14 @@ but they hold zero and have no effect on a car.</p>
 <td>rate profile</td>
 <td>array of 3</td>
 <td><code>0,0,0</code></td>
-<td>Setpoint boost gain, roll, pitch, yaw</td>
+<td>Setpoint boost gain, roll, pitch, steering</td>
 </tr>
 <tr>
 <td><code>setpoint_boost_cutoff</code></td>
 <td>rate profile</td>
 <td>array of 3</td>
 <td><code>15,15,90</code></td>
-<td>Setpoint boost cutoff, roll, pitch, yaw</td>
+<td>Setpoint boost cutoff, roll, pitch, steering</td>
 </tr>
 <tr>
 <td><code>yaw_dynamic_ceiling_gain</code></td>
@@ -8429,17 +8429,17 @@ bypasses them.</p>
 <tr>
 <td>1-4</td>
 <td><code>SR</code>, <code>SP</code>, <code>SY</code>, <code>ST</code></td>
-<td>Stabilized roll, pitch, yaw (steering), throttle. Roll and pitch are always zero</td>
+<td>Stabilized roll, pitch, steering, throttle. Roll and pitch are always zero</td>
 </tr>
 <tr>
 <td>5-8</td>
 <td><code>CR</code>, <code>CP</code>, <code>CY</code>, <code>CT</code></td>
-<td>RC command (stick deflection after the deadband) roll, pitch, yaw, throttle</td>
+<td>RC command (stick deflection after the deadband) roll, pitch, steering, throttle</td>
 </tr>
 <tr>
 <td>9-12</td>
 <td><code>RR</code>, <code>RP</code>, <code>RY</code>, <code>RT</code></td>
-<td>RC channel roll, pitch, yaw, throttle</td>
+<td>RC channel roll, pitch, steering, throttle</td>
 </tr>
 <tr>
 <td>13-26</td>
@@ -8458,10 +8458,10 @@ bypasses them.</p>
 </tr>
 </tbody>
 </table>
-<p>RC channels here are in the firmware's own order (roll, pitch, yaw,
+<p>RC channels here are in the firmware's own order (roll, pitch, steering,
 throttle, then AUX), after the <code>map</code> command has been applied, not the
-order on the receiver. With the default car map <code>RT1234AE</code>, CH1 is steering
-(yaw), CH2 throttle, CH3-CH6 AUX1-AUX4 and CH7/CH8 roll and pitch.</p>
+order on the receiver. With the default car map <code>RT1234AE</code>, CH1 is steering,
+CH2 throttle, CH3-CH6 AUX1-AUX4 and CH7/CH8 roll and pitch.</p>
 <p>The optional last argument, <code>&lt;role&gt;</code>, is a label for the Configurator: <code>0</code>
 none (the default when omitted), <code>1</code> Flap Compensation, <code>2</code> Differential
 Thrust Yaw. Both named roles are inherited from WingFlight; the mixer never

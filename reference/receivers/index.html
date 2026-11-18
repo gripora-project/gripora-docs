@@ -2045,7 +2045,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -4300,7 +4300,7 @@ The bug prevents use of all 16 channels.  Upgrade to the latest OpenTX version t
 without the fix you are limited to 8 channels regardless of the CH1-16/D16 settings.</p>
 <h3 id="srxl-formerly-xbus">SRXL (formerly XBUS)<a class="headerlink" href="#srxl-formerly-xbus" title="Permanent link">&para;</a></h3>
 <p>(Serial Receiver Link Protocol)
-SRXL is an open data transfer protocol which allows to transport control data from a rc receiver to another device like a flybarless system 
+SRXL is an open data transfer protocol which allows to transport control data from a rc receiver to another device like a stability controller 
 by only using one single line. This protocol has been established by SRXL.org based on the idea to create a freely available and unified protocol 
 that manufacturers can easily implement to their receivers and devices that process receiver data. The protocol does not describe an exact definition of 
 how the data must be processed. It only describes a framework in which receiver data can be packed. Each manufacturer can have his own ID, which must be 
@@ -4403,7 +4403,7 @@ the steering (and the unused roll and pitch) to <code>rc_center</code> and the t
 <h3 id="rx-loss-configuration">RX loss configuration<a class="headerlink" href="#rx-loss-configuration" title="Permanent link">&para;</a></h3>
 <p>The <code>rxfail</code> cli command is used to configure per-channel rx-loss behaviour.
 You can use the <code>rxfail</code> command to change this behaviour.
-A control channel (roll, pitch, yaw, throttle) can be AUTOMATIC, HOLD or SET. An AUX channel can be HOLD or SET.  </p>
+A control channel (roll, pitch, steering, throttle) can be AUTOMATIC, HOLD or SET. An AUX channel can be HOLD or SET.  </p>
 <ul>
 <li>AUTOMATIC - Control channels are set to safe values: centre for steering, roll and pitch, and neutral for the throttle.</li>
 <li>HOLD - Channel holds the last value.</li>
@@ -4416,11 +4416,11 @@ A control channel (roll, pitch, yaw, throttle) can be AUTOMATIC, HOLD or SET. An
 * Mode ('a' = AUTOMATIC, 'h' = HOLD, 's' = SET)
 * A value to use when in SET mode.</p>
 <p>Channels are always specified in the firmware's order, regardless of your channel mapping
-(with the default car map, CH1 steering is yaw and CH2 is throttle).</p>
+(with the default car map, CH1 is steering and CH2 is throttle).</p>
 <ul>
 <li>Roll is 0</li>
 <li>Pitch is 1</li>
-<li>Yaw is 2</li>
+<li>Steering (yaw) is 2</li>
 <li>Throttle is 3.</li>
 <li>Aux channels are 4 onwards.</li>
 </ul>
@@ -4501,7 +4501,7 @@ Do <strong>NOT USE</strong> the mode indicated with FAILSAFE instead, as this co
 </tr>
 <tr>
 <td>2</td>
-<td>Yaw (steering)</td>
+<td>Steering (yaw)</td>
 <td>CH1</td>
 </tr>
 <tr>

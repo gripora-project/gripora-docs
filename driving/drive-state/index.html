@@ -2163,7 +2163,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -3649,7 +3649,7 @@
 
 
 <h1 id="drive-state">Drive State<a class="headerlink" href="#drive-state" title="Permanent link">&para;</a></h1>
-<p>A car's yaw response to a steering angle depends on its speed and its
+<p>A car's turn response to a steering angle depends on its speed and its
 direction of travel. Driving backwards the response changes sign, so a gyro
 correction tuned going forward would steer the wrong way and become positive
 feedback. Near a standstill the car doesn't rotate at all, however far the
@@ -3658,11 +3658,11 @@ steering to full lock.</p>
 <p>The drive state is how the controller handles this. It works out which way
 the car is travelling and how fast, and the steering loop uses that to:</p>
 <ul>
-<li><strong>turn the gyro correction round in reverse.</strong> The steering stick keeps
+<li><strong>turn the gyro correction round in reverse.</strong> The steering wheel keeps
   meaning "wheel angle" in both directions; only the gyro feedback is
   reversed;</li>
 <li><strong>fade the gyro correction out at low speed</strong>, so at a standstill the
-  steering follows the stick alone;</li>
+  steering follows the wheel alone;</li>
 <li><strong>reduce, or switch off, the correction in reverse</strong>;</li>
 <li><strong>clear the steering I-term</strong> whenever the travel direction changes.</li>
 </ul>

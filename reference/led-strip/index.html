@@ -2045,7 +2045,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -4717,8 +4717,8 @@ Note: this mode requires a current sensor. See <a href="../../configurator/tabs/
 This overlay dims all of the LEDs it is assigned to and brightens certain ones at certain times in accordance with the animation. The animation is active regardless of arm state.</p>
 <h4 id="orientation">Orientation<a class="headerlink" href="#orientation" title="Permanent link">&para;</a></h4>
 <p>This function (<code>F</code>, "flight mode" in the code) colours LEDs by the direction
-they face and where they sit on the grid. The flight-mode colour schemes of
-the flight controller are gone; Gripora always uses the orientation colours.</p>
+they face and where they sit on the grid. The mode colour schemes inherited
+from WingFlight are gone; Gripora always uses the orientation colours.</p>
 <p>LEDs are set in a specific order:
  * LEDs that marked as facing up or down.
  * LEDs that marked as facing west or east AND are on the west or east side of the grid.
@@ -5002,7 +5002,7 @@ color 15 0,0,0
 <p>The ColorIndex is picked from the colors array ("palette").</p>
 <p>Mode 5 sets the channel the Throttle state overlay follows, instead of a
 colour: its last value is the channel in the firmware's order (0 roll,
-1 pitch, 2 yaw, 3 throttle, 4 AUX1 and so on). The default is the throttle.</p>
+1 pitch, 2 steering, 3 throttle, 4 AUX1 and so on). The default is the throttle.</p>
 <p>Examples (using the default colors):</p>
 <ul>
 <li>set armed color to red: <code>mode_color 4 1 2</code></li>

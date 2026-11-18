@@ -2136,7 +2136,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -3596,10 +3596,10 @@
 
 <h1 id="rates">Rates<a class="headerlink" href="#rates" title="Permanent link">&para;</a></h1>
 <p>The Rates tab sets the steering response: how fast the car is asked to turn
-(its yaw rate) at full steering, and how much expo softens the steering
+(its turn rate, or yaw rate) at full steering, and how much expo softens the steering
 around center.</p>
 <p>Rates are separate from the PID tune on the <a href="../profiles/">Profiles</a> tab:
-rates turn the steering stick into a commanded yaw rate, and the profile
+rates turn the steering wheel into a commanded turn rate, and the profile
 decides how closely the car follows it. The Setup Wizard's <strong>Driving
 style</strong> step sets a starting point (Beginner, Sport or Drift); see
 <a href="../../../getting-started/car-setup/">Set Up Your Car</a>.</p>
@@ -3610,9 +3610,9 @@ compare a change before saving it. Switch rate profiles while driving with
 the <strong>Rate Profile Selection</strong> function on the
 <a href="../adjustments/">Adjustments</a> tab.</p>
 <h2 id="rate-shape-and-expo">Rate, Shape and Expo<a class="headerlink" href="#rate-shape-and-expo" title="Permanent link">&para;</a></h2>
-<p>The steering (YAW) row has three values:</p>
+<p>The steering row has three values:</p>
 <ul>
-<li><strong>Rate</strong> sets the top speed: the yaw rate, in °/s, the car is asked for
+<li><strong>Rate</strong> sets the top speed: the turn rate, in °/s, the car is asked for
   at full steering. It's shown in the <strong>Max Vel</strong> column, and it's the
   <em>only</em> one of the three that changes it.</li>
 <li><strong>Expo</strong> softens the response around center, for finer small corrections,
@@ -3622,12 +3622,12 @@ the <strong>Rate Profile Selection</strong> function on the
   how much of the rate increase is saved for the last part of the steering
   travel. <strong>Shape only does anything if Expo is above 0%.</strong></li>
 </ul>
-<p>A car can only turn as fast as its speed and grip allow. When the stick
+<p>A car can only turn as fast as its speed and grip allow. When the steering
 asks for more rate than the car can give, for example armed on a stand, the
 stabilizer keeps adding steering, so held steering creeps towards full
 lock. That is normal. With an RPM source, the
 <a href="../motors/#drive">Drive panel</a> fades the gyro out at low speed and at a
-standstill, so the steering then follows the stick alone.</p>
+standstill, so the steering then follows the wheel alone.</p>
 <h3 id="quick-troubleshooting">Quick troubleshooting<a class="headerlink" href="#quick-troubleshooting" title="Permanent link">&para;</a></h3>
 <table>
 <thead>

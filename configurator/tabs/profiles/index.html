@@ -2247,7 +2247,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -3825,9 +3825,9 @@ the one to edit from the profile selector at the top; the loaded profile is
 shown there. <strong>Copy profile</strong> copies the current one to another, and
 <strong>Reset to defaults</strong> resets it. Switch profiles while driving with the
 <strong>Profile Selection</strong> function on the <a href="../adjustments/">Adjustments</a> tab.</p>
-<p>Gripora stabilizes the steering only, so the tab shows the yaw (steering)
-values. The controller measures the car's yaw rate with the gyro and steers
-so that it follows the rate the steering stick asks for (set on the
+<p>Gripora stabilizes the steering only, so the tab shows the steering
+values. The controller measures the car's turn rate (yaw rate) with the gyro and steers
+so that it follows the rate the steering wheel asks for (set on the
 <a href="../rates/">Rates</a> tab).</p>
 <h2 id="driving-feel">Driving Feel<a class="headerlink" href="#driving-feel" title="Permanent link">&para;</a></h2>
 <p>Driving Feel is where to start tuning. One value per column, with a guide
@@ -3844,7 +3844,7 @@ beside the table saying what each one does:</p>
 <tbody>
 <tr>
 <td><strong>Master Gain</strong> [%]</td>
-<td>How hard the car fights unwanted yaw</td>
+<td>How hard the car fights unwanted turning</td>
 <td>The car wanders or feels soft, or twitches out of line on bumps or under power</td>
 <td>The steering wobbles, buzzes or oscillates at speed</td>
 </tr>
@@ -3857,7 +3857,7 @@ beside the table saying what each one does:</p>
 <tr>
 <td><strong>I-Term Relax</strong> (1-10)</td>
 <td>How firmly it stops at the end of a fast turn or slide</td>
-<td>The car kicks back the other way when you centre the stick</td>
+<td>The car kicks back the other way when you centre the wheel</td>
 <td>Long, sustained turns lose rate</td>
 </tr>
 </tbody>
@@ -3908,13 +3908,13 @@ the kick-back.</p>
 <p>The PID gains table holds the steering loop's P, I, D, F (feedforward) and B
 (boost): the stored tune, which Master Gain scales.</p>
 <ul>
-<li><strong>P</strong> is how tightly the car tracks the steering stick and corrects a
+<li><strong>P</strong> is how tightly the car tracks the steering wheel and corrects a
   bump or grip change right now. Too little and it feels loose and wanders;
   too much and the steering overshoots or oscillates, quickly.</li>
-<li><strong>I</strong> holds the yaw rate over time against steady influences: a camber,
+<li><strong>I</strong> holds the turn rate over time against steady influences: a camber,
   uneven grip, a car that pulls to one side, a long sweeping corner. Too
   much and the car keeps rotating after a quick steering input is released.</li>
-<li><strong>D</strong> damps any yaw acceleration, from your input or from a bump. It
+<li><strong>D</strong> damps any change in turn rate, from your input or from a bump. It
   reduces overshoot from a high P, but is by far the most sensitive term to
   gyro noise; check <a href="../gyro/">Gyro</a> filtering before adding it.</li>
 <li><strong>F</strong> steers from the stick alone, without waiting for an error: a
@@ -3970,10 +3970,10 @@ Gain and the gain attenuation, so you can see the effect on the bench.</p>
 <h2 id="pid-controller-bandwidth-and-settings">PID Controller Bandwidth and Settings<a class="headerlink" href="#pid-controller-bandwidth-and-settings" title="Permanent link">&para;</a></h2>
 <p>Expert settings, best left at their defaults until you need them:</p>
 <ul>
-<li><strong>Yaw Bandwidth</strong> (PID loop bandwidth, Hz), <strong>Yaw D-term Cutoff</strong> and
-  <strong>Yaw B-term Cutoff</strong>.</li>
+<li><strong>Steering Bandwidth</strong> (PID loop bandwidth, Hz), <strong>Steering D-term Cutoff</strong> and
+  <strong>Steering B-term Cutoff</strong>.</li>
 <li><strong>I-Term Decay Max Rate</strong> and <strong>I-Term Relax Level</strong>, above.</li>
-<li><strong>Error Limit for Yaw Axis</strong>: a hard limit on the angle error in the loop,
+<li><strong>Error Limit for Steering Axis</strong>: a hard limit on the angle error in the loop,
   so the I-term can never grow past it.</li>
 </ul>
 <h2 id="gain-attenuation">Gain attenuation<a class="headerlink" href="#gain-attenuation" title="Permanent link">&para;</a></h2>
@@ -4014,7 +4014,7 @@ it. To see it while driving, log <code>debug_mode = GAIN_ATTEN</code> with
 <a href="../blackbox/">Blackbox</a>.</p>
 <h3 id="gain-curves">Gain Curves<a class="headerlink" href="#gain-curves" title="Permanent link">&para;</a></h3>
 <p>Gain curves are assigned in the <strong>Gain Curves</strong> panel (advanced): one slot
-each for Yaw (by steering deflection), Throttle and Speed. The Speed line
+each for Steering (by steering deflection), Throttle and Speed. The Speed line
 also holds the speed curve range in km/h. The shapes themselves are edited
 on the <a href="../curves/">Curves</a> tab. "-" means no curve. Whenever a curve shapes
 Master Gain, its cell in Driving Feel shows a <strong>CURVE</strong> badge.</p>

@@ -2050,7 +2050,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -2203,15 +2203,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sensors-gps" class="md-nav__link">
+  <a href="#sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sensors &amp; GPS
+        Sensors
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Sensors &amp; GPS">
+    <nav class="md-nav" aria-label="Sensors">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3775,15 +3775,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sensors-gps" class="md-nav__link">
+  <a href="#sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sensors &amp; GPS
+        Sensors
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Sensors &amp; GPS">
+    <nav class="md-nav" aria-label="Sensors">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3949,7 +3949,7 @@ the Configurator page that explains the settings.</p>
 here are for changing one thing later.</p>
 <h2 id="board-radio">Board &amp; Radio<a class="headerlink" href="#board-radio" title="Permanent link">&para;</a></h2>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
-<p>The car's name (the page still labels it <em>Craft name</em>), PID loop speed, and
+<p><strong>Car name</strong>, PID loop speed, and
 the features the board runs: LED strip and the ready-to-arm wiggle. There is
 no GPS switch: GPS runs when the GPS source matches a port (see
 <a href="../../configurator/tabs/gps/">GPS</a>).</p>
@@ -3961,8 +3961,8 @@ no GPS switch: GPS runs when the GPS source matches a port (see
 <p><img alt="Ports page" src="../../assets/images/ethos-suite/ports.png" /></p>
 <p>See <a href="../../reference/serial-ports/">Serial Ports</a>.</p>
 <h3 id="radio-config">Radio Config<a class="headerlink" href="#radio-config" title="Permanent link">&para;</a></h3>
-<p>Stick deflection and centre, the throttle range, and the deadbands. On a car
-the throttle is signed around the centre: forward above it, brake and
+<p>Channel centre and travel, the throttle range, and the steering deadband.
+The throttle is signed around the centre: forward above it, brake and
 reverse below.</p>
 <p><img alt="Radio Config page" src="../../assets/images/ethos-suite/radio_config.png" /></p>
 <p>See <a href="../../configurator/tabs/receiver/">Receiver</a>.</p>
@@ -4011,14 +4011,14 @@ turn sensors on or off. <strong>Tool</strong> selects the default sensors.</p>
 </tr>
 <tr>
 <td>Stats</td>
-<td>Run count, and last and total run time (labelled <em>Flight Count</em> and <em>Flight Time</em> in the suite).</td>
+<td><strong>Run Count</strong>, <strong>Last Run Time</strong> and <strong>Total Run Time</strong>.</td>
 <td></td>
 </tr>
 </tbody>
 </table>
 <p><img alt="Modes page" src="../../assets/images/ethos-suite/modes.png" /></p>
 <p><img alt="Failsafe, Stage 2 page" src="../../assets/images/ethos-suite/failsafe_procedure.png" /></p>
-<h2 id="sensors-gps">Sensors &amp; GPS<a class="headerlink" href="#sensors-gps" title="Permanent link">&para;</a></h2>
+<h2 id="sensors">Sensors<a class="headerlink" href="#sensors" title="Permanent link">&para;</a></h2>
 <h3 id="accelerometer">Accelerometer<a class="headerlink" href="#accelerometer" title="Permanent link">&para;</a></h3>
 <p>Accelerometer trim for roll and pitch. <strong>Tool</strong> calibrates the
 accelerometer: keep the car level and still while it does.</p>
@@ -4031,8 +4031,8 @@ you.</p>
 <p>See <a href="../../configurator/tabs/configuration/">Configuration</a>.</p>
 <h2 id="mixer-servos">Mixer &amp; Servos<a class="headerlink" href="#mixer-servos" title="Permanent link">&para;</a></h2>
 <h3 id="mixer">Mixer<a class="headerlink" href="#mixer" title="Permanent link">&para;</a></h3>
-<p>Gain and direction for each stabilised axis. On a car only yaw (the
-steering) is used. The car mix itself (steering on S1, the ESC on M1,
+<p>The steering <strong>Throw</strong>, <strong>Invert</strong> and <strong>Gyro Direction</strong> (Normal or
+Inverted). The car mix itself (steering on S1, the ESC on M1,
 optional rear steering and a second ESC) is set by the Setup Wizard's Model
 step, or in Mixer Rules.</p>
 <p><img alt="Mixer page" src="../../assets/images/ethos-suite/mixer_config.png" /></p>
@@ -4070,7 +4070,7 @@ step.</p>
 </tr>
 <tr>
 <td>Alerts</td>
-<td>Run time alarm (labelled <em>Flight Time Alarm</em>) and the BEC and receiver voltage alerts.</td>
+<td><strong>Run Time Alarm</strong> and the BEC and receiver voltage alerts.</td>
 </tr>
 <tr>
 <td>Sources</td>
@@ -4110,6 +4110,11 @@ step.</p>
 <td><a href="../../configurator/tabs/motors/">Motors</a></td>
 </tr>
 <tr>
+<td>Drive</td>
+<td><strong>ESC behaviour</strong> below neutral, <strong>Tyre diameter</strong>, <strong>Gyro starts at</strong> and <strong>Gyro fully on at</strong>, <strong>Gyro in reverse</strong> and <strong>Reverse gyro gain</strong>.</td>
+<td><a href="../../configurator/tabs/motors/#drive">Motors</a>, <a href="../../driving/drive-state/">Drive State</a></td>
+</tr>
+<tr>
 <td>Telemetry</td>
 <td>ESC telemetry protocol and corrections.</td>
 <td><a href="../../configurator/tabs/motors/">Motors</a></td>
@@ -4121,7 +4126,7 @@ step.</p>
 </tr>
 <tr>
 <td>RPM</td>
-<td>Where RPM comes from, the gear ratios and the motor pole count.</td>
+<td>Where RPM comes from, <strong>Motor 1 Gear Ratio</strong> and <strong>Motor 2 Gear Ratio</strong> (motor turns per wheel turn), and the motor pole count.</td>
 <td><a href="../../configurator/tabs/motors/">Motors</a></td>
 </tr>
 <tr>
@@ -4131,14 +4136,8 @@ step.</p>
 </tr>
 </tbody>
 </table>
-<p>The RPM page still labels its two ratios <em>main motor</em> and <em>tail motor</em>. On a
-car they are the gear ratios (motor turns per wheel turn) of motor 1 and
-motor 2, which the controller uses to work out the car's speed.</p>
-<p>The suite has no page for the drive settings (ESC behaviour below neutral,
-tyre diameter, the gyro start speeds and the reverse gyro). Set those on the
-Configurator's <a href="../../configurator/tabs/motors/">Motors</a> tab; the Setup
-Wizard's ESC step sets the ESC behaviour. See
-<a href="../../driving/drive-state/">Drive State</a>.</p>
+<p>The controller works out the car's speed from the RPM, the gear ratios and
+the tyre diameter.</p>
 <p><img alt="Motor Override page" src="../../assets/images/ethos-suite/motor_override.png" /></p>
 <p><img alt="ESC Prog. menu" src="../../assets/images/ethos-suite/esc_forward_menu.png" /></p>
 <p>Each ESC page shows the ESC it found, then its settings in groups:</p>
@@ -4178,7 +4177,7 @@ Wizard's ESC step sets the ESC behaviour. See
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../flight-tuning/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Flight Tuning">
+          <a href="../flight-tuning/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Tuning">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4188,7 +4187,7 @@ Wizard's ESC step sets the ESC behaviour. See
                 Previous
               </span>
               <div class="md-ellipsis">
-                Flight Tuning
+                Tuning
               </div>
             </div>
           </a>

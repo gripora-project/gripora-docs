@@ -2152,7 +2152,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -3654,7 +3654,7 @@ Configurator builds them.</p>
 <tbody>
 <tr>
 <td><strong>S1</strong></td>
-<td>Stabilized Yaw (steering stick through the gyro)</td>
+<td>Stabilized Steering (steering wheel through the gyro)</td>
 <td>Steering servo, front wheels</td>
 </tr>
 <tr>
@@ -3672,7 +3672,7 @@ mixer rule 1 set ST M1 1000 0 1000 0 0 0 0
 wizard's Model step:</p>
 <ul>
 <li><strong>Rear steering (4-wheel steering)</strong>: a second steering servo on <strong>S2</strong>,
-  also from Stabilized Yaw. <strong>Opposite to the front wheels</strong> gives tighter
+  also from Stabilized Steering. <strong>Opposite to the front wheels</strong> gives tighter
   turns, <strong>Same direction as the front wheels</strong> gives crab steering.
   <strong>Amount</strong> (0-100 %, default 50 %) is how far the rear wheels turn compared
   with the front ones.</li>
@@ -3738,7 +3738,7 @@ the movement, the gyro is correcting the wrong way. This usually happens
 after the steering channel was reversed with a servo reverse.</p>
 <p>Turn on <strong>Reverse gyro (steering)</strong> on the Mixer tab (CLI:
 <code>yaw_gyro_reverse = ON</code>, default <code>OFF</code>). It reverses only the gyro feedback
-of the steering loop, not the stick. Board orientation and the attitude
+of the steering loop, not the wheel. Board orientation and the attitude
 estimate don't change.</p>
 <p>Don't use servo reverse to fix the gyro direction: that reverses your
 steering too.</p>

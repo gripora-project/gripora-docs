@@ -2175,7 +2175,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -3692,8 +3692,8 @@ between them.</p>
 <p>With <strong>Car</strong>, <strong>Edit Configuration</strong> opens the car options. These are always
 set:</p>
 <ul>
-<li><strong>Steering servo</strong> (front wheels) on <strong>S1</strong>, from the steering stick
-  through the gyro (Stabilized Yaw).</li>
+<li><strong>Steering servo</strong> (front wheels) on <strong>S1</strong>, from the steering wheel
+  through the gyro (Stabilized Steering).</li>
 <li><strong>ESC</strong> on <strong>M1</strong>, reversible: forward, brake and reverse (Stabilized
   Throttle).</li>
 </ul>
@@ -3723,18 +3723,18 @@ with rear steering. See <a href="../servos/#name">Servos → Name</a>.</p>
 <h2 id="steering-throw-gyro-direction-and-steering-invert">Steering Throw, Gyro Direction and Steering Invert<a class="headerlink" href="#steering-throw-gyro-direction-and-steering-invert" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Steering Throw</strong> scales every rule that reads the steering (Stabilized
-  Yaw) by one percentage, 0-200% (100% is the servo's normal travel). It
+  Steering) by one percentage, 0-200% (100% is the servo's normal travel). It
   raises or lowers the throw of all steering servos together, without
   changing each rule's weight. Pair it with <strong>Steering Override</strong> below to
   set a target throw: enable the override, command a known percentage,
   measure the wheel angle, and adjust the throw until it matches.</li>
 <li><strong>Gyro Direction</strong> → <strong>Reverse gyro (steering)</strong> reverses only the gyro's
-  correction of the steering, not the stick. Turn it on if, with the wheels
+  correction of the steering, not the wheel. Turn it on if, with the wheels
   off the ground, turning the car by hand makes the steering turn <em>with</em>
   the movement instead of against it. Don't use servo reverse for this: that
   reverses your steering too. The CLI setting is <code>yaw_gyro_reverse</code>. Board
   orientation and the attitude display are not affected.</li>
-<li><strong>Steering Invert</strong> flips every rule that reads the steering, the stick
+<li><strong>Steering Invert</strong> flips every rule that reads the steering, the wheel
   and the gyro correction together.</li>
 </ul>
 <p>The gyro correction is turned round for reverse by the controller itself,
@@ -3760,7 +3760,7 @@ normally be <strong>Set</strong>, and later rules for the <em>same</em> output <
 cases on the rule.</p>
 <p>Other fields of a rule:</p>
 <ul>
-<li><strong>Input source</strong>: a stabilized input (<strong>Stabilized Yaw</strong> for the
+<li><strong>Input source</strong>: a stabilized input (<strong>Stabilized Steering</strong> for the
   steering, <strong>Stabilized Throttle</strong> for the ESC), a commanded input (the
   stick after rates, without the gyro), an RC input that bypasses
   everything (<strong>RC Steering (bypass)</strong>, <strong>RC Throttle (bypass)</strong>), or any

@@ -2045,7 +2045,7 @@
   <span class="md-ellipsis">
     
   
-    Flight Tuning
+    Tuning
   
 
     
@@ -3738,7 +3738,7 @@ lists the reasons:</p>
 <p><code>GOVERNOR</code>, <code>GPS</code>, <code>RESCUE_SW</code>, <code>CMS</code> and <code>PARALYZE</code> are kept only so the
 flag numbers don't move; they are never set.</p>
 <h2 id="stick-commands">Stick commands<a class="headerlink" href="#stick-commands" title="Permanent link">&para;</a></h2>
-<p>Stick arming and stick commands are inherited from the flight-controller
+<p>Stick arming and stick commands are inherited from the WingFlight
 code and are <strong>off by default</strong> (<code>enable_stick_arming</code> and
 <code>enable_stick_commands</code>).</p>
 <div class="admonition warning">
@@ -3749,8 +3749,8 @@ throttle at neutral. With <code>enable_stick_arming</code> on, the arm stick
 position is refused with the <code>THROTTLE</code> flag. Use an <code>ARM</code> switch.</p>
 </div>
 <p>The stick commands read the four control channels in the firmware's order
-(roll, pitch, yaw, throttle), after the channel <code>map</code>. With the default car
-map <code>RT1234AE</code>, yaw is CH1 (steering) and throttle CH2, and roll and pitch
+(roll, pitch, steering, throttle), after the channel <code>map</code>. With the default car
+map <code>RT1234AE</code>, steering is CH1 and throttle CH2, and roll and pitch
 are on CH7 and CH8, which a car radio often doesn't have as sticks. A
 position counts as LOW or HIGH at 90% of full travel:</p>
 <table>
@@ -3781,7 +3781,7 @@ position counts as LOW or HIGH at 90% of full travel:</p>
 <tr>
 <th>Function</th>
 <th>Throttle</th>
-<th>Yaw</th>
+<th>Steering</th>
 <th>Pitch</th>
 <th>Roll</th>
 </tr>
