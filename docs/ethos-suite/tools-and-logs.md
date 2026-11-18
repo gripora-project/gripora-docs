@@ -18,8 +18,8 @@ so a car can be set up at the track without a computer.
 
 The steps are: Sensors and level, Receiver, Servo bus, Model, Servo type,
 ESC, ESC telemetry, Center, Steering direction, Binding limits, Gyro
-direction, Trim and gain, Mode switches (ARM, GYRO OFF, DRIVE AIDS OFF),
-Driving style and Finish. A checklist button in the header lists them all
+direction, Trim and gain, Mode switches (ARM, GYRO OFF, DRIVE AIDS OFF,
+LAUNCH, DRIFT), Driving style and Finish. A checklist button in the header lists them all
 and jumps to any one.
 
 What differs from the Configurator:
@@ -28,6 +28,10 @@ What differs from the Configurator:
   channel order (CH1 steering, CH2 throttle). The receiver's port and
   protocol can only be set in the Configurator, because the radio talks to
   the controller through the receiver.
+- Like the Configurator's, it works only on steering servos (the servos the
+  mixer drives from the stabilised steering) and names them **STEER**, **F
+  STEER** / **R STEER** for a pair, or **STEER n** for more. The Steering
+  direction step reverses any servo that moves the wrong way.
 - Changes reach the car as you make them and are kept only once saved.
   Leaving the wizard with unsaved changes asks whether to **Save** or
   **Discard** them; closing the tool can't ask, so it leaves them on the

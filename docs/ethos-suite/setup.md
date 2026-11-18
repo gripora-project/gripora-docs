@@ -62,7 +62,7 @@ A menu of its own:
 
 | Page | What it is for | More |
 | --- | --- | --- |
-| Modes | Switch ranges for each mode, such as ARM, GYRO OFF and DRIVE AIDS OFF. Pick a mode, then add or change its ranges. | [Modes](../configurator/tabs/auxiliary.md) |
+| Modes | Switch ranges for each mode, such as ARM, GYRO OFF, DRIVE AIDS OFF, LAUNCH and DRIFT. Pick a mode, then add or change its ranges. | [Modes](../configurator/tabs/auxiliary.md) |
 | Adjustments | Adjustments from a switch or knob while driving, such as a gain knob. | [Adjustments](../configurator/tabs/adjustments.md) |
 | Failsafe | **Ch. Fallback**: what each channel does when the signal is lost. **Stage 2**: the failsafe procedure and its delays. | [Failsafe](../configurator/tabs/failsafe.md) |
 | Beepers | Which events sound the beeper, and the ESC beacon. | [Beepers](../configurator/tabs/beepers.md) |
@@ -108,7 +108,10 @@ See [Mixer](../configurator/tabs/mixer.md) and
 
 ### Mixer Rules
 
-The mixer's rules, one row each. Select a rule to edit it.
+The mixer's rules, one row each. Select a rule to edit it. The rule's
+**Role** picker offers only None: the two roles inherited from WingFlight
+are aircraft mixes. A rule loaded with one still shows it by name, so you
+can set it back to None.
 
 ![Mixer Rules page](../assets/images/ethos-suite/mixer_rules.png)
 

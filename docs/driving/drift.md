@@ -51,8 +51,9 @@ servo travel.
    reach while driving is best; a 3-position switch can carry DRIFT and
    GYRO OFF together.
 3. **Check the settings** on the [Profiles](../configurator/tabs/profiles.md#drift)
-   tab, in the **Drift** panel, on the EdgeTX tool's
-   [Drift page](../edgetx/index.md#drift), or in the CLI (`drift_gain`,
+   tab, in the **Drift** panel, on the Ethos Lua suite's
+   [Drift page](../ethos-suite/flight-tuning.md#drift) (Tuning → Steering),
+   on the EdgeTX tool's [Drift page](../edgetx/index.md#drift), or in the CLI (`drift_gain`,
    `drift_allow`, `drift_limit`). They belong to the PID profile, so a
    drift profile and a grip profile can each have their own.
 4. **Bench check**, disarmed: with DRIFT on, the wheels follow the steering
@@ -117,11 +118,11 @@ DRIFT mode.
 
 ## Settings
 
-| Setting | Configurator | EdgeTX | Default | Range |
-|---|---|---|---|---|
-| `drift_gain` | Counter-steer gain | Counter gain | 100 % | 0-200 % |
-| `drift_allow` | Allowed turn rate | Allowed rate | 30 °/s | 0-720 °/s |
-| `drift_limit` | Counter-steer limit | Counter limit | 100 % | 10-100 % of full lock |
+| Setting | Configurator | Ethos | EdgeTX | Default | Range |
+|---|---|---|---|---|---|
+| `drift_gain` | Counter-steer gain | Counter Gain | Counter gain | 100 % | 0-200 % |
+| `drift_allow` | Allowed turn rate | Allowed Rate | Allowed rate | 30 °/s | 0-720 °/s |
+| `drift_limit` | Counter-steer limit | Counter Limit | Counter limit | 100 % | 10-100 % of full lock |
 
 DRIFT is mode id 68. The settings of the profile in use are recorded in the
 Blackbox log header as `drift` (gain, allowed rate, limit).
