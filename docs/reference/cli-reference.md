@@ -395,6 +395,16 @@ ABS, traction control and launch control, one set per PID profile (select it wit
 | `drive_lc_throttle` | PID profile | `10..100` | `50` | Forward throttle allowed as a launch starts, % |
 | `drive_lc_ramp_time` | PID profile | `100..5000` | `1000` | From the start throttle to full, ms |
 
+### Drift (per PID profile)
+
+The DRIFT mode's settings, one set per PID profile (select it with `profile <n>` first). They act only while the DRIFT mode is on, outside failsafe and with GYRO OFF off. See [DRIFT](../driving/drift.md).
+
+| Setting | Scope | Values | Default | Description |
+|---|---|---|---|---|
+| `drift_gain` | PID profile | `0..200` | `100` | Counter-steer gain, %: 100 gives full lock 360 °/s past `drift_allow`; 0 = no counter-steer |
+| `drift_allow` | PID profile | `0..720` | `30` | Turn rate the gyro leaves alone, °/s |
+| `drift_limit` | PID profile | `10..100` | `100` | Most counter-steer the gyro adds, % of full lock |
+
 ### Rate profile
 
 Select the rate profile with `rateprofile <n>` first. Only the steering rows act on a car.
@@ -949,5 +959,5 @@ CH2 throttle, CH3-CH6 AUX1-AUX4 and CH7/CH8 roll and pitch.
 
 The optional last argument, `<role>`, is a label for the Configurator: `0`
 none (the default when omitted), `1` Flap Compensation, `2` Differential
-Thrust Yaw. Both named roles are inherited from WingFlight; the mixer never
-reads the role. See [Mixer](../configurator/tabs/mixer.md).
+Thrust Yaw. Both named roles are inherited from WingFlight aircraft mixes;
+the mixer never reads the role, and the Configurator only offers none. See [Mixer](../configurator/tabs/mixer.md).

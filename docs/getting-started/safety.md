@@ -49,7 +49,7 @@ Configure failsafe in two places, and bench-test both before you drive:
    link was lost, it disarms straight away.
 
 Once the failsafe procedure runs, the throttle to the ESC is
-`failsafe_throttle`, and the drive aids and GYRO OFF are ignored.
+`failsafe_throttle`, and the drive aids, GYRO OFF and DRIFT are ignored.
 
 ## Check the directions
 

@@ -12,6 +12,7 @@ drive aids.
 | [Drive State](drive-state.md) | How the controller works out which way the car is travelling and how fast, so the gyro corrects the right way in reverse and fades out near a standstill |
 | [Drive Aids](drive-aids.md) | ABS and traction control: timed shaping of the brake and throttle you give, per PID profile |
 | [GYRO OFF](gyro-off.md) | Turns the steering gyro off from a switch: the steering wheel goes straight to the steering servo |
+| [DRIFT](drift.md) | For drifting: the steering wheel goes straight to the servo and the gyro only counter-steers when the car rotates too fast |
 | [Ready-to-Arm Wiggle](ready-to-arm-wiggle.md) | The steering twitches to show the car is ready to arm, armed, or can't arm |
 | [Backup RX Input](backup-rx-input.md) | A second or third receiver takes over if the main link is lost |
 
@@ -26,6 +27,7 @@ car drives:
 | **ARM** | Arms the ESC output. Arming needs the throttle at neutral. |
 | **PREARM** | Optional safety switch that must be on before ARM works. |
 | **GYRO OFF** | Steering without the gyro. See [GYRO OFF](gyro-off.md). |
+| **DRIFT** | The steering wheel steers the wheels directly; the gyro only counter-steers turn rate beyond an allowance. See [DRIFT](drift.md). |
 | **DRIVE AIDS OFF** | ABS, traction control and launch control off; the gyro still steers. See [Drive Aids](drive-aids.md). |
 | **LAUNCH** | Stages a launch for launch control. See [Launch control](drive-aids.md#launch-control). |
 | **FAILSAFE** | Tests or triggers failsafe from a switch. See [Failsafe](../configurator/tabs/failsafe.md). |

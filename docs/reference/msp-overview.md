@@ -44,8 +44,9 @@ Added for the car, all in MSP API 33.0:
 | `MSP2_GRIPORA_DRIVE_STATUS` | `0x5F3E` | ESC mode in use, commanded ESC state, travel direction, whether the speed is known, speed and gyro correction scale |
 | `MSP2_GRIPORA_DRIVE_AIDS_CONFIG` / `MSP2_GRIPORA_SET_DRIVE_AIDS_CONFIG` | `0x5F3F` / `0x5F40` | The [drive aids](../driving/drive-aids.md) of the current PID profile: the nine ABS settings, the traction control mode and ramp time, then the launch control mode, start throttle and ramp time |
 | `MSP2_GRIPORA_DRIVE_AIDS_STATUS` | `0x5F41` | Flags (aids on, ABS armed, ABS releasing, traction control armed, traction control holding back, launch staged, launching), throttle in and throttle out |
+| `MSP2_GRIPORA_DRIFT_CONFIG` / `MSP2_GRIPORA_SET_DRIFT_CONFIG` | `0x5F42` / `0x5F43` | The [DRIFT](../driving/drift.md) settings of the current PID profile: `U8` counter-steer gain %, `U16` allowed turn rate °/s, `U8` counter-steer limit % |
 
-A `SET` request for the drive or drive aids settings is refused as a whole
+A `SET` request for the drive, drive aids or drift settings is refused as a whole
 if any value is out of range. `MSP_SET_MIXER_CONFIG` accepts only the car
 model types (`CAR`, `CUSTOM`).
 
@@ -69,7 +70,8 @@ fields of `MSP_PID_PROFILE`, are zero placeholders. Commands for features
 removed earlier (VTX, camera control, the rangefinder) are gone too.
 
 The mode list sent over MSP keeps the permanent ids of removed modes
-reserved, so `GYRO OFF` is still id 12; `DRIVE AIDS OFF` is id 66 and `LAUNCH` id 67.
+reserved, so `GYRO OFF` is still id 12; `DRIVE AIDS OFF` is id 66, `LAUNCH`
+id 67 and `DRIFT` id 68.
 
 !!! note
     A full MSP command reference is planned as the project stabilises --

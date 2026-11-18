@@ -16,8 +16,10 @@ What it does today:
   holds the car on the line you steer and catches slides. It corrects the
   right way in reverse and fades out near a standstill
   ([Drive State](driving/drive-state.md)), and can be switched off from the
-  transmitter ([GYRO OFF](driving/gyro-off.md)).
-- **Drive aids.** Timed ABS and traction control shape the brake and
+  transmitter ([GYRO OFF](driving/gyro-off.md)). For drifting, the
+  [DRIFT](driving/drift.md) mode gives you the wheel angle directly and
+  keeps the gyro only to catch over-rotation.
+- **Drive aids.** Timed ABS, traction control and launch control shape the brake and
   throttle you give, per PID profile ([Drive Aids](driving/drive-aids.md)).
 - **A car setup out of the box.** Steering on S1, a reversible ESC on M1,
   optional rear steering and a second ESC, and the car radio channel order

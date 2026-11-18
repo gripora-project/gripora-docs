@@ -56,7 +56,8 @@ tool that only reads `flightModeFlags` misses the modes past the 32nd. The
 separate mode change *event* carries only the first word.
 
 The log header records the drive aids settings of the profile in use
-(`drive_abs`, `drive_tc`).
+(`drive_abs`, `drive_tc`, `drive_lc`) and its [DRIFT](../../driving/drift.md)
+settings (`drift`: gain, allowed turn rate, limit).
 
 ## Log files over USB
 
@@ -69,6 +70,9 @@ a sequence number and timestamp. With no car name set, the prefix is
 ## Reviewing logs
 
 Open a `.bbl` file in the Gripora Blackbox viewer to play the run back.
+The **Car** button shows a 3D car that follows the logged attitude
+(heading, pitch and roll); its position and size on the screen are set
+under **Car Settings**.
 Each graph stacks related fields, such as the steering setpoint against the
 turn rate from the gyro, then the servo and motor outputs, with the legend showing every
 field's value at the cursor. The strip along the bottom shows the whole log

@@ -17,7 +17,6 @@ pitch versions are hidden):
 | Driving Feel | Master Gain Steering, I-Term Decay Steering, I-Term Relax Steering (see [Profiles](profiles.md#driving-feel)) |
 | Servo Trims | Servo Trim Steering (see [Servos](servos.md#trimming-from-the-transmitter)) |
 | Setpoint Boost | Steering Setpoint Boost Gain |
-| Mixer | Flap Compensation Gain, Differential Thrust Yaw Gain (scale mixer rules with that [role](mixer.md#rule-roles); not used by the car setup) |
 
 A function under live adjustment shows its value on the tab that owns it while the switch or knob is in control.
 
